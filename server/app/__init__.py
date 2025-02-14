@@ -6,7 +6,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Inicializa extensões
+    # Inicializa
     db.init_app(app)
 
     # Registra rotas

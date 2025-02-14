@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 from sqlalchemy.ext.declarative import declarative_base
-
+from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 class Usuario(Base):
@@ -14,5 +14,4 @@ class Usuario(Base):
     endereco = Column(String(255), nullable=True)
     horario_de_trabalho = Column(String(20), nullable=False)
 
-    def __repr__(self):
-        return f"<Usuario(nome={self.nome}, email={self.email})>"
+    cargo = relationship('Cargo', back_populates='usuario')
