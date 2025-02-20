@@ -1,10 +1,9 @@
-from sqlalchemy import Column, Date, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from ..extensions import db
 
-Base = declarative_base()
+class Calendario(db.Model):
+    ano_letivo = db.Column(db.Integer, primary_key = True)
+    data_inicio = db.Column(db.Date, nullable = False)
+    data_fim = db.Column(db.Date, nullable = False)
+    dias_letivos = db.Column(db.Integer, nullable = False)
 
-class Calendario(Base):
-    anoLetivo = Column(Integer, primary_key = True, unique = True),
-    dataInicio = Column(Date, nullable = False),
-    dataFim = Column(Date, nullable = False),
-    diasLetivos = Column(Integer, nullable = False)
+    turmas = db.relationship('Turma', backref='ano_letivo', lazy=True)

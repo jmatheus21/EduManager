@@ -1,10 +1,9 @@
-from sqlalchemy import Column, Date, Numeric, String, ForeignKey
-from sqlalchemy.orm import relationship
+from ..extensions import db
 
-class Cargo:
-    usuario_cpf = Column(String(20), ForeignKey('usuario.id'))
-    nome = Column(String(100), nullable=False)
-    salario = Column(Numeric(10, 2), nullable=False)
-    data_contrato = Column(Date, nullable=False)
+class Cargo(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nome = db.Column(db.String(100), nullable=False)
+    salario = db.Column(db.Numeric(10, 2), nullable=False)
+    data_contrato = db.Column(db.Date, nullable=False)
 
-    usuario = relationship('Usuario', back_populates='cargo')
+    usuario_cpf = db.Column(db.String(20), db.ForeignKey('usuario.cpf'), nullable=False)

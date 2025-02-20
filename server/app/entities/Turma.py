@@ -1,22 +1,14 @@
-from sqlalchemy import Column, Integer, String, CHAR, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-from sala import Sala
-from calendario import Calendario
+from ..extensions import db
 
-Base = declarative_base()
+class Turma(db.Model):
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    ano = db.Column(db.Integer, nullable = False)
+    serie = db.Column(db.CHAR(1), nullable = False)
+    nivel_ensino = db.Column(db.String(30), nullable = False)
+    turno = db.Column(db.CHAR(1), nullable = False)
+    status = db.Column(db.CHAR(1), nullable = False, default='A')
 
-class Turma(Base):
-    idTurma = Column(Integer, primary_key = True, autoincrement = True),
-    ano = Column(Integer, nullable = False),
-    serie = Column(CHAR(1), nullable = False),
-    nivelEnsino = Column(String(30), nullable = False),
-    turno = Column(CHAR(1), nullable = False),
-    status = Column(CHAR(1), nullable = False),
-    numSala = Column(Integer, ForeignKey('sala.numero'), nullable = False),
-    anoLetivoCalendario = Column(Integer, ForeignKey('calendario.anoLetivo'), nullable = False)
+    sala_numero = db.Column(db.Integer, db.ForeignKey('sala.numero'), nullable = False)
+    calendario_ano_letivo = db.Column(db.Integer, db.ForeignKey('calendario.ano_letivo'), nullable = False)
 
-    sala = relationship('Sala', backref = 'sala'),
-    calendario = relationship('Calendario', backref = 'calendario')
-
-
+    aulas = db.relationship('Aula', backref='turma', lazy=True)

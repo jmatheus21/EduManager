@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from ..extensions import db
 
-Base = declarative_base()
+class Sala(db.Model):
+    numero = db.Column(db.Integer, primary_key = True)
+    localizacao = db.Column(db.String(10), nullable = False)
+    capacidade = db.Column(db.Integer, nullable = False)
 
-class Sala(Base):
-    numero = Column(Integer, primary_key = True, unique = True),
-    localizacao = Column(String(10), nullable = False),
-    capacidade = Column(Integer, nullable = False)
+    turmas = db.relationship('Turma', backref='sala', lazy=True)

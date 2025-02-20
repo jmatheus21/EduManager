@@ -9,8 +9,11 @@ def create_app():
     # Inicializa
     db.init_app(app)
 
+    # Importar modelos
+    from .entities import Usuario, Turma, Sala, professor_ensina, Disciplina, Cargo, Calendario, Boletim, Aula, Aluno, aluno_participa
+
     # Registra rotas
-    from .routes import init_routes
-    init_routes(app)
+    # from .routes import init_routes
+    # init_routes(app)
 
     return app
