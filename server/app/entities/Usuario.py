@@ -1,7 +1,7 @@
 from ..extensions import db
 
 # Tabela de associação para o relacionamento Muitos para Muitos entre professor e disciplina
-professor_ensina = db.Table(
+professor_disciplina = db.Table(
     'professor_ensina',
     db.Column('usuario_cpf', db.String(20), db.ForeignKey('usuario.cpf'), primary_key=True),
     db.Column('disciplina_codigo', db.String(10), db.ForeignKey('disciplina.codigo'), primary_key=True)
