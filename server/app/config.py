@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # SECRET_KEY = os.getenv('SECRET_KEY', 'uma_chave_secreta_muito_segura')
+    SECRET_KEY = os.getenv('SECRET_KEY')
 
     # Configuração do SQLAlchemy
     SQLALCHEMY_DATABASE_URI = (
