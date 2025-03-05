@@ -11,13 +11,18 @@ Os desenvolvedores integrantes desse projeto são:
 
 ## Instruções para desenvolvedores
 
+Antes de inciar a instalação, certifique-se de ter o Node.js e o Python nas versões mais recentes instalados. Caso ainda não tenha instalado, abaixo estão os links para download:
+https://www.python.org/downloads/
+https://nodejs.org/pt/download
+Em seguida, basta clonar o repositório com `git clone` e seguir os passos seguintes.
+
 ### Instalação do Backend
 
 Para instalar todas as dependências do servidor, navegue até a pasta *server*, a partir do diretório raíz do projeto,com o comando no terminal:
 ```
 cd server
 ```
-Após isso, você deve criar um ambiente virtual:
+Após isso, exclua a pasta *venv* já existente para evitar conflito de arquivos e crie um ambiente virtual:
 ```
 python3 -m venv venv
 ```
