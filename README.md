@@ -1,7 +1,13 @@
 # Sistema de Gestão Escolar (EduManager)
 ## Equipe
 Os desenvolvedores integrantes desse projeto são: 
-
+- EDGAR DE SOUZA DIAS
+- ISAAC LEVI LIRA DE OLIVEIRA
+- JOÃO EMANUEL MENDONÇA APÓSTOLO
+- JOSÉ MATHEUS RIBEIRO DOS SANTOS
+- MARIA EDUARDA PIRES POSSARI DOS SANTOS
+- RAFAEL LIMA DANTAS
+- ULISSES DE JESUS CAVALCANTE
 
 ## Instruções para desenvolvedores
 
