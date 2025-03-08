@@ -1,5 +1,6 @@
 import React from "react";
 import { Alert, Container } from "react-bootstrap";
+import { useLocation } from 'react-router'
 
 const Alerta = ({ type }) => {
   const url = useLocation();

@@ -80,11 +80,12 @@ const useApi = (baseUrl) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      if (!response.ok) throw new Error("Erro ao atualizar recurso");
+
+      if (!response.ok) throw new Error(response.json());
       const result = await response.json();
-      setData((prevData) =>
-        prevData.map((item) => (item.id === result.id ? result : item))
-      );
+      // setData((prevData) =>
+      //   prevData.map((item) => (item.id === result.id ? result : item))
+      // );
     } catch (err) {
       setError(err.message);
       throw err;
@@ -106,9 +107,9 @@ const useApi = (baseUrl) => {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Erro ao deletar recurso");
-      setData((prevData) =>
-        prevData.filter((item) => item.id !== endpoint.split("/").pop())
-      );
+      // setData((prevData) =>
+      //   prevData.filter((item) => item.id !== endpoint.split("/").pop())
+      // );
     } catch (err) {
       setError(err.message);
       throw err;

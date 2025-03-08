@@ -25,9 +25,9 @@ def cadastrar_sala() -> jsonify:
     if erros:
         return jsonify({"erro": erros}), 400
     
-    sala_existente = db.session.get(Sala, data['numero']);
+    sala_existente = db.session.get(Sala, data['numero'])
     if sala_existente is not None:
-        return jsonify({"erro": ["Sala já existe"]}), 400;
+        return jsonify({"erro": ["Sala já existe"]}), 400
 
     nova_sala = Sala(numero=data['numero'], localizacao=data['localizacao'], capacidade=data['capacidade'])
     db.session.add(nova_sala)
@@ -76,9 +76,10 @@ def alterar_sala(numero: int) -> jsonify:
     if erros:
         return jsonify({"erro": erros}), 400
     
-    sala_existente = db.session.get(Sala, data['numero']);
-    if sala_existente is not None:
-        return jsonify({"erro": ["Sala já existe"]}), 400;
+    if numero != data['numero']:
+        sala_existente = db.session.get(Sala, data['numero']);
+        if sala_existente is not None:
+            return jsonify({"erro": ["Sala já existe"]}), 400;
 
     sala.numero = data['numero']
     sala.localizacao = data['localizacao']

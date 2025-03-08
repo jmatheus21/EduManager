@@ -24,7 +24,7 @@ const ConsultarSala = () => {
    */
   useEffect(() => {
     api.fetchData("/sala");
-  }, [url.pathname]);
+  }, []);
 
   // Exibe mensagem de carregamento enquanto os dados estão sendo buscados
   if (api.loading) return <p>Carregando...</p>;
@@ -41,6 +41,7 @@ const ConsultarSala = () => {
         placeholder={"Exemplo: 10"}
         min={1}
         max={100}
+        entidade={"sala"}
       />
       <Alerta type={true} />
       <Listagem colunas={colunas} data={api.data} pk={colunas[0].campo} />
