@@ -2,13 +2,26 @@ from flask import Flask
 from .config import Config
 from .extensions import db
 from flask_cors import CORS
+from flask.json.provider import DefaultJSONProvider
+from datetime import date, datetime
+
+class CustomJSONProvider(DefaultJSONProvider):
+    def default(self, o):
+        if isinstance(o, (datetime, date)):
+            return o.strftime('%Y-%m-%d')
+        return super().default(o)
 
 def create_app():
     app = Flask(__name__)
+    
+    # Configura o JSON provider customizado
+    app.json_provider_class = CustomJSONProvider
+    app.json = app.json_provider_class(app)
+    
     CORS(app, origins=["http://localhost:5173"])
     app.config.from_object(Config)
 
-    # Inicializa
+    # Inicializa o banco de dados
     db.init_app(app)
 
     # Importar modelos
@@ -16,6 +29,8 @@ def create_app():
 
     # Registra rotas
     from .routes.sala_routes import sala_bp
+    from .routes.calendario_routes import calendario_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
+    app.register_blueprint(calendario_bp, url_prefix="/calendario")
 
     return app
