@@ -36,7 +36,7 @@ def listar_disciplinas() -> jsonify:
     return disciplina_controller.listar_disciplinas
 
 
-@disciplina_bp.route("/<str:codigo>", methods=['GET'])
+@disciplina_bp.route("/<string:codigo>", methods=['GET'])
 def buscar_disciplina(codigo: str) -> jsonify:
     """Rota para buscar uma disciplina específica pelo código.
 
@@ -51,7 +51,7 @@ def buscar_disciplina(codigo: str) -> jsonify:
     return disciplina_controller.buscar_disciplina(codigo)
 
 
-@disciplina_bp.route("/<str:codigo>", methods=['PUT'])
+@disciplina_bp.route("/<string:codigo>", methods=['PUT'])
 def alterar_disciplina(codigo: str) -> jsonify:
     """Rota para alterar os dados de uma disciplina existente.
 
@@ -66,7 +66,7 @@ def alterar_disciplina(codigo: str) -> jsonify:
     return disciplina_controller.alterar_disciplina(codigo)
 
 
-@disciplina_bp.route("/<str:codigo>", methods=['DELETE'])
+@disciplina_bp.route("/<string:codigo>", methods=['DELETE'])
 def remover_disciplina(codigo: str) -> jsonify:
     """Rota para remover uma disciplina existente.
 
