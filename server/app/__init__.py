@@ -18,4 +18,7 @@ def create_app():
     from .routes.sala_routes import sala_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
 
+    from .routes.disciplina_routes import disciplina_bp
+    app.register_blueprint(disciplina_bp, url_prefix="/disciplina")
+    
     return app
