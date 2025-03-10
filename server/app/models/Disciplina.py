@@ -15,15 +15,15 @@ class Disciplina(db.Model):
         codigo (str): Código da disciplina (chave primária) (máximo 10 caracteres).
         nome (str): Nome da disciplina (máximo 50 caracteres).
         carga_horaria: Carga horária da disciplina (número inteiro positivo).
-        ementa: Ementa da disciplina (máximo de 100 caracteres) (Pode ser nulo).
-        bibliografia: Bibliografia da disciplina (máximo 100 caracteres) (Pode ser nulo).
+        ementa: Ementa da disciplina (máximo de 255 caracteres) (Pode ser nulo).
+        bibliografia: Bibliografia da disciplina (máximo 255 caracteres) (Pode ser nulo).
         aulas (relationship): Relacionamento com a entidade Aula. Cada disciplina deve ter uma ou mais aulas associadas.
     """
 
     codigo = db.Column(db.String(10), primary_key = True)
     nome = db.Column(db.String(50), nullable = False)
     carga_horaria = db.Column(db.Integer, nullable = False)
-    ementa = db.Column(db.String(100), nullable = True)
-    bibliografia = db.Column(db.String(100), nullable = True)
+    ementa = db.Column(db.String(255), nullable = True)
+    bibliografia = db.Column(db.String(255), nullable = True)
 
     aulas = db.relationship('Aula', backref='disciplina', lazy=True, doc="Relacionamento com a entidade Aula. Cada disciplina deve ter uma ou várias aulas associadas.")

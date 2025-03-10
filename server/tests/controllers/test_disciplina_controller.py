@@ -113,7 +113,7 @@ def test_buscar_disciplina(client, app):
         assert dados['nome'] == "Matemática"
         assert dados['carga_horaria'] == 30
         assert dados['ementa'] == "Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos."
-        assert dados['bibliografia'] == "bibliografia", "STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014."
+        assert dados['bibliografia'] == "STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014."
 
 
 def test_alterar_disciplina(client, app):

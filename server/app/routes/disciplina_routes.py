@@ -33,7 +33,7 @@ def listar_disciplinas() -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo uma lista de disciplinas.
     """
-    return disciplina_controller.listar_disciplinas
+    return disciplina_controller.listar_disciplinas()
 
 
 @disciplina_bp.route("/<string:codigo>", methods=['GET'])

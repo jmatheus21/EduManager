@@ -95,16 +95,16 @@ def test_alterar_disciplina(app):
         disciplina_original = db.session.get(Disciplina, "MAT001")
         disciplina_original.codigo = "MAT001"
         disciplina_original.nome = "Matemática"
-        disciplina_original.carga_horaria = 30
+        disciplina_original.carga_horaria = 120
         disciplina_original.ementa = "Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos."
         disciplina_original.bibliografia = "STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014."
         db.session.commit()
 
-        disciplina_alterada = db.session.get(Disciplina, 101)
+        disciplina_alterada = db.session.get(Disciplina, "MAT001")
         assert disciplina_alterada is not None
         assert disciplina_alterada.codigo == "MAT001"
         assert disciplina_alterada.nome == "Matemática"
-        assert disciplina_alterada.carga_horaria == 30
+        assert disciplina_alterada.carga_horaria == 120
         assert disciplina_alterada.ementa == "Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos."
         assert disciplina_alterada.bibliografia == "STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014."
 

@@ -21,7 +21,7 @@ def cadastrar_disciplina() -> jsonify:
     """
     data = request.get_json()
 
-    erros = validar_disciplina(codigo=data['numero'], nome=data['nome'], carga_horaria=data['carga_horaria'], ementa=data['ementa'], bibliografia=data['bibliografia'])
+    erros = validar_disciplina(codigo=data['codigo'], nome=data['nome'], carga_horaria=data['carga_horaria'], ementa=data['ementa'], bibliografia=data['bibliografia'])
     if erros:
         return jsonify({"erro": erros}), 400
     
@@ -31,7 +31,7 @@ def cadastrar_disciplina() -> jsonify:
     
     nova_disciplina = Disciplina(codigo=data['codigo'], nome=data['nome'], carga_horaria=data['carga_horaria'], ementa=data['ementa'], bibliografia=data['bibliografia'])
     db.session.add(nova_disciplina)
-    db.commit()
+    db.session.commit()
     return jsonify({"mensagem": "Disciplina criada com sucesso!", "data": {"codigo": nova_disciplina.codigo, "nome": nova_disciplina.nome, "carga_horaria": nova_disciplina.carga_horaria, "ementa": nova_disciplina.ementa, "bibliografia": nova_disciplina.bibliografia}}), 201
 
 
