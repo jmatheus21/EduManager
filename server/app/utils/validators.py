@@ -1,3 +1,5 @@
+from .disciplina_helpers import validar_codigo
+
 """
 Módulo de Validação de Salas.
 
@@ -84,8 +86,8 @@ def validar_disciplina (codigo: str, nome: str, carga_horaria: int, ementa: str,
     """
     erros = []
 
-    if not codigo or not isinstance(codigo, str) or len(codigo) < 6 or len(codigo) > 10:
-        erros.append("O atributo 'codigo' é obrigatório e deve ter no minimo 6 caracteres e no máximo 10")
+    if not codigo or not isinstance(codigo, str) or len(codigo) < 6 or len(codigo) > 10 or not validar_codigo(codigo):
+        erros.append("O atributo 'codigo' é obrigatório e deve ter no minimo 6 caracteres e no máximo 10. Além do formato ser composto por três letras maiúsculas seguidas de três números (ex: MAT123)")
 
     if not nome or not isinstance(nome, str) or len(nome) < 3 or len(nome) > 50:
         erros.append("O atributo 'nome' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 50")

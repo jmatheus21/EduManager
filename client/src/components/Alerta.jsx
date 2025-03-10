@@ -2,7 +2,7 @@ import React from "react";
 import { Alert, Container } from "react-bootstrap";
 import { useLocation } from 'react-router'
 
-const Alerta = ({ type }) => {
+const Alerta = ({ type, entidade }) => {
   const url = useLocation();
   const queryParams = new URLSearchParams(url.search);
   const successParam = queryParams.get("success");
@@ -14,8 +14,8 @@ const Alerta = ({ type }) => {
       {successParam && (
         <Alert variant="success" className="p-3 mb-3">
           {!type || typeParam == "remocao"
-            ? "Sala removida com sucesso!"
-            : "Sala cadastrada com sucesso!"}
+            ? `${entidade} removid${entidade.endsWith("a") ? "a" : "o"} com sucesso!`
+            : `${entidade} cadastrad${entidade.endsWith("a") ? "a" : "o"} com sucesso!`}
         </Alert>
       )}
     </Container>

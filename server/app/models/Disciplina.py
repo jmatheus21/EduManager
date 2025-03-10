@@ -20,10 +20,10 @@ class Disciplina(db.Model):
         aulas (relationship): Relacionamento com a entidade Aula. Cada disciplina deve ter uma ou mais aulas associadas.
     """
 
-    codigo = db.Column(db.String(10), primary_key = True)
-    nome = db.Column(db.String(50), nullable = False)
-    carga_horaria = db.Column(db.Integer, nullable = False)
-    ementa = db.Column(db.String(255), nullable = True)
-    bibliografia = db.Column(db.String(255), nullable = True)
+    codigo = db.Column(db.String(10), primary_key = True, doc = "Código da disciplina")
+    nome = db.Column(db.String(50), nullable = False, doc = "Nome da disciplina")
+    carga_horaria = db.Column(db.Integer, nullable = False, doc = "Carga horária da disciplina")
+    ementa = db.Column(db.String(255), nullable = True, doc = "Ementa da disciplina")
+    bibliografia = db.Column(db.String(255), nullable = True, doc = "Bibliografia da disciplina")
 
     aulas = db.relationship('Aula', backref='disciplina', lazy=True, doc="Relacionamento com a entidade Aula. Cada disciplina deve ter uma ou várias aulas associadas.")
