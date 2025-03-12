@@ -1,6 +1,6 @@
 import React from "react";
 import { Alert, Container } from "react-bootstrap";
-import { useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router'
 
 const Alerta = ({ type, entidade }) => {
   const url = useLocation();
@@ -14,8 +14,8 @@ const Alerta = ({ type, entidade }) => {
       {successParam && (
         <Alert variant="success" className="p-3 mb-3">
           {!type || typeParam == "remocao"
-            ? `${entidade} removid${entidade.endsWith("a") ? "a" : "o"} com sucesso!`
-            : `${entidade} cadastrad${entidade.endsWith("a") ? "a" : "o"} com sucesso!`}
+            ? `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} removid${entidade.endsWith("a") ? "a" : "o"} com sucesso!`
+            : `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} cadastrad${entidade.endsWith("a") ? "a" : "o"} com sucesso!`}
         </Alert>
       )}
     </Container>

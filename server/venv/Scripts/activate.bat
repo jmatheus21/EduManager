@@ -9,10 +9,14 @@ if defined _OLD_CODEPAGE (
 )
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 set "VIRTUAL_ENV=D:\Estudos\Projetos\Web\EduManager\server\venv"
 =======
 set VIRTUAL_ENV=C:\Users\uliss\OneDrive\Área de Trabalho\EduManager\EduManager\server\venv
 >>>>>>> origin/usuario-cc
+=======
+set VIRTUAL_ENV=C:\Users\levi_\Desktop\ES2\EduManager\server\venv
+>>>>>>> calendario-cc
 
 if not defined PROMPT set PROMPT=$P$G
 
@@ -20,12 +24,17 @@ if defined _OLD_VIRTUAL_PROMPT set PROMPT=%_OLD_VIRTUAL_PROMPT%
 if defined _OLD_VIRTUAL_PYTHONHOME set PYTHONHOME=%_OLD_VIRTUAL_PYTHONHOME%
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 set "_OLD_VIRTUAL_PROMPT=%PROMPT%"
 set "PROMPT=(venv) %PROMPT%"
 =======
 set _OLD_VIRTUAL_PROMPT=%PROMPT%
 set PROMPT=(venv) %PROMPT%
 >>>>>>> origin/usuario-cc
+=======
+set _OLD_VIRTUAL_PROMPT=%PROMPT%
+set PROMPT=(venv) %PROMPT%
+>>>>>>> calendario-cc
 
 if defined PYTHONHOME set _OLD_VIRTUAL_PYTHONHOME=%PYTHONHOME%
 set PYTHONHOME=
@@ -34,12 +43,17 @@ if defined _OLD_VIRTUAL_PATH set PATH=%_OLD_VIRTUAL_PATH%
 if not defined _OLD_VIRTUAL_PATH set _OLD_VIRTUAL_PATH=%PATH%
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 set "PATH=%VIRTUAL_ENV%\Scripts;%PATH%"
 set "VIRTUAL_ENV_PROMPT=venv"
 =======
 set PATH=%VIRTUAL_ENV%\Scripts;%PATH%
 set VIRTUAL_ENV_PROMPT=(venv) 
 >>>>>>> origin/usuario-cc
+=======
+set PATH=%VIRTUAL_ENV%\Scripts;%PATH%
+set VIRTUAL_ENV_PROMPT=(venv) 
+>>>>>>> calendario-cc
 
 :END
 if defined _OLD_CODEPAGE (
