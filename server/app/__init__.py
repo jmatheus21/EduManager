@@ -32,9 +32,11 @@ def create_app():
     from .routes.calendario_routes import calendario_bp
     from .routes.usuario_routes import usuario_bp
     from .routes.disciplina_routes import disciplina_bp
+    from .routes.turma_routes import turma_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
     app.register_blueprint(calendario_bp, url_prefix="/calendario")
     app.register_blueprint(usuario_bp, url_prefix="/usuario")
     app.register_blueprint(disciplina_bp, url_prefix="/disciplina")
+    app.register_blueprint(turma_bp, url_prefix="/turma")
     
     return app
