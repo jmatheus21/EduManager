@@ -49,7 +49,7 @@ const BarraDeBusca = ({
   return (
     <Container fluid>
       <Form className="d-flex my-4">
-        <Form.Label htmlFor="atributo" className="pe-2 d-flex align-items-center">
+        <Form.Label htmlFor="atributo" style={{ whiteSpace: "nowrap" }} className="pe-2 d-flex align-items-center">
           {atributoNome}:{" "}
         </Form.Label>
         {tipo == "number" ? (
