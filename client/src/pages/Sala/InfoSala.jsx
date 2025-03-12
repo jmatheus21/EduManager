@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoInfo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
 

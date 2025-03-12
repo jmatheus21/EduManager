@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, Container } from 'react-bootstrap'
 import { Cabecalho, Pagina } from "../../components";
 import { FaUserTie, FaBook, FaUsers, FaCalendarAlt, FaChalkboardTeacher, FaUserGraduate, FaUserSlash, FaStar, FaDoorOpen, FaClipboardList, FaHistory } from "react-icons/fa";
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import packageJson from "../../../package.json";
 
 const cards = [
@@ -30,28 +30,28 @@ const HomePage = () => {
 
   return (
     <Pagina>
-        <Cabecalho />
-        <Container fluid className='d-flex flex-fill justify-content-center align-items-center bg-primary-subtle py-sm-0 py-5'>
-            <div className='menu'>
-              {
-                cards.map((card, index) => {
-                  return (
-                    <Card key={index} className='px-5 custom-card' onClick={()  => navigate(card.url)}>
-                      <div className="d-flex justify-content-center align-items-center" style={{ height: '120px' }}>
-                          {card.icone}
-                      </div>
-                      <Card.Body>
-                        <Card.Title className='text-center text-black pb-4'>{card.nome}</Card.Title>
-                      </Card.Body>
-                    </Card>
-                  )
-                })
-              }
-            </div>
-        </Container>
-        <Container fluid>
-          <p className='text-center py-3'>EduManager v.{packageJson.version}</p>
-        </Container>
+      <Cabecalho />
+      <Container fluid className='d-flex flex-fill justify-content-center align-items-center bg-primary-subtle py-sm-0 py-5'>
+        <div className='menu'>
+          {
+            cards.map((card, index) => {
+              return (
+                <Card key={index} className='px-5 custom-card' onClick={() => navigate(card.url)}>
+                  <div className="d-flex justify-content-center align-items-center" style={{ height: '120px' }}>
+                    {card.icone}
+                  </div>
+                  <Card.Body>
+                    <Card.Title className='text-center text-black pb-4'>{card.nome}</Card.Title>
+                  </Card.Body>
+                </Card>
+              )
+            })
+          }
+        </div>
+      </Container>
+      <Container fluid>
+        <p className='text-center py-3'>EduManager v.{packageJson.version}</p>
+      </Container>
     </Pagina>
   )
 }

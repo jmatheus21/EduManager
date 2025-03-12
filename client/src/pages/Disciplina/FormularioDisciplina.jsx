@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Row, Alert } from "react-bootstrap";
 import useApi from "../../hooks/useApi";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoCadastrar, BotaoAlterar } from "../../components";
 import { useForm } from "react-hook-form";
 
@@ -18,14 +18,14 @@ const FormularioDisciplina = () => {
     const [titulo, setTitulo] = useState("Cadastrar");
     const api = useApi("/api");
     const navigate = useNavigate();
-    const url = useLocation();
+    // const url = useLocation();
     const { chave } = useParams();
 
     /**
      * Efeito para carregar os dados da disciplina quando o componente é montado ou quando o caminho da URL ou o parâmetro `chave` mudam.
      * Se o caminho da URL incluir "alterar", o título do formulário será alterado para "Alterar" e os dados da disciplina serão carregados.
      */
-    useEffect(() => {
+    // useEffect(() => {
         // const carregarDados = async () => {
         //     if (url.pathname.includes("alterar")) {
         //         setTitulo("Alterar");
@@ -45,7 +45,7 @@ const FormularioDisciplina = () => {
         // };
 
         // carregarDados();
-    }, [url.pathname, chave]);
+    // }, [url.pathname, chave]);
 
     /**
      * Função para lidar com o envio do formulário.
@@ -101,7 +101,7 @@ const FormularioDisciplina = () => {
                                 />
                             </Form.Group>
                             <Alert variant="white" className={`${errors.nome ? "" : "d-none"} text-danger`}>
-                                {errors?.nome?.type == "required" && "O nome da disciplina é obrigatória"}
+                                {errors?.nome?.type == "required" && "O nome da disciplina é obrigatório"}
                                 {errors?.nome?.type == "minLength" && "O nome da disciplina deve ter no mínimo 3 caracteres"}
                                 {errors?.nome?.type == "maxLength" && "O nome da disciplina deve ter no máximo 50 caracteres"}
                             </Alert>

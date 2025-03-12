@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 
 /**
  * Componente para exibir o cabeçalho da página.

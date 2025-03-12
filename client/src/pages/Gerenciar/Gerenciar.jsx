@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import Cabecalho from "../../components/Cabecalho";
 import Pagina from "../../components/Pagina";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 /**
  * Componente de template para as páginas de 'Gerenciar'
@@ -35,8 +35,8 @@ const Gerenciar = ({ menus }) => {
                 menus.map((menu, index) => (
                   <Button
                     key={index}
-                    variant={url.pathname === menu.url? "primary" : "light"}
-                    className={`${url.pathname === menu.url? "bg-primary" : ""} py-2 nav-button`}
+                    variant={url.pathname === menu.url ? "primary" : "light"}
+                    className={`${url.pathname === menu.url ? "bg-primary" : ""} py-2 nav-button`}
                     onClick={() => navigate(menu.url)}
                   >
                     {menu.nome}
