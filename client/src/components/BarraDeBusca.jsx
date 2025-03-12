@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Button, Container, Form } from "react-bootstrap";
 import useApi from "../hooks/useApi.jsx";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Componente para exibir a barra de busca.

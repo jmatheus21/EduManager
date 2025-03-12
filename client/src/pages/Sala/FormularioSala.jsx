@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Row, Alert } from "react-bootstrap";
 import useApi from "../../hooks/useApi";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoCadastrar, BotaoAlterar } from "../../components";
 
 /**

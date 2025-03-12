@@ -2,11 +2,11 @@ import React from 'react'
 import { Card, Container } from 'react-bootstrap'
 import { Cabecalho, Pagina } from "../../components";
 import { FaUserTie, FaBook, FaUsers, FaCalendarAlt, FaChalkboardTeacher, FaUserGraduate, FaUserSlash, FaStar, FaDoorOpen, FaClipboardList, FaHistory } from "react-icons/fa";
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import packageJson from "../../../package.json";
 
 const cards = [
-  { "nome": "Usuario", "url": "usuario", "icone": <FaUserTie size={65} color='#000' /> },
+  { "nome": "Usuário", "url": "usuario", "icone": <FaUserTie size={65} color='#000' /> },
   { "nome": "Disciplina", "url": "disciplina", "icone": <FaBook size={60} color='#000' /> },
   { "nome": "Turma", "url": "turma", "icone": <FaUsers size={70} color='#000' /> },
   { "nome": "Calendário", "url": "calendario", "icone": <FaCalendarAlt size={60} color='#000' /> },

@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import Cabecalho from "../../components/Cabecalho";
 import Pagina from "../../components/Pagina";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 /**
  * Componente de template para as páginas de 'Gerenciar'
@@ -46,7 +46,7 @@ const Gerenciar = ({ menus }) => {
             </div>
           </Col>
           <Col lg={9} className="px-5 py-4 d-flex col-12">
-            <Outlet className="flex-fill" />
+            <Outlet />
           </Col>
         </Row>
       </Container>

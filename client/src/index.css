@@ -62,3 +62,7 @@
   width: auto;
   max-width: 500px; /* Ajuste conforme necessário */
 }
+
+.custom-max-height {
+  max-height: 100%;
+}

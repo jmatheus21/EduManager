@@ -43,7 +43,7 @@ const ConsultarSala = () => {
         max={100}
         entidade={"sala"}
       />
-      <Alerta type={true} />
+      <Alerta type={true} entidade="Sala" />
       <Listagem colunas={colunas} data={api.data} pk={colunas[0].campo} />
     </Container>
   );
