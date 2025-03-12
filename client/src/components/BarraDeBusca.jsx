@@ -34,10 +34,10 @@ const BarraDeBusca = ({
 
       if (response) {
         navigate(`/${entidade}/${chave}`);
-      } 
+      }
     } catch (error) {
-      if (typeof(entidade) == "string"){
-        setTextAlert(`${entidade.charAt(0).toUpperCase() + entidade.slice(1)} ${chave} não foi encontrad${entidade.endsWith("a")? "a" : "o"}`);
+      if (typeof (entidade) == "string") {
+        setTextAlert(`${entidade.charAt(0).toUpperCase() + entidade.slice(1)} ${chave} não foi encontrad${entidade.endsWith("a") ? "a" : "o"}`);
       }
     }
   };

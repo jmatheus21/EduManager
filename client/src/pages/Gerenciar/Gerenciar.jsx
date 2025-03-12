@@ -35,8 +35,8 @@ const Gerenciar = ({ menus }) => {
                 menus.map((menu, index) => (
                   <Button
                     key={index}
-                    variant={url.pathname === menu.url? "primary" : "light"}
-                    className={`${url.pathname === menu.url? "bg-primary" : ""} py-2 nav-button`}
+                    variant={url.pathname === menu.url ? "primary" : "light"}
+                    className={`${url.pathname === menu.url ? "bg-primary" : ""} py-2 nav-button`}
                     onClick={() => navigate(menu.url)}
                   >
                     {menu.nome}

@@ -31,8 +31,10 @@ def create_app():
     from .routes.sala_routes import sala_bp
     from .routes.calendario_routes import calendario_bp
     from .routes.usuario_routes import usuario_bp
+    from .routes.disciplina_routes import disciplina_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
     app.register_blueprint(calendario_bp, url_prefix="/calendario")
     app.register_blueprint(usuario_bp, url_prefix="/usuario")
-
+    app.register_blueprint(disciplina_bp, url_prefix="/disciplina")
+    
     return app

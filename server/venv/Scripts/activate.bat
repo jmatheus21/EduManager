@@ -10,6 +10,7 @@ if defined _OLD_CODEPAGE (
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 set "VIRTUAL_ENV=D:\Estudos\Projetos\Web\EduManager\server\venv"
 =======
 set VIRTUAL_ENV=C:\Users\uliss\OneDrive\Área de Trabalho\EduManager\EduManager\server\venv
@@ -17,6 +18,9 @@ set VIRTUAL_ENV=C:\Users\uliss\OneDrive\Área de Trabalho\EduManager\EduManager\
 =======
 set VIRTUAL_ENV=C:\Users\levi_\Desktop\ES2\EduManager\server\venv
 >>>>>>> calendario-cc
+=======
+set "VIRTUAL_ENV=C:\Users\miste\EduManager\server\venv"
+>>>>>>> disciplina-cc
 
 if not defined PROMPT set PROMPT=$P$G
 

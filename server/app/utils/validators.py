@@ -1,6 +1,8 @@
 from datetime import date
-from .validators_helpers import validar_telefone, validar_data_de_nascimento, validar_data_contrato, validar_horario_completo, validar_horario_trabalho
+from .validators_helpers import validar_telefone, validar_data_de_nascimento, validar_data_contrato, validar_horario_completo, validar_horario_trabalho, validar_data
 from .date_helpers import string_para_data
+from .disciplina_helpers import validar_codigo
+
 
 """
 Módulo de Validação de Salas.
@@ -133,8 +135,55 @@ def validar_cargo (nome : str, salario : float, data_contrato : str) -> list:
     return erros
 
 
-def validar_disciplina ():
-    pass
+"""
+Módulo de Validação de Disciplinas.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+
+def validar_disciplina (codigo: str, nome: str, carga_horaria: int, ementa: str, bibliografia: str) -> list:
+    """ Valida os dados de uma disciplina.
+
+    Esta função verifica se os dados fornecidos para uma disciplina estão dentro dos critérios esperados.
+    Caso haja erros, eles são retornados em uma lista.
+
+    Args:
+        codigo (str): O código da disciplina. Deve ter no mínimo 6 caracteres e no máximo 10.
+        nome (str): O nome da disciplina. Deve ter no mínimo 3 caracteres e no máximo 50 caracteres.
+        carga_horaria (int): A carga horária da disciplina. Deve ser no mínimo 15 e no máximo 120.
+        ementa (str): A ementa da disciplina. Deve ter no máximo 255 caracteres. Este argumento pode ser nulo.
+        bibliografia (str): A bibliografia da disciplina. Deve ter no máximo 255 caracteres. Este argumento pode ser nulo.
+        
+    Returns:
+        list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
+
+    Exemplo:
+        >>> erros = validar_disciplina("MAT001", "Matemática", 30, 
+        "Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", 
+        "STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro:"Zahar, 2014.")
+        >>> print(erros)
+        []
+    """
+    erros = []
+
+    if not codigo or not isinstance(codigo, str) or len(codigo) < 6 or len(codigo) > 10 or not validar_codigo(codigo):
+        erros.append("O atributo 'codigo' é obrigatório e deve ter no minimo 6 caracteres e no máximo 10. Além do formato ser composto por três letras maiúsculas seguidas de três números (ex: MAT123)")
+
+    if not nome or not isinstance(nome, str) or len(nome) < 3 or len(nome) > 50:
+        erros.append("O atributo 'nome' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 50")
+
+    if not carga_horaria or not isinstance(carga_horaria, int) or carga_horaria < 15 or carga_horaria > 120:
+        erros.append("O atributo 'carga_horaria' é obrigatório e deve ser no mínimo 15 e no máximo 120")
+
+    if not isinstance(ementa, str) or len(ementa) < 0 or len(ementa) > 255:
+        erros.append("O atributo 'ementa' não é obrigatório e deve ter no máximo 255 caracteres")
+
+    if not isinstance(bibliografia, str) or len(bibliografia) < 0 or len(bibliografia) > 255:
+        erros.append("O atributo 'bibliografia' não é obrigatório e deve ter no máximo 255 caracteres")
+
+    return erros
 
 
 def validar_turma ():

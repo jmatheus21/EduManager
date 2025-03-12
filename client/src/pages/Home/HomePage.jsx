@@ -30,28 +30,28 @@ const HomePage = () => {
 
   return (
     <Pagina>
-        <Cabecalho />
-        <Container fluid className='d-flex flex-fill justify-content-center align-items-center bg-primary-subtle py-sm-0 py-5'>
-            <div className='menu'>
-              {
-                cards.map((card, index) => {
-                  return (
-                    <Card key={index} className='px-5 custom-card' onClick={()  => navigate(card.url)}>
-                      <div className="d-flex justify-content-center align-items-center" style={{ height: '120px' }}>
-                          {card.icone}
-                      </div>
-                      <Card.Body>
-                        <Card.Title className='text-center text-black pb-4'>{card.nome}</Card.Title>
-                      </Card.Body>
-                    </Card>
-                  )
-                })
-              }
-            </div>
-        </Container>
-        <Container fluid>
-          <p className='text-center py-3'>EduManager v.{packageJson.version}</p>
-        </Container>
+      <Cabecalho />
+      <Container fluid className='d-flex flex-fill justify-content-center align-items-center bg-primary-subtle py-sm-0 py-5'>
+        <div className='menu'>
+          {
+            cards.map((card, index) => {
+              return (
+                <Card key={index} className='px-5 custom-card' onClick={() => navigate(card.url)}>
+                  <div className="d-flex justify-content-center align-items-center" style={{ height: '120px' }}>
+                    {card.icone}
+                  </div>
+                  <Card.Body>
+                    <Card.Title className='text-center text-black pb-4'>{card.nome}</Card.Title>
+                  </Card.Body>
+                </Card>
+              )
+            })
+          }
+        </div>
+      </Container>
+      <Container fluid>
+        <p className='text-center py-3'>EduManager v.{packageJson.version}</p>
+      </Container>
     </Pagina>
   )
 }

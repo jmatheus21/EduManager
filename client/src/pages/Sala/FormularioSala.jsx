@@ -78,7 +78,7 @@ const FormularioSala = () => {
     } catch (error) {
       console.error(error.message);
 
-      if (typeof(error.message) == "string") {
+      if (typeof (error.message) == "string") {
         setErros(error.message.split(","));
       }
     }
@@ -148,7 +148,7 @@ const FormularioSala = () => {
           </Form.Group>
         </Container>
         {
-          titulo.includes("Alterar")? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />
+          titulo.includes("Alterar") ? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />
         }
       </Form>
     </Container>
