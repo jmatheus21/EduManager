@@ -19,7 +19,8 @@ const minData = `${anoAtual - 100}-01-01`;
  * @returns {JSX.Element} O componente de formulário para cadastrar ou alterar um usuário.
  */
 const FormularioUsuario = () => {
-  const { control, register, setError, handleSubmit, watch, reset, formState: { errors } } = useForm({
+  const { control, register, setError, getValues, handleSubmit, clearErrors, watch, reset, formState: { errors } } = useForm({
+    shouldFocusError: false,
     defaultValues: {
       cargos: [],
       tipo: "p"
@@ -35,6 +36,16 @@ const FormularioUsuario = () => {
   const navigate = useNavigate();
   const { chave } = useParams();
 
+  // const validateArrayNotEmpty = (value) => {
+
+  //   if (fields.length === 0) {
+  //     setError("cargos", { type: "void"});
+  //     return false; // Impede o envio do formulário
+  //   }
+  //   clearErrors("cargos"); // Limpa o erro se o array não estiver vazio
+  //   return true;
+  // };
+
   /**
    * Função para lidar com o envio do formulário.
    * Dependendo do caminho da URL, a função irá cadastrar um novo usuário ou alterar um usuário existente.
@@ -42,25 +53,40 @@ const FormularioUsuario = () => {
    * @param {Event} event - O evento de submissão do formulário.
    */
   const enviarFormulario = async (data) => {
-    if (data.cargos.length < 1) {
+
+    if (fields.length === 0) {
       setError("cargos", { type: "void"});
-    } else {
-      data.cpf = data.cpf.replace(/\D/g, '');
-      data.disciplinas = data.disciplinas.split(',').map((disciplina) => disciplina.trim());
-  
-      try {
-        if (location.pathname.includes("alterar")) {
-          await api.updateData(`/usuario/${chave}`, data);
-  
-          navigate(`/usuario/${data.cpf}?success=true`);
-        } else {
-          await api.createData("/usuario", data);
-  
-          navigate("/usuario?success=true&type=cadastro");
-        }
-      } catch (error) {
-        console.error(error.message);
+      return;
+    }
+      
+    clearErrors("cargos");
+
+    data.cpf = data.cpf.replace(/\D/g, '');
+    data.disciplinas = data.disciplinas.split(',').map((disciplina) => disciplina.trim());
+
+    try {
+      if (location.pathname.includes("alterar")) {
+        await api.updateData(`/usuario/${chave}`, data);
+
+        navigate(`/usuario/${data.cpf}?success=true`);
+      } else {
+        await api.createData("/usuario", data);
+
+        navigate("/usuario?success=true&type=cadastro");
       }
+    } catch (error) {
+
+      if (error.message == "Usuário já existe") {
+        setError("cpf", { type: "equal" });
+      }
+
+      console.log(error.message.includes("Disciplinas inválidas"));
+
+      if (error.message.includes("Disciplinas inválidas")) {
+        setError("disciplinas", { type: "absence" });
+      }
+
+      console.error(error.message);
     }
 
   };
@@ -138,6 +164,7 @@ const FormularioUsuario = () => {
                     )}
                   />
                   <Alert variant="white" className={`${errors.cpf? "" : "d-none"} text-danger`}>
+                    {errors?.cpf?.type == "equal" && "Já existe um usuário com esse CPF"}
                     {errors?.cpf?.type == "required" && "O CPF é obrigatório"}
                   </Alert> 
                 </Form.Group>
@@ -192,7 +219,7 @@ const FormularioUsuario = () => {
                       id="horarioTrabalho"
                       type="text"
                       className="p-2"
-                      placeholder="Exemplo: Seg-Sex, 12h-17h"
+                      placeholder="Exemplo: Seg-Sex,12h-17h"
                       {...register('horario_de_trabalho', { required: true, minLength: 5, maxLength: 20, pattern: /^[A-Z][a-z]{2}-[A-Z][a-z]{2},([01]\d|2[0-3])h-([01]\d|2[0-3])h$/ })}
                     />
                     <Alert variant="white" className={`${errors.horario_de_trabalho? "" : "d-none"} text-danger`}>
@@ -276,6 +303,8 @@ const FormularioUsuario = () => {
                 append={append}
                 remove={remove}
                 erro={errors}
+                setError={setError}
+                clearErrors={clearErrors}
               />
             </Row>
             <Row className={`${tipo == "p"? "" : "d-none"} gap-5`}>
@@ -310,7 +339,8 @@ const FormularioUsuario = () => {
                     />
                     <Alert variant="white" className={`${errors.disciplinas? "" : "d-none"} text-danger`}>
                       {errors?.disciplinas?.type == "required" && tipo == "p" && "As disciplinas do professor são obrigatórias"}
-                      {errors?.disciplinas?.type == "minLength" && "As disciplinas do professor são obrigatórias"}
+                      {errors?.disciplinas?.type == "absence" && "As disciplinas não existem"}
+                      {errors?.disciplinas?.type == "minLength" && "Ao menos uma disciplina deve ser cadastrada"}
                   </Alert>
                 </Form.Group>
               </Col>
