@@ -1,6 +1,6 @@
 import React from "react";
 import { Alert, Container } from "react-bootstrap";
-import { useLocation } from 'react-router'
+import { useLocation } from 'react-router-dom'
 
 const Alerta = ({ type, entidade }) => {
   const url = useLocation();
