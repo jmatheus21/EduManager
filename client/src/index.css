@@ -1,0 +1,68 @@
+/* Reset global */
+* {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Reset específico para elementos do Bootstrap */
+.container,
+.row,
+.col {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.nav-button {
+  border-radius: 25px 0 0 25px !important;
+  border-right: none;
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  gap: 5px;
+}
+
+@media (max-width: 992px) {
+  .menu {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .menu {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.custom-card {
+  background-color: #78aefe;
+  cursor: pointer;
+}
+
+.custom-card:hover {
+  background-color: #589bfe;
+}
+
+.modal {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-dialog {
+  margin: auto;
+  position: relative;
+  width: auto;
+  max-width: 500px; /* Ajuste conforme necessário */
+}
+
+.custom-max-height {
+  max-height: 100%;
+}

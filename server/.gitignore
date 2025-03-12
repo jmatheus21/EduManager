@@ -1,0 +1,29 @@
+# Configuração do Banco de Dados
+.env
+
+# Ambientes virtuais
+venv/
+ENV/
+env/
+
+# Arquivos gerados pelo Python
+__pycache__/
+*.py[cod]
+
+# Arquivos temporários
+*.log
+*.tmp
+
+# IDEs e editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Distribuições e pacotes
+dist/
+build/
+*.egg-info/
+
+# Arquivos de testes
+.pytest_cache/
