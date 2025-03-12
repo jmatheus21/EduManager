@@ -15,13 +15,12 @@ const anoAtual = new Date().getFullYear();
  * @returns {JSX.Element} O componente de formulário para cadastrar ou alterar um calendário.
  */
 const FormularioCalendario = () => {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, setError, formState: { errors } } = useForm();
   const dataInicio = watch("data_inicio");
   const anoLetivo = watch("ano_letivo");
-  const [erros, setErros] = useState("");
 
   // Configuração padrão
-  const [titulo, setTitulo] = useState("Cadastrar");
+  const [alterar, setAlterar] = useState(false);
   const api = useApi("/api");
   const navigate = useNavigate();
   const url = useLocation();
@@ -65,15 +64,15 @@ const FormularioCalendario = () => {
 
         navigate(`/calendario/${data.ano_letivo}?success=true`);
       } else {
-        const response = await api.createData("/calendario", data);
+        await api.createData("/calendario", data);
 
         navigate("/calendario?success=true&type=cadastro");
       }
     } catch (error) {
-      if (error.message == "Calendário já existe") {
-        setErros(error.message)
-      }
       console.error(error.message);
+      if (error.message == "Calendário já existe") {
+        setError("ano_letivo", { type: "equal" });
+      }
     }
   };
 
@@ -83,14 +82,14 @@ const FormularioCalendario = () => {
   const funcaoVoltar = () => navigate(`/calendario/${chave}`);
 
   // Exibe mensagem de carregamento enquanto os dados estão sendo buscados
-  if (titulo.includes("Alterar") && api.loading) return <p>Carregando...</p>;
+  if (alterar && api.loading) return <p>Carregando...</p>;
 
   // Exibe mensagem de erro caso ocorra um erro na requisição
-  if (titulo.includes("Alterar") && api.error) return <p>Erro: {api.error}</p>;
+  if (alterar && api.error) return <p>Erro: {api.error}</p>;
 
   return (
     <Container fluid className="d-flex flex-column">
-      <Titulo>{titulo} Calendário</Titulo>
+      <Titulo>{alterar? "Alterar" : "Cadastrar"} Calendário</Titulo>
       <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(enviarFormulario)}>
         <Container className="d-grid gap-3">
           <Row className="gap-5">
@@ -103,8 +102,8 @@ const FormularioCalendario = () => {
                   className="p-2"
                   {...register("ano_letivo", { required: true, validate: (value) => value >= anoAtual, valueAsNumber: true })}
                 />
-                <Alert variant="white" className={`${(errors.ano_letivo || erros)? "" : "d-none"} text-danger`}>
-                    {erros? erros : ""}
+                <Alert variant="white" className={`${errors.ano_letivo? "" : "d-none"} text-danger`}>
+                    {errors?.ano_letivo?.type == "equal" && "O calendário já existe"}
                     {errors?.ano_letivo?.type == "required" && "O ano letivo é obrigatório"}
                     {errors?.ano_letivo?.type == "validate" && `O ano deve ser igual ou maior que ${anoAtual}`}
                 </Alert>
@@ -161,7 +160,7 @@ const FormularioCalendario = () => {
           </Row>
         </Container>
         {
-          titulo.includes("Alterar")? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />
+          alterar? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />
         }
       </Form>
     </Container>

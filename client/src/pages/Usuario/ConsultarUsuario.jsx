@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import useApi from "../../hooks/useApi.jsx";
 import { Container } from "react-bootstrap";
-import { BarraDeBusca, Titulo, Listagem, Alerta } from "../../components";
+import { BarraDeBusca, Titulo, Listagem } from "../../components";
 import { inverterData, formatarCpf } from "../../components/Listagem.jsx"; 
 
 const colunas = [
@@ -47,7 +47,6 @@ const ConsultarUsuario = () => {
             maxLength={20}
             entidade={"usuario"}
           />
-          <Alerta type={true} entidade={"Usuário"} />
           <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
         </Container>
       );

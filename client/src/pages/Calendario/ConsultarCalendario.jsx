@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import useApi from "../../hooks/useApi.jsx";
 import { Container } from "react-bootstrap";
-import { BarraDeBusca, Titulo, Listagem, Alerta } from "../../components";
+import { BarraDeBusca, Titulo, Listagem } from "../../components";
 import { inverterData } from "../../components/Listagem.jsx";
 
 const anoAtual = new Date().getFullYear();
@@ -46,7 +46,6 @@ const ConsultarCalendario = () => {
         min={anoAtual}
         entidade={"calendario"}
       />
-      <Alerta type={true} entidade={"calendário"} />
       <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
     </Container>
   );

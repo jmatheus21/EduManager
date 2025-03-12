@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import useApi from "../../hooks/useApi.jsx";
 import { Container } from "react-bootstrap";
-import { BarraDeBusca, Titulo, Listagem, Alerta } from "../../components";
+import { BarraDeBusca, Titulo, Listagem } from "../../components";
 
 const colunas = [
-  { campo: "numero", label: "Número" },
-  { campo: "capacidade", label: "Capacidade" },
-  { campo: "localizacao", label: "Localização" },
+  { field: "numero", headerName: "Número", flex: 1, align: "center", headerAlign: "center" },
+  { field: "capacidade", headerName: "Capacidade", flex: 1, align: "center", headerAlign: "center" },
+  { field: "localizacao", headerName: "Localização", flex: 1, align: "center", headerAlign: "center" },
 ];
 
 /**
@@ -43,8 +43,7 @@ const ConsultarSala = () => {
         max={100}
         entidade={"sala"}
       />
-      <Alerta type={true} entidade="Sala" />
-      <Listagem colunas={colunas} data={api.data} pk={colunas[0].campo} />
+      <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
     </Container>
   );
 };

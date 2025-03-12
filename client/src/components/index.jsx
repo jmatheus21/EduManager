@@ -7,4 +7,3 @@ export { default as Titulo } from "./Titulo";
 export { default as BotaoInfo } from "./BotaoInfo";
 export { default as ModalRemover } from "./ModalRemover";
 export { default as BotaoAlterar } from "./BotaoAlterar";
-export { default as Alerta } from "./Alerta";

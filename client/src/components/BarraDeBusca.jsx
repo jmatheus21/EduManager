@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, Button, Container, Form } from "react-bootstrap";
 import useApi from "../hooks/useApi.jsx";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 /**
- * Componente para exibir a barra de busca.
- * Este componente permite visualizar uma barra de busca que permite ao usuário buscar o objeto por sua chave primária.
+ * Componente unificado para barra de busca e exibição de alertas.
+ * Este componente combina a funcionalidade de busca da BarraDeBusca e a exibição de alertas do Alerta.
  *
- * @returns {JSX.Element} O componente de busca.
+ * @param {Object} props - Propriedades do componente.
+ * @param {string} props.atributoNome - Nome do atributo que será buscado (ex.: "Número").
+ * @param {string} props.tipo - Tipo do campo de busca (ex.: "number" ou "text").
+ * @param {string} props.placeholder - Placeholder do campo de busca.
+ * @param {number} props.min - Valor mínimo para campos do tipo número.
+ * @param {number} props.max - Valor máximo para campos do tipo número.
+ * @param {number} props.minLength - Comprimento mínimo para campos do tipo texto.
+ * @param {number} props.maxLength - Comprimento máximo para campos do tipo texto.
+ * @param {string} props.entidade - Nome da entidade que está sendo buscada (ex.: "sala").
+ * @returns {JSX.Element} O componente unificado de busca e alerta.
  */
 const BarraDeBusca = ({
   atributoNome,
@@ -17,14 +26,34 @@ const BarraDeBusca = ({
   max,
   minLength,
   maxLength,
-  entidade
+  entidade,
 }) => {
   const [chave, setChave] = useState(1);
-  const [textAlert, setTextAlert] = useState("");
+  const [mensagemAlerta, setMensagemAlerta] = useState("");
+  const [tipoAlerta, setTipoAlerta] = useState(""); // "success" ou "danger"
   const api = useApi("/api");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Verifica se há uma mensagem de sucesso na URL
+  const queryParams = new URLSearchParams(location.search);
+  const successParam = queryParams.get("success");
+  const typeParam = queryParams.get("type");
+
+  // Exibe mensagem de sucesso se houver
+  useEffect(() => {
+    if (successParam) {
+      setTipoAlerta("success");
+      setMensagemAlerta(
+        typeParam === "remocao"
+          ? `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} removid${entidade.endsWith("a") ? "a" : "o"} com sucesso!`
+          : `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} cadastrad${entidade.endsWith("a") ? "a" : "o"} com sucesso!`
+      );
+    }
+  }, [successParam, typeParam, entidade]);
+
   /**
-   * Função para navegar para a página de detalhes a chave especificada.
+   * Função para realizar a busca e navegar para a página de detalhes.
    */
   const funcaoBusca = async (event) => {
     event.preventDefault();
@@ -36,9 +65,10 @@ const BarraDeBusca = ({
         navigate(`/${entidade}/${chave}`);
       }
     } catch (error) {
-      if (typeof (entidade) == "string") {
-        setTextAlert(`${entidade.charAt(0).toUpperCase() + entidade.slice(1)} ${chave} não foi encontrad${entidade.endsWith("a") ? "a" : "o"}`);
-      }
+      setTipoAlerta("danger");
+      setMensagemAlerta(
+        `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} ${chave} não foi encontrad${entidade.endsWith("a") ? "a" : "o"}`
+      );
     }
   };
 
@@ -52,7 +82,7 @@ const BarraDeBusca = ({
         <Form.Label htmlFor="atributo" style={{ whiteSpace: "nowrap" }} className="pe-2 d-flex align-items-center">
           {atributoNome}:{" "}
         </Form.Label>
-        {tipo == "number" ? (
+        {tipo === "number" ? (
           <Form.Control
             id="atributo"
             type="number"
@@ -81,9 +111,10 @@ const BarraDeBusca = ({
           Buscar
         </Button>
       </Form>
-      {textAlert && (
-        <Alert variant="danger" className="p-3 mb-3">
-          {textAlert}
+
+      {mensagemAlerta && (
+        <Alert variant={tipoAlerta} className="p-3 mb-3">
+          {mensagemAlerta}
         </Alert>
       )}
     </Container>

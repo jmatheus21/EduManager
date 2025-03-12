@@ -15,7 +15,7 @@ const FormularioDisciplina = () => {
     const { register, handleSubmit, setError, formState: { errors } } = useForm(); // esse é o novo formulário
 
     // Configuração padrão
-    const [titulo, setTitulo] = useState("Cadastrar");
+    const [alterar, setAlterar] = useState(false);
     const api = useApi("/api");
     const navigate = useNavigate();
     // const url = useLocation();
@@ -79,14 +79,14 @@ const FormularioDisciplina = () => {
     const funcaoVoltar = () => navigate(`/disciplina/${chave}`);
 
     // Exibe mensagem de carregamento enquanto os dados estão sendo buscados
-    if (titulo.includes("Alterar") && api.loading) return <p>Carregando...</p>;
+    if (alterar && api.loading) return <p>Carregando...</p>;
 
     // Exibe mensagem de erro caso ocorra um erro na requisição
-    if (titulo.includes("Alterar") && api.error) return <p>Erro: {api.error}</p>;
+    if (alterar && api.error) return <p>Erro: {api.error}</p>;
 
     return (
         <Container fluid className="d-flex flex-column">
-            <Titulo>{titulo} Disciplina</Titulo>
+            <Titulo>{alterar? "Alterar" : "Cadastrar"} Disciplina</Titulo>
             <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(enviarFormulario)}>
                 <Container fluid className="d-grid gap-3">
                     <Row className="gap-5">
@@ -177,7 +177,7 @@ const FormularioDisciplina = () => {
                     </Row>
                 </Container>
                 {
-                    titulo.includes("Alterar") ? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />
+                    alterar ? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />
                 }
             </Form >
         </Container >
