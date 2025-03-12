@@ -1,5 +1,5 @@
 from datetime import date
-from .validators_helpers import validar_telefone, validar_data_de_nascimento, validar_data_contrato, validar_horario_completo, validar_horario_trabalho
+from .validators_helpers import validar_telefone, validar_data, validar_data_de_nascimento, validar_data_contrato, validar_horario_completo, validar_horario_trabalho
 from .date_helpers import string_para_data
 
 """
