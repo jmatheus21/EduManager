@@ -1,4 +1,4 @@
-import React, { useState }from 'react'
+import React from 'react'
 import { Row, Col, Form, Button, Container, Alert, Table } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { isDate, isAfter } from "validator";
@@ -18,17 +18,14 @@ const formatarMoeda = (valor) => {
   };
 
 
-const FormularioCargo = ({ fields, append, remove, erro }) => {
+const FormularioCargo = ({ fields, append, remove, erro, setError, clearErrors }) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const [erroCargo, setErroCargo] = useState('');
 
     const adicionarCargo = (data) => {
-        // Verifica se o nome do cargo já existe na lista de cargos
         const cargoExistente = fields.find(cargo => cargo.nome === data.nome);
 
         if (cargoExistente) {
-            // Se o cargo já existir, exibe um alerta de erro
-            setErroCargo("Este cargo já foi adicionado!");
+            setError("cargos", { type: "equal" });
             reset({ 
                 nome: "",
                 salario: "",
@@ -36,20 +33,20 @@ const FormularioCargo = ({ fields, append, remove, erro }) => {
             });
             return;
         }
-
+        
         append({
             nome: data.nome,
             salario: parseFloat(data.salario) || 0.0,
             data_contrato: data.data_contrato
         });
-
+        
         reset({
             nome: "",
             salario: "",
             data_contrato: ""
         });
-
-        setErroCargo('');
+        
+        clearErrors("cargos");
     };
 
   return (
@@ -94,7 +91,7 @@ const FormularioCargo = ({ fields, append, remove, erro }) => {
                             />
                     </Form.Group>
                 </Col>
-                <Col className='d-flex align-items-end justify-content-center'>
+                <Col className='d-flex align-items-end justify-content-end'>
                     <Button
                         variant="primary"
                         type="submit"
@@ -108,6 +105,7 @@ const FormularioCargo = ({ fields, append, remove, erro }) => {
             <Row>
                 <Alert variant="white" className={`${errors? "d-flex" : "d-none"} text-danger justify-content-center pb-1 pt-2`}>
                     {erro?.cargos?.type == "void" && "Nenhum cargo foi cadastrado"}
+                    {errors?.cargos?.type == "equal" && "Este cargo já foi adicionado!"}
                     {errors?.nome?.type == "required" && "O nome do cargo é obrigatório"}
                     {errors?.salario?.type == "required" && "O salário é obrigatório"}
                     {errors?.salario?.type == "min" && "O salário deve ser maior que R$ 100"}
@@ -115,14 +113,7 @@ const FormularioCargo = ({ fields, append, remove, erro }) => {
                     {errors?.data_contrato?.type == "required" && "A data de contrato é obrigatória"}
                     {errors?.data_contrato?.type == "validate" && "A data de contrato deve ser uma data futura"}
                 </Alert>
-            </Row>  
-            {erroCargo && (
-                <Row>
-                    <Alert variant="danger" className="d-flex justify-content-center pb-1 pt-2">
-                        {erroCargo}
-                    </Alert>
-                </Row>
-            )}
+            </Row>
         <Container fluid className="mt-3">
             <Table>
                 <thead>

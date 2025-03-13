@@ -51,14 +51,14 @@ const FormularioSala = () => {
    * @param data - Os dados recebidos da submissão do formulário.
    */
   const enviarFormulario = async (data) => {
-
-    if (chave != data.numero) {
-      setError("numero", { type: "equal" });
-      return;
-    }
-
+ 
     try {
       if (alterar) {
+        if (chave != data.numero) {
+          setError("numero", { type: "equal" });
+          return;
+        }
+
         await api.updateData(`/sala/${chave}`, data);
 
         navigate(`/sala/${data.numero}?success=true`);
