@@ -15,7 +15,7 @@ const anoAtual = new Date().getFullYear();
  * @returns {JSX.Element} O componente de formulário para cadastrar ou alterar um calendário.
  */
 const FormularioCalendario = () => {
-  const { register, handleSubmit, watch, setError, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch, setError, reset, formState: { errors } } = useForm();
   const dataInicio = watch("data_inicio");
   const anoLetivo = watch("ano_letivo");
 
@@ -31,23 +31,22 @@ const FormularioCalendario = () => {
    * Se o caminho da URL incluir "alterar", o título do formulário será alterado para "Alterar" e os dados do calendário serão carregados.
    */
   useEffect(() => {
-    // const carregarDados = async () => {
-    //   if (url.pathname.includes("alterar")) {
-    //     setTitulo("Alterar");
+    const carregarDados = async () => {
+      if (url.pathname.includes("alterar")) {
+        setAlterar(true);
 
-    //     try {
-    //       const response = await api.fetchData(`/calendario/${chave}`);
-    //       if (response) {
-    //         reset(response);
-    //       }
-    //     } catch (error) {
-    //       // setTextAlert(error);
-    //       console.error("Erro ao carregar dados do calendario:", error);
-    //     }
-    //   }
-    // };
+        try {
+          const response = await api.fetchData(`/calendario/${chave}`);
+          if (response) {
+            reset(response);
+          }
+        } catch (error) {
+          console.error("Erro ao carregar dados do calendario:", error);
+        }
+      }
+    };
 
-    // carregarDados();
+    carregarDados();
   }, [url.pathname, chave]);
 
   /**
@@ -58,8 +57,13 @@ const FormularioCalendario = () => {
    */
   const enviarFormulario = async (data) => {
 
+    if (chave != data.anoletivo) {
+      setError("ano_letivo", { type: "equal" });
+      return;
+    }
+
     try {
-      if (location.pathname.includes("alterar")) {
+      if (alterar) {
         await api.updateData(`/calendario/${chave}`, data);
 
         navigate(`/calendario/${data.ano_letivo}?success=true`);
@@ -70,7 +74,8 @@ const FormularioCalendario = () => {
       }
     } catch (error) {
       console.error(error.message);
-      if (error.message == "Calendário já existe") {
+
+      if (error.message === "Calendário já existe") {
         setError("ano_letivo", { type: "equal" });
       }
     }

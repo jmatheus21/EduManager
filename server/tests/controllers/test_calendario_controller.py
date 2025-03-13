@@ -139,3 +139,56 @@ def test_buscar_calendario(client, app):
         assert dados["data_inicio"] == "2026-02-17", "A data de início deve ser 2026-02-17."
         assert dados["data_fim"] == "2026-11-27", "A data de fim deve ser 2026-11-27."
         assert dados["dias_letivos"] == 150, "A quantidade de dias letivos deve ser 150."
+
+
+def test_alterar_calendario(client, app):
+    """Testa a atualização dos dados de um calendário.
+
+    Este teste verifica se a requisição PUT para a rota '/calendario/{ano_letivo}' retorna o status code 200 (OK),
+    se a resposta contém uma mensagem de sucesso e se os dados do calendário foram atualizados corretamente.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        calendario = Calendario(ano_letivo=2026, data_inicio="2026-02-01", data_fim="2026-09-01", dias_letivos=50)
+        db.session.add(calendario)
+        db.session.commit()
+
+        # Dados para atualização
+        dados_atualizacao = {
+            "ano_letivo": 2026,
+            "data_inicio": "2026-02-01",
+            "data_fim": "2026-09-15",
+            "dias_letivos": 160
+        }
+
+        response = client.put(f'/calendario/{calendario.ano_letivo}', json=dados_atualizacao)
+        assert response.status_code == 200, "O status code deve ser 200 (OK)."
+        assert response.json["mensagem"] == "Calendário atualizado com sucesso!"
+        dados = response.json["data"]
+        assert dados['ano_letivo'] == 2026, "O ano letivo do calendário deve ser 2026."
+        assert dados['data_inicio'] == "2026-02-01", "A data de início do calendário deve ser '2026-02-01'."
+        assert dados['data_fim'] == "2026-09-15", "A data de fim do calendário deve ser '2026-09-15'."
+        assert dados['dias_letivos'] == 160, "A quantidade de dias letivos do calendário deve ser 160."
+
+
+def test_deletar_calendario(client, app):
+    """Testa a exclusão de um calendário.
+
+    Este teste verifica se a requisição DELETE para a rota '/calendario/{ano_letivo}' retorna o status code 200 (OK)
+    e se a resposta contém uma mensagem de sucesso.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        calendario = Calendario(ano_letivo=2026, data_inicio="2026-02-01", data_fim="2026-09-01", dias_letivos=50)
+        db.session.add(calendario)
+        db.session.commit()
+
+        response = client.delete(f'/calendario/{calendario.ano_letivo}')
+        assert response.status_code == 200, "O status code deve ser 200 (OK)."
+        assert response.json["mensagem"] == "Calendário deletado com sucesso!"

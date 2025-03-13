@@ -49,3 +49,33 @@ def buscar_calendario(ano_letivo: int) -> jsonify:
         jsonify: Resposta JSON contendo os dados do calendário encontrado.
     """
     return calendario_controller.buscar_calendario(ano_letivo)
+
+
+@calendario_bp.route("/<int:ano_letivo>", methods=['PUT'])
+def alterar_calendario(ano_letivo: int) -> jsonify:
+    """Rota para alterar os dados de um calendário existente.
+
+    Esta rota recebe o ano letivo de um calendário e os novos dados via JSON, e chama o controlador para realizar a atualização.
+
+    Args:
+        ano_letivo (int): O ano letivo do calendário a ser alterada.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem e os dados atualizados do calendário.
+    """
+    return calendario_controller.alterar_calendario(ano_letivo)
+
+
+@calendario_bp.route("/<int:ano_letivo>", methods=['DELETE'])
+def remover_calendario(ano_letivo: int) -> jsonify:
+    """Rota para remover um calendário existente.
+
+    Esta rota recebe o ano letivo de um calendário e chama o controlador para realizar a remoção.
+
+    Args:
+        ano_letivo (int): O ano letivo do calendário a ser removido.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso.
+    """
+    return calendario_controller.remover_calendario(ano_letivo)

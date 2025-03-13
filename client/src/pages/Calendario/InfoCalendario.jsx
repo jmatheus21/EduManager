@@ -5,12 +5,12 @@ import { Titulo, BotaoInfo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
 
 /**
- * Componente para exibir informações detalhadas de uma sala.
- * Este componente permite visualizar os detalhes de uma sala específica, além de oferecer opções para alterar ou remover a sala.
+ * Componente para exibir informações detalhadas de um calendário.
+ * Este componente permite visualizar os detalhes de um calendário específico, além de oferecer opções para alterar ou remover o calendário.
  *
- * @returns {JSX.Element} O componente de informações da sala.
+ * @returns {JSX.Element} O componente de informações do calendário.
  */
-const InfoSala = () => {
+const InfoCalendario = () => {
   // Configuração padrão
   const { chave } = useParams();
   const navigate = useNavigate();
@@ -31,24 +31,24 @@ const InfoSala = () => {
   const handleShow = () => setShow(true);
 
   /**
-   * Função para remover a sala.
-   * Após a remoção bem-sucedida, o usuário é redirecionado para a lista de salas.
+   * Função para remover o calendário.
+   * Após a remoção bem-sucedida, o usuário é redirecionado para a lista de calendários.
    */
-  const RemoverSala = async () => {
+  const RemoverCalendario = async () => {
     try {
-      await api.deleteData(`/sala/${chave}`);
-      navigate("/sala?success=true&type=remocao");
+      await api.deleteData(`/calendario/${chave}`);
+      navigate("/calendario?success=true&type=remocao");
     } catch (error) {
-      console.error("Erro ao remover sala:", error);
-      alert("Erro ao remover sala, tente novamente mais tarde");
+      console.error("Erro ao remover calendário:", error);
+      alert("Erro ao remover calendário, tente novamente mais tarde");
     }
   };
 
   /**
-   * Efeito para buscar os dados da sala ao carregar o componente ou quando o número da sala muda.
+   * Efeito para buscar os dados do calendário ao carregar o componente ou quando o ano letivo do calendário muda.
    */
   useEffect(() => {
-    api.fetchData(`/sala/${chave}`);
+    api.fetchData(`/calendario/${chave}`);
   }, [chave]);
 
   // Exibe mensagem de carregamento enquanto os dados estão sendo buscados
@@ -59,42 +59,46 @@ const InfoSala = () => {
 
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
-      <Titulo>Informações da Sala</Titulo>
+      <Titulo>Informações do Calendário</Titulo>
       {successParam && (
         <Alert variant="success" className="p-3 mt-3">
-          Sala alterada com sucesso!
+          Calendário alterado com sucesso!
         </Alert>
       )}
       <Container fluid className="my-4 d-grid gap-3">
         <Row>
           <Col>
-            <h5>Número:</h5>
-            {api.data && <p>{api.data.numero}</p>}
+            <h5>Ano Letivo:</h5>
+            {api.data && <p>{api.data.ano_letivo}</p>}
           </Col>
           <Col>
-            <h5>Capacidade:</h5>
-            {api.data && <p>{api.data.capacidade}</p>}
+            <h5>Dias letivos:</h5>
+            {api.data && <p>{api.data.dias_letivos}</p>}
           </Col>
         </Row>
         <Row>
           <Col>
-            <h5>Localização:</h5>
-            {api.data && <p>{api.data.localizacao}</p>}
+            <h5>Data de início:</h5>
+            {api.data && <p>{api.data.data_inicio}</p>}
+          </Col>
+          <Col>
+            <h5>Data de fim:</h5>
+            {api.data && <p>{api.data.data_fim}</p>}
           </Col>
         </Row>
       </Container>
       <BotaoInfo
-        funcaoAlterar={() => navigate(`/sala/alterar/${chave}`)}
+        funcaoAlterar={() => navigate(`/calendario/alterar/${chave}`)}
         funcaoRemover={handleShow}
       />
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}
-        funcaoRemover={RemoverSala}
-        entidade={"Sala"}
+        funcaoRemover={RemoverCalendario}
+        entidade={"Calendario"}
       />
     </Container>
   );
 };
 
-export default InfoSala;
+export default InfoCalendario;
