@@ -25,9 +25,9 @@ def cadastrar_turma() -> jsonify:
     if erros:
         return jsonify({"erro": erros}), 400
     
-    # turma_existente = db.session.get(Turma, data['id'])
-    # if turma_existente is not None:
-    #     return jsonify({"erro": ["Turma já existe"]}), 400
+    turma_existente = db.session.get(Turma, erros.id)
+    if turma_existente is not None:
+        return jsonify({"erro": ["Turma já existe"]}), 400
     
     nova_turma = Turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
     db.session.add(nova_turma)
@@ -76,12 +76,12 @@ def alterar_turma(id: int) -> jsonify:
     if erros:
         return jsonify({"erro": erros}), 400
     
-    # if id != data['id']:
-    #     turma_existente = db.session.get(Turma, data['id']);
-    #     if turma_existente is not None:
-    #         return jsonify({"erro": ["Turma já existe"]}), 400;
+    if id != erros.id:
+        turma_existente = db.session.get(Turma, erros.id);
+        if turma_existente is not None:
+            return jsonify({"erro": ["Turma já existe"]}), 400;
 
-    # turma.id = data['id']
+    turma.id = erros.id
     turma.ano = data['ano']
     turma.serie = data['serie']
     turma.nivel_de_ensino = data['nivel_de_ensino']

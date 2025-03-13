@@ -51,7 +51,7 @@ def buscar_turmas(id: int) -> jsonify:
     return turma_controller.buscar_turma(id)
 
 
-@turma_bp.route("/<int:if>", methods=['PUT'])
+@turma_bp.route("/<int:id>", methods=['PUT'])
 def alterar_turma(id: int) -> jsonify:
     """Rota para alterar os dados de uma turma existente.
 

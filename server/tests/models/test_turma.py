@@ -5,8 +5,25 @@ Os testes verificam as operações básicas de CRUD (Create, Read, Update, Delet
 incluindo cadastro, listagem, busca, atualização e remoção de turmas no banco de dados.
 """
 
-from app.models import Turma
+from app.models import Turma, Sala, Calendario
 from app.extensions import db
+from datetime import datetime
+
+
+def criar_dependencias(app):
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a sala existe
+            if not Sala.query.filter_by(numero=101).first():
+                sala = Sala(numero=101, capacidade=50, localizacao="Bloco A, 1° andar")
+                db.session.add(sala)
+
+            # Garante que o calendário existe
+            if not Calendario.query.filter_by(ano_letivo="2026").first():
+                calendario = Calendario(ano_letivo="2026", data_inicio=datetime.strptime("2026-02-17", '%Y-%m-%d').date(), data_fim=datetime.strptime("2026-11-27", '%Y-%m-%d').date(), dias_letivos=150)
+                db.session.add(calendario)
+
+            db.session.commit()
 
 
 def test_cadastrar_turma(app):
@@ -19,19 +36,22 @@ def test_cadastrar_turma(app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero="10", calendario_ano_letivo="2026")
+        criar_dependencias(app)
+
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
-        turma_adicionada = db.session.get(Turma, turma.id)
+        turma_adicionada = Turma.query.filter_by(id=turma.id).first()
         assert turma_adicionada is not None
+        assert turma_adicionada.id == turma.id
         assert turma_adicionada.ano == 9
         assert turma_adicionada.serie == "A"
         assert turma_adicionada.nivel_de_ensino == "Fundamental"
         assert turma_adicionada.turno == "D"
         assert turma_adicionada.status == "A"
-        assert turma_adicionada.sala_numero == "10"
-        assert turma_adicionada.calendario_ano_letivo == "2026"
+        assert turma_adicionada.sala_numero == 101
+        assert turma_adicionada.calendario_ano_letivo == 2026
 
 
 def test_listar_turmas(app):
@@ -44,19 +64,22 @@ def test_listar_turmas(app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero="10", calendario_ano_letivo="2026")
+        criar_dependencias(app)
+
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
         turmas = Turma.query.all()
         assert turmas[0] is not None
+        assert turmas[0].id == turma.id
         assert turmas[0].ano == 9
         assert turmas[0].serie == "A"
         assert turmas[0].nivel_de_ensino == "Fundamental"
         assert turmas[0].turno == "D"
         assert turmas[0].status == "A"
-        assert turmas[0].sala_numero == "10"
-        assert turmas[0].calendario_ano_letivo == "2026"
+        assert turmas[0].sala_numero == 101
+        assert turmas[0].calendario_ano_letivo == 2026
 
 
 def test_buscar_turma(app):
@@ -69,19 +92,22 @@ def test_buscar_turma(app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero="10", calendario_ano_letivo="2026")
+        criar_dependencias(app)
+
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
         turma_buscada = db.session.get(Turma, turma.id)
         assert turma_buscada is not None
+        assert turma_buscada.id == turma.id
         assert turma_buscada.ano == 9
         assert turma_buscada.serie == "A"
-        # assert turma_buscada.nivel_de_ensino == "Fundamental"
-        # assert turma_buscada.turno == "D"
-        # assert turma_buscada.status == "A"
-        # assert turma_buscada.sala_numero == "10"
-        # assert turma_buscada.calendario_ano_letivo == "2026"
+        assert turma_buscada.nivel_de_ensino == "Fundamental"
+        assert turma_buscada.turno == "D"
+        assert turma_buscada.status == "A"
+        assert turma_buscada.sala_numero == 101
+        assert turma_buscada.calendario_ano_letivo == 2026
 
 
 def test_alterar_turma(app):
@@ -94,18 +120,20 @@ def test_alterar_turma(app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero="10", calendario_ano_letivo="2026")
+        criar_dependencias(app)
+
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
         turma_original = db.session.get(Turma, turma.id)
-        turma_original.ano == 9
-        turma_original.serie == "A"
-        turma_original.nivel_de_ensino == "Fundamental"
-        turma_original.turno == "D"
-        turma_original.status == "A"
-        turma_original.sala_numero == "10"
-        turma_original.calendario_ano_letivo == "2026"
+        turma_original.ano = 9
+        turma_original.serie = "D"
+        turma_original.nivel_de_ensino = "Fundamental"
+        turma_original.turno = "N"
+        turma_original.status = "A"
+        turma_original.sala_numero = 101
+        turma_original.calendario_ano_letivo = 2026
         db.session.commit()
 
         turma_alterada = db.session.get(Turma, turma.id)
@@ -115,8 +143,8 @@ def test_alterar_turma(app):
         assert turma_alterada.nivel_de_ensino == "Fundamental"
         assert turma_alterada.turno == "N"
         assert turma_alterada.status == "A"
-        assert turma_alterada.sala_numero == "10"
-        assert turma_alterada.calendario_ano_letivo == "2026"
+        assert turma_alterada.sala_numero == 101
+        assert turma_alterada.calendario_ano_letivo == 2026
 
 
 def test_remover_turma(app):
@@ -129,7 +157,9 @@ def test_remover_turma(app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero="10", calendario_ano_letivo="2026")
+        criar_dependencias(app)
+
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
