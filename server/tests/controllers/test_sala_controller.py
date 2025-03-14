@@ -38,6 +38,36 @@ def test_cadastrar_sala(client, app):
         assert sala["capacidade"] == 30, "A capacidade da sala deve ser 30."
         assert sala["localizacao"] == "Bloco A, 1º Andar", "A localização da sala deve ser 'Bloco A, 1º Andar'."
 
+def test_cadastrar_sala_calendario_ine(client, app):
+    """Testa o cadastro de uma sala com dados válidos.
+
+    Este teste verifica se:
+    1. A requisição POST para a rota '/sala' retorna o status code 201 (Created).
+    2. A resposta contém uma mensagem indicando sucesso.
+    3. Os dados da sala cadastrada são retornados corretamente.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        dados_validos = {
+            "numero": 101,
+            "capacidade": 30,
+            "localizacao": "Bloco A, 1º Andar"
+        }
+
+        response = client.post('/sala/', json=dados_validos)
+
+        assert response.status_code == 201, "O status code deve ser 201 (Created)."
+        assert "mensagem" in response.json, "A resposta deve conter uma mensagem."
+        assert "data" in response.json, "A resposta deve conter os dados da sala."
+        sala = response.json["data"]
+        assert sala["numero"] == 101, "O número da sala deve ser 101."
+        assert sala["capacidade"] == 30, "A capacidade da sala deve ser 30."
+        assert sala["localizacao"] == "Bloco A, 1º Andar", "A localização da sala deve ser 'Bloco A, 1º Andar'."
+
+
 
 def test_cadastrar_sala_dados_invalidos(client, app):
     """Testa o cadastro de uma sala com dados inválidos.

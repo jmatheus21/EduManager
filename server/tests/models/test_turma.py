@@ -12,7 +12,7 @@ from datetime import datetime
 
 def criar_dependencias(app):
     """ Garante que instâncias das entidades `Sala` e `Clendario` estejam disponíveis para 
-    que testes na classe `Turma` possam ser feitos 
+    que testes na classe `Turma` possam ser feitos.
     """
     with app.app_context():
         with db.session.no_autoflush:
@@ -133,7 +133,7 @@ def test_alterar_turma(app):
         turma_original.ano = 9
         turma_original.serie = "D"
         turma_original.nivel_de_ensino = "Fundamental"
-        turma_original.turno = "N"
+        turma_original.turno = "V"
         turma_original.status = "A"
         turma_original.sala_numero = 101
         turma_original.calendario_ano_letivo = 2026
@@ -144,7 +144,7 @@ def test_alterar_turma(app):
         assert turma_alterada.ano == 9
         assert turma_alterada.serie == "D"
         assert turma_alterada.nivel_de_ensino == "Fundamental"
-        assert turma_alterada.turno == "N"
+        assert turma_alterada.turno == "V"
         assert turma_alterada.status == "A"
         assert turma_alterada.sala_numero == 101
         assert turma_alterada.calendario_ano_letivo == 2026

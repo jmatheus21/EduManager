@@ -8,11 +8,12 @@ incluindo cadastro, listagem, busca, atualização e remoção de turmas no banc
 from datetime import datetime
 from app.models import Turma, Sala, Calendario
 from app.extensions import db
+from app.utils.date_helpers import string_para_data
 
 
 def criar_dependencias(app):
-    """ Garante que instâncias das entidades `Sala` e `Clendario` estejam disponíveis para 
-    que testes na classe `Turma` possam ser feitos 
+    """ Garante que instâncias das entidades `Sala` e `Calendario` estejam disponíveis para 
+    que testes na classe `Turma` possam ser feitos.
     """
     with app.app_context():
         with db.session.no_autoflush:
@@ -22,12 +23,37 @@ def criar_dependencias(app):
                 db.session.add(sala)
 
             # Garante que o calendário existe
-            if not Calendario.query.filter_by(ano_letivo="2026").first():
-                calendario = Calendario(ano_letivo="2026", data_inicio=datetime.strptime("2026-02-17", '%Y-%m-%d').date(), data_fim=datetime.strptime("2026-11-27", '%Y-%m-%d').date(), dias_letivos=150)
+            if not Calendario.query.filter_by(ano_letivo=2026).first():
+                calendario = Calendario(ano_letivo=2026, data_inicio=string_para_data("2026-02-17"), data_fim=string_para_data("2026-11-27"), dias_letivos=150)
                 db.session.add(calendario)
 
             db.session.commit()
 
+def criar_dependencia_calendario(app):
+    """ Garante que a instância da entidade `Calendario` esteja disponível para 
+    que testes na classe `Turma` possam ser feitos.
+    """
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que o calendário existe
+            if not Calendario.query.filter_by(ano_letivo=2026).first():
+                calendario = Calendario(ano_letivo = 2026, data_inicio=string_para_data("2026-02-17"), data_fim=string_para_data("2026-11-27"), dias_letivos=150)
+                db.session.add(calendario)
+
+            db.session.commit()
+
+def criar_dependencia_sala(app):
+    """ Garante que a instância da entidade `Sala` esteja disponível para 
+    que testes na classe `Turma` possam ser feitos.
+    """
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a sala existe
+            if not Sala.query.filter_by(numero=101).first():
+                sala = Sala(numero=101, capacidade=50, localizacao="Bloco A, 1° andar")
+                db.session.add(sala)
+
+            db.session.commit()
 
 def test_cadastrar_turma(client, app):
     """Testa o cadastro de uma turma com dados válidos.
@@ -47,7 +73,7 @@ def test_cadastrar_turma(client, app):
         dados_validos = {
             "ano": 9,
             "serie": "A",
-            "nivel_de_ensino": "Fundamental",
+            "nivel_de_ensino": "Ensino Fundamental",
             "turno": "D",
             "status": "A",
             "sala_numero": 101,
@@ -55,6 +81,8 @@ def test_cadastrar_turma(client, app):
         }
 
         response = client.post('/turma/', json=dados_validos)
+
+        print("Resposta da API:", response.json)
 
         assert response.status_code == 201, "O status code deve ser 201 (Created)."
         assert "mensagem" in response.json, "A resposta deve conter uma mensagem."
@@ -65,12 +93,71 @@ def test_cadastrar_turma(client, app):
         assert "id" in turma, "A resposta deve conter o campo 'id'."
         assert turma["ano"] == 9, "O ano da turma deve ser 9."
         assert turma["serie"] == "A", "A serie da turma deve ser A."
-        assert turma["nivel_de_ensino"] == "Fundamental", "O nivel de ensino da turma deve ser 'Fundamental'."
+        assert turma["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
         assert turma["turno"] == "D", "O turno da turma deve ser D."
         assert turma["status"] == "A", "O status da turma deve ser A."
         assert turma["sala_numero"] == 101, "O numero da sala da turma deve ser 101."
         assert turma["calendario_ano_letivo"] == 2026, "O calendario do ano letivo deve ser 2026."
 
+def test_cadastrar_turma_calendario_inexistente(client, app):
+    """Testa o cadastro de uma turma com dado calendário inexistente.
+
+    Este teste verifica se:
+    1. A requisição POST para a rota '/turma' retorna o status code 400 (Bad Request).
+    2. A resposta contém uma mensagem indicando "Calendário não existe".
+    3. Os dados da turma cadastrada são retornados corretamente.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencia_sala(app)
+
+        dados_validos = {
+            "ano": 9,
+            "serie": "A",
+            "nivel_de_ensino": "Ensino Fundamental",
+            "turno": "D",
+            "status": "A",
+            "sala_numero": 101,
+            "calendario_ano_letivo": 2026
+        }
+
+        response = client.post('/turma/', json=dados_validos)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        assert "erro" in response.json, "Calendário não existe"
+
+def test_cadastrar_turma_sala_inexistente(client, app):
+    """Testa o cadastro de uma turma com dado sala inexistente.
+
+    Este teste verifica se:
+    1. A requisição POST para a rota '/turma' retorna o status code 400 (Bad Request).
+    2. A resposta contém uma mensagem indicando "Sala não existe".
+    3. Os dados da turma cadastrada são retornados corretamente.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencia_calendario(app)
+
+        dados_validos = {
+            "ano": 9,
+            "serie": "A",
+            "nivel_de_ensino": "Ensino Fundamental",
+            "turno": "D",
+            "status": "A",
+            "sala_numero": 101,
+            "calendario_ano_letivo": 2026
+        }
+
+        response = client.post('/turma/', json=dados_validos)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        assert "erro" in response.json, "Sala não existe"
 
 def test_cadastrar_turma_dados_invalidos(client, app):
     """Testa o cadastro de uma turma com dados inválidos.
@@ -88,7 +175,7 @@ def test_cadastrar_turma_dados_invalidos(client, app):
         dados_invalidos = {
             "ano": 13,
             "serie": "Aberta",
-            "nivel_de_ensino": "Fundamental",
+            "nivel_de_ensino": "Ensino Fundamental",
             "turno": "",
             "status": "A",
             "sala_numero": 101,
@@ -98,7 +185,7 @@ def test_cadastrar_turma_dados_invalidos(client, app):
         response = client.post('/turma/', json=dados_invalidos)
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert len(response.json["erro"]) == 3, "Deve haver 3 erros de validação."
+        assert len(response.json["erro"]) == 4, "Deve haver 3 erros de validação."
 
 
 def test_listar_turmas(client, app):
@@ -114,7 +201,7 @@ def test_listar_turmas(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -138,7 +225,7 @@ def test_buscar_turma(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -149,7 +236,7 @@ def test_buscar_turma(client, app):
         assert "id" in dados, "A resposta deve conter o campo 'id'."
         assert dados["ano"] == 9, "O ano da turma deve ser 9."
         assert dados["serie"] == "A", "A serie da turma deve ser A."
-        assert dados["nivel_de_ensino"] == "Fundamental", "O nivel de ensino da turma deve ser 'Fundamental'."
+        assert dados["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
         assert dados["turno"] == "D", "O turno da turma deve ser D."
         assert dados["status"] == "A", "O status da turma deve ser A."
         assert dados["sala_numero"] == 101, "O numero da sala da turma deve ser 101."
@@ -169,7 +256,7 @@ def test_alterar_turma(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -177,7 +264,7 @@ def test_alterar_turma(client, app):
         dados_atualizacao = {
             "ano": 9,
             "serie": "D",
-            "nivel_de_ensino": "Fundamental",
+            "nivel_de_ensino": "Ensino Fundamental",
             "turno": "N",
             "status": "A",
             "sala_numero": 101,
@@ -190,7 +277,7 @@ def test_alterar_turma(client, app):
         dados = response.json["data"]
         assert dados["ano"] == 9, "O ano da turma deve ser 9."
         assert dados["serie"] == "D", "A serie da turma deve ser D."
-        assert dados["nivel_de_ensino"] == "Fundamental", "O nivel de ensino da turma deve ser 'Fundamental'."
+        assert dados["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
         assert dados["turno"] == "N", "O turno da turma deve ser N."
         assert dados["status"] == "A", "O status da turma deve ser A."
         assert dados["sala_numero"] == 101, "O numero da sala da turma deve ser 101."

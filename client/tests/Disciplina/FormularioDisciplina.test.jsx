@@ -83,11 +83,11 @@ describe("ConsultarUsuario Component", () => {
     const cargaHorariaInput = screen.getByLabelText(/Carga Horária:/i);
     fireEvent.change(cargaHorariaInput, { target: { value: 30 } });
 
-    // exemplo com tipo select
+    // exemplo com tipo text
     const ementaInput = screen.getByLabelText(/Ementa:/i);
     fireEvent.change(ementaInput, { target: { value: "Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos." } });
 
-    // exemplo com tipo select
+    // exemplo com tipo text
     const bibliografiaInput = screen.getByLabelText(/Bibliografia:/i);
     fireEvent.change(bibliografiaInput, { target: { value: "STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014." } });
     

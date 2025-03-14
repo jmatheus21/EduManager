@@ -204,7 +204,7 @@ def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, statu
         list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
 
     Exemplo:
-        >>> erros = validar_turma(9, A, "Fundamental", D, A, 10, 2026)
+        >>> erros = validar_turma(9, A, "Ensino Fundamental", D, A, 101, 2026)
         >>> print(erros)
         []
     """
@@ -218,15 +218,24 @@ def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, statu
 
     if not nivel_de_ensino or not isinstance(nivel_de_ensino, str) or len(nivel_de_ensino) < 2 or len(nivel_de_ensino) > 30:
         erros.append("O atributo 'nivel_de_ensino' é obrigatório e deve ter no mínimo 2 caracteres máximo 30")
+    
+    if not nivel_de_ensino in ["Ensino Fundamental", "Ensino Médio"]:
+        erros.append("O atributo 'nivel_de_ensino' não tem um valor válido")
 
     if not turno or not isinstance(turno, str) or len(turno) != 1:
         erros.append("O atributo 'turno' é obrigatório e deve ter apenas 1 caractere")
+    
+    if not turno in ["D", "V", "N"]:
+        erros.append("O atributo 'turno' não tem um valor válido")
 
     if not status or not isinstance(status, str) or len(status) != 1:
         erros.append("O atributo 'status' é obrigatório e deve ter apenas 1 caractere")
+    
+    if not status in ["A", "C"]:
+        erros.append("O atributo 'status' não tem um valor válido")
 
-    if not sala_numero or not isinstance(sala_numero, int) or sala_numero < 0 or sala_numero > 1000:
-        erros.append("O atributo 'sala_numero' é obrigatório e deve ser no mínimo 0 e no máximo 1000")
+    if not isinstance(sala_numero, int) or sala_numero < 0 or sala_numero > 1000:
+        erros.append("O atributo 'sala_numero' deve ser no maior que 0 e menor que 1000")
 
     if not calendario_ano_letivo or not isinstance(calendario_ano_letivo, int) or calendario_ano_letivo < date.today().year:
         erros.append("O atributo 'calendario_ano_letivo' é obrigatório e deve ser maior ou igual ao ano atual")

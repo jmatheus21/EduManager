@@ -7,7 +7,7 @@ Ele interage com o modelo `Turma` para realizar operações CRUD e valida os dad
 
 from flask import request, jsonify
 from app.extensions import db
-from ..models import Turma
+from ..models import Turma, Calendario, Sala
 from app.utils.validators import validar_turma
 
 
@@ -25,9 +25,17 @@ def cadastrar_turma() -> jsonify:
     if erros:
         return jsonify({"erro": erros}), 400
     
-    turma_existente = Turma.query.filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
+    turma_existente = db.session.query(Turma).filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
     if turma_existente is not None:
         return jsonify({"erro": ["Turma já existe"]}), 400
+    
+    calendario_existente = db.session.query(Calendario).filter_by(ano_letivo=data['calendario_ano_letivo']).first()
+    if calendario_existente is None:
+        return jsonify({"erro": ["Calendário não existe"]}), 400
+    
+    sala_existente = db.session.query(Sala).filter_by(numero=data['sala_numero']).first()
+    if sala_existente is None:
+        return jsonify({"erro": ["Sala não existe"]}), 400
     
     nova_turma = Turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
     db.session.add(nova_turma)
