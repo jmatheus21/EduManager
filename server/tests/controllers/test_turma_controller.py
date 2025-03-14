@@ -11,6 +11,9 @@ from app.extensions import db
 
 
 def criar_dependencias(app):
+    """ Garante que instâncias das entidades `Sala` e `Clendario` estejam disponíveis para 
+    que testes na classe `Turma` possam ser feitos 
+    """
     with app.app_context():
         with db.session.no_autoflush:
             # Garante que a sala existe
