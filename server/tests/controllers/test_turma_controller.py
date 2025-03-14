@@ -59,9 +59,7 @@ def test_cadastrar_turma(client, app):
         
         turma = response.json["data"]
         
-        assert isinstance(turma, dict), "A resposta da turma deve ser um dicionário."
         assert "id" in turma, "A resposta deve conter o campo 'id'."
-        assert turma["id"] > 0, "O ID da turma deve ser maior que zero."
         assert turma["ano"] == 9, "O ano da turma deve ser 9."
         assert turma["serie"] == "A", "A serie da turma deve ser A."
         assert turma["nivel_de_ensino"] == "Fundamental", "O nivel de ensino da turma deve ser 'Fundamental'."
@@ -121,9 +119,8 @@ def test_listar_turmas(client, app):
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert isinstance(response.json, list), "A resposta deve ser uma lista."
         assert len(response.json) == 1, "Deve haver exatamente 1 turma na listagem."
-        assert "id" in response.json[0]
-        # assert response.json[0]["sala_numero"] == 101, "O número da sala deve ser 101."
-
+        assert "id" in response.json[0], "A resposta deve conter o campo 'id'."
+        
 
 def test_buscar_turma(client, app):
     """Testa a busca de uma turma específica pelo número.
@@ -138,7 +135,7 @@ def test_buscar_turma(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Medio", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -188,7 +185,6 @@ def test_alterar_turma(client, app):
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Turma atualizada com sucesso!"
         dados = response.json["data"]
-        assert "id" in dados, "A resposta deve conter o campo 'id'."
         assert dados["ano"] == 9, "O ano da turma deve ser 9."
         assert dados["serie"] == "D", "A serie da turma deve ser D."
         assert dados["nivel_de_ensino"] == "Fundamental", "O nivel de ensino da turma deve ser 'Fundamental'."

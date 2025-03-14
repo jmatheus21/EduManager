@@ -25,14 +25,14 @@ def cadastrar_turma() -> jsonify:
     if erros:
         return jsonify({"erro": erros}), 400
     
-    turma_existente = db.session.get(Turma, erros.id)
+    turma_existente = Turma.query.filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
     if turma_existente is not None:
         return jsonify({"erro": ["Turma já existe"]}), 400
     
     nova_turma = Turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
     db.session.add(nova_turma)
     db.session.commit()
-    return jsonify({"mensagem": "Turma criada com sucesso!", "data": {"ano": nova_turma.ano, "serie": nova_turma.serie, "nivel_de_ensino": nova_turma.nivel_de_ensino, "turno": nova_turma.turno, "status": nova_turma.status, "sala_numero": nova_turma.sala_numero, "calendario_ano_letivo": nova_turma.calendario_ano_letivo}}), 201
+    return jsonify({"mensagem": "Turma criada com sucesso!", "data": {"id": nova_turma.id, "ano": nova_turma.ano, "serie": nova_turma.serie, "nivel_de_ensino": nova_turma.nivel_de_ensino, "turno": nova_turma.turno, "status": nova_turma.status, "sala_numero": nova_turma.sala_numero, "calendario_ano_letivo": nova_turma.calendario_ano_letivo}}), 201
 
 
 def listar_turmas() -> jsonify:
@@ -42,7 +42,7 @@ def listar_turmas() -> jsonify:
         jsonify: Resposta JSON contendo uma lista de turmas com seus respectivos dados.
     """
     turmas = Turma.query.all()
-    return jsonify([{"ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo} for turma in turmas]), 200
+    return jsonify([{"id": turma.id, "ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo} for turma in turmas]), 200
 
 
 def buscar_turma(id: int) -> jsonify:
@@ -55,7 +55,7 @@ def buscar_turma(id: int) -> jsonify:
         jsonify: Resposta JSON contendo os dados da turma encontrada.
     """
     turma = db.session.get(Turma, id)
-    return jsonify({"ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo}), 200
+    return jsonify({"id": turma.id, "ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo}), 200
 
 
 def alterar_turma(id: int) -> jsonify:
@@ -70,27 +70,29 @@ def alterar_turma(id: int) -> jsonify:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados da turma, ou uma mensagem de erro em caso de dados inválidos.
     """
     turma = db.session.get(Turma, id)
+    if not turma:
+        return jsonify({"erro": "Turma não encontrada"}), 404
+    
     data = request.get_json()
 
-    erros = validar_turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], sala_numero=['sala_numero'], calendario_ano_letivo=['calendario_ano_letivo'])
+    erros = validar_turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
     if erros:
         return jsonify({"erro": erros}), 400
     
-    if id != erros.id:
-        turma_existente = db.session.get(Turma, erros.id);
-        if turma_existente is not None:
-            return jsonify({"erro": ["Turma já existe"]}), 400;
+    turma_existente = Turma.query.filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
+    if turma_existente is not None:
+        return jsonify({"erro": ["Turma já existe"]}), 400
 
-    turma.id = erros.id
     turma.ano = data['ano']
     turma.serie = data['serie']
     turma.nivel_de_ensino = data['nivel_de_ensino']
     turma.turno = data['turno']
+    turma.status = data['status']
     turma.sala_numero = data['sala_numero']
     turma.calendario_ano_letivo = data['calendario_ano_letivo']
     db.session.commit()
 
-    return jsonify({"mensagem": "Turma atualizada com sucesso!", "data": {"ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo}}), 200
+    return jsonify({"mensagem": "Turma atualizada com sucesso!", "data": {"id": turma.id, "ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo}}), 200
 
 
 def remover_turma(id: int) -> jsonify:
