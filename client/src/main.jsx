@@ -8,6 +8,7 @@ import { ConsultarSala, FormularioSala, InfoSala } from "./pages/Sala";
 import { ConsultarDisciplina, FormularioDisciplina } from "./pages/Disciplina";
 import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pages/Calendario";
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
+import { ConsultarTurma, FormularioTurma} from "./pages/Turma";
 import "./index.css";
 
 const criarMenu = (entidade) => {
@@ -51,6 +52,12 @@ createRoot(document.getElementById("root")).render(
           <Route path="cadastrar" element={<FormularioUsuario />} />
           <Route path=":chave" element={<InfoUsuario />} />
           <Route path="alterar/:chave" element={<FormularioUsuario />} />
+        </Route>
+        <Route path="turma" element={<Gerenciar menus={criarMenu("turma")} />}>
+          <Route index element={<ConsultarTurma />} />
+          <Route path="cadastrar" element={<FormularioTurma />} />
+          {/* <Route path=":chave" element={<InfoTurma />} />
+          <Route path="alterar/:chave" element={<FormularioTurma />}/> */}
         </Route>
       </Routes>
     </BrowserRouter>
