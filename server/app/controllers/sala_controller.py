@@ -7,7 +7,7 @@ Ele interage com o modelo `Sala` para realizar operações CRUD e valida os dado
 
 from flask import request, jsonify
 from app.extensions import db
-from ..models import Sala
+from ..models import Sala, Turma, Calendario
 from app.utils.validators import validar_sala
 
 
@@ -88,7 +88,6 @@ def alterar_sala(numero: int) -> jsonify:
 
     return jsonify({"mensagem": "Sala atualizada com sucesso!", "data": {"numero": sala.numero, "localizacao": sala.localizacao, "capacidade": sala.capacidade}}), 200
 
-
 def remover_sala(numero: int) -> jsonify:
     """Remove uma sala existente do banco de dados.
 
@@ -98,7 +97,13 @@ def remover_sala(numero: int) -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.
     """
+    turmas_ativas = db.session.query(Turma).filter_by(sala_numero = numero, status = 'A').first()
+
+    if turmas_ativas:
+        return jsonify({"erro": "Não é possível remover a sala, pois há turmas ativas associadas a essa sala"}), 400
+    
     sala = db.session.get(Sala, numero)
+
     db.session.delete(sala)
     db.session.commit()
     return jsonify({"mensagem": "Sala deletada com sucesso!"}), 200

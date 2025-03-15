@@ -105,7 +105,7 @@ const FormularioCargo = ({ fields, append, remove, erro, setError, clearErrors }
             <Row>
                 <Alert variant="white" className={`${errors? "d-flex" : "d-none"} text-danger justify-content-center pb-1 pt-2`}>
                     {erro?.cargos?.type == "void" && "Nenhum cargo foi cadastrado"}
-                    {errors?.cargos?.type == "equal" && "Este cargo já foi adicionado!"}
+                    {erro?.cargos?.type == "equal" && "Este cargo já foi adicionado!"}
                     {errors?.nome?.type == "required" && "O nome do cargo é obrigatório"}
                     {errors?.salario?.type == "required" && "O salário é obrigatório"}
                     {errors?.salario?.type == "min" && "O salário deve ser maior que R$ 100"}

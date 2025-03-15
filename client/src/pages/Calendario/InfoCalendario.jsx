@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row } from "react-bootstrap";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoInfo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
+import { inverterData } from "../../components/Listagem.jsx"; 
 
 /**
  * Componente para exibir informações detalhadas de um calendário.
@@ -69,7 +70,7 @@ const InfoCalendario = () => {
         <Row>
           <Col>
             <h5>Ano Letivo:</h5>
-            {api.data && <p>{api.data.ano_letivo}</p>}
+            {api.data && <p data-testid="chave_primaria">{api.data.ano_letivo}</p>}
           </Col>
           <Col>
             <h5>Dias letivos:</h5>
@@ -79,11 +80,11 @@ const InfoCalendario = () => {
         <Row>
           <Col>
             <h5>Data de início:</h5>
-            {api.data && <p>{api.data.data_inicio}</p>}
+            {api.data && <p>{inverterData(api.data.data_inicio)}</p>}
           </Col>
           <Col>
             <h5>Data de fim:</h5>
-            {api.data && <p>{api.data.data_fim}</p>}
+            {api.data && <p>{inverterData(api.data.data_fim)}</p>}
           </Col>
         </Row>
       </Container>
@@ -95,7 +96,7 @@ const InfoCalendario = () => {
         estado={show}
         funcaoFechar={handleClose}
         funcaoRemover={RemoverCalendario}
-        entidade={"Calendario"}
+        entidade={"Calendário"}
       />
     </Container>
   );

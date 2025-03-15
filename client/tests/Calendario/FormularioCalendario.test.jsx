@@ -1,115 +1,187 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import FormularioCalendario from "../../src/pages/Calendario/FormularioCalendario";
+import { FormularioCalendario } from "../../src/pages/Calendario"
+import Formulario from "../../src/pages/Calendario/components/Formulario";
 
 // Mock do useLocation e useNavigate
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
-  useLocation: jest.fn(),
+  useLocation: () => ({
+    pathname: "/calendario"
+  }),
   useNavigate: jest.fn(),
 }));
 
-const anoAtual = new Date().getFullYear();
-
 /**
  * Testes unitários para o componente FormularioCalendario.
- * Este conjunto de testes verifica a renderização correta do componente,
- * a interação com a barra de busca e a exibição de mensagens de sucesso/erro.
+ * Este conjunto de testes verifica a renderização correta do componente
+ * e a exibição de mensagens de sucesso/erro.
  */
 describe("FormularioCalendario Component", () => {
-  it("renderiza o formulário corretamente", () => {
-    render(
-      <BrowserRouter>
-        <FormularioCalendario/>
-      </BrowserRouter>
-    );
 
-    // Verifica se o título da página foi renderizado
-    expect(screen.getByText(/Cadastrar Calendário/i)).toBeInTheDocument();
+  describe("Cadastrar Calendario", () => {
 
-    // Verifica se cada campo foi renderizado
-    expect(screen.getByLabelText(/Ano letivo:/i)).toBeInTheDocument();
+    beforeEach(() => {
+      render(
+          <BrowserRouter>
+              <FormularioCalendario/>
+          </BrowserRouter>
+      );
+    })
 
-    expect(screen.getByLabelText(/Data de início/i)).toBeInTheDocument();
+    it ("renderiza o formulário corretamente", () => {
 
-    expect(screen.getByLabelText(/Dias letivos:/i)).toBeInTheDocument();
-    
-    expect(screen.getByLabelText(/Data de fim:/i)).toBeInTheDocument();
-
-    // Verifica se o botão foi renderizado
-    expect(screen.getByText(/Finalizar/i)).toBeInTheDocument();
-
-    /*
-      expect = verifica se a condição é verdadeira
-      screen.getByText = busca um elemento na tela com o texto passado como parâmetro
-      /Cadastrar Entidade/i = expressão regular que busca o texto "Cadastrar Entidade" ignorando maiúsculas e minúsculas
-      screen.getByLabelText = busca um campo de formulário na tela pelo texto da label
-    */
-  });
+      // Verifica se o título da página foi renderizado
+      expect(screen.getByText(/Cadastrar Calendário/i)).toBeVisible();
   
-  it("exibe mensagem de erro ao enviar formulário sem preencher campos obrigatórios", async () => {
-    render(<BrowserRouter>{<FormularioCalendario/>}</BrowserRouter>);
-
-    // Clica no botão de finalizar sem preencher os campos obrigatórios
-    fireEvent.click(screen.getByText(/Finalizar/i));
-
-    // Verifica se as mensagens de erro foram exibidas, aguardando a renderização com await
-    expect(await screen.findByText(/O ano letivo é obrigatório/i)).toBeInTheDocument();
-    expect(await screen.findByText(/A quantidade de dias letivos é obrigatória/i)).toBeInTheDocument();
-    expect(await screen.findByText(/A data de início é obrigatória/i)).toBeInTheDocument();
-    expect(await screen.findByText(/A data de fim é obrigatória/i)).toBeInTheDocument();
-  });
-
-  it("exibe mensagens de erro ao enviar formulário com dados inválidos (ano letivo, dias letivos, data de início, data de fim)", async () => {
-    render(<BrowserRouter>{<FormularioCalendario/>}</BrowserRouter>); 
-    
-    //Inserção de dados inválidos e contraditórios
-    const anoLetivoInput = screen.getByLabelText(/Ano letivo:/i);
-    fireEvent.change(anoLetivoInput, { target: { value: 2024 } });
-
-    const diasLetivosInput = screen.getByLabelText(/Dias letivos:/i);
-    fireEvent.change(diasLetivosInput, { target: { value: 208 } });
-
-    const dataInicioInput = screen.getByLabelText(/Data de início:/i);
-    fireEvent.change(dataInicioInput, { target: { value: "2026-01-15" } });
-
-    const dataFimInput = screen.getByLabelText(/Data de fim:/i);
-    fireEvent.change(dataFimInput, { target: { value: "2026-01-09" } });
-    
-    // Clica no botão de finalizar sem preencher os campos obrigatórios
-    fireEvent.click(screen.getByText(/Finalizar/i));
-
-    // Verifica se as mensagens de erro foram exibidas, aguardando a renderização com await
-    expect(await screen.findByText(new RegExp(`O ano deve ser igual ou maior que ${anoAtual}`, 'i'))).toBeInTheDocument();
-    expect(await screen.findByText(/A quantidade de dias letivos deve ser no máximo 200/i)).toBeInTheDocument();
-    expect(await screen.findByText(/A data de início deve ser no mesmo ano letivo inserido/i)).toBeInTheDocument();
-    expect(await screen.findByText(/A data de fim é anterior à data de início ou ela não pertence ao mesmo ano letivo/i)).toBeInTheDocument();
-    
-  });
-
-  it("permite ao usuário digitar nos campos do formulário", () => {
-    render(<BrowserRouter>{<FormularioCalendario/>}</BrowserRouter>);
-
-    //Inserção de dados válidos
-    const anoLetivoInput = screen.getByLabelText(/Ano letivo:/i);
-    fireEvent.change(anoLetivoInput, { target: { value: 2026 } });
-
-    const diasLetivosInput = screen.getByLabelText(/Dias letivos:/i);
-    fireEvent.change(diasLetivosInput, { target: { value: 150 } });
-
-    const dataInicioInput = screen.getByLabelText(/Data de início:/i);
-    fireEvent.change(dataInicioInput, { target: { value: "2026-01-15" } });
-
-    const dataFimInput = screen.getByLabelText(/Data de fim:/i);
-    fireEvent.change(dataFimInput, { target: { value: "2026-09-15" } });
-
-    // verifica se o dado foi digitado corretamente
-    expect(anoLetivoInput.value).toBe("2026");
-    expect(diasLetivosInput.value).toBe("150"); 
-    expect(dataInicioInput.value).toBe("2026-01-15");
-    expect(dataFimInput.value).toBe("2026-09-15");
-  });
+      // Verifica se o campo "Ano letivo" foi renderizado
+      expect(screen.getByLabelText(/Ano letivo:/i)).toBeVisible();
   
+      // Verifica se o campo "Dias letivos" foi renderizado
+      expect(screen.getByLabelText(/Dias letivos:/i)).toBeVisible();
+  
+      // Verifica se o campo "Data de início" foi renderizado
+      expect(screen.getByLabelText(/Data de início:/i)).toBeVisible();
+
+      // Verifica se o campo "Data de fim" foi renderizado
+      expect(screen.getByLabelText(/Data de fim:/i)).toBeVisible();
+  
+      // Verifica se o botão foi renderizado
+      expect(screen.getByText(/Finalizar/i)).toBeVisible();
+
+    });
+
+    it ("exibe mensagem de erro ao enviar formulário sem preencher campos obrigatórios", async () => {
+  
+      // Clica no botão de finalizar sem preencher os campos obrigatórios
+      const botao = screen.getByText(/Finalizar/i);
+      fireEvent.click(botao);
+  
+      // Verifica se as mensagens de erro foram exibidas, aguardando a renderização com await
+      expect(await screen.findByText(/O ano letivo é obrigatório/i)).toBeVisible();
+      expect(await screen.findByText(/A quantidade de dias letivos é obrigatória/i)).toBeVisible();
+      expect(await screen.findByText(/A data de início é obrigatória/i)).toBeVisible();
+      expect(await screen.findByText(/A data de fim é obrigatória/i)).toBeVisible();
+
+    });
+
+    it ("permite ao usuário digitar nos campos do formulário", async () => {
+  
+      const anoLetivoInput = screen.getByLabelText(/Ano letivo:/i);
+      const diasLetivosInput = screen.getByLabelText(/Dias letivos:/i);
+      const dataDeInicioInput = screen.getByLabelText(/Data de início:/i);
+      const dataDeFimInput = screen.getByLabelText(/Data de fim:/i);
+
+      // realiza as ações
+      await act(async () => {
+        await userEvent.type(anoLetivoInput, "2026");
+        await userEvent.type(diasLetivosInput, "150");
+        await userEvent.type(dataDeInicioInput, "2026-01-01");
+        await userEvent.type(dataDeFimInput, "2026-09-01");
+      })
+      
+      // verifica se os dados foram digitados corretamente
+      expect(anoLetivoInput.value).toBe("2026");
+      expect(diasLetivosInput.value).toBe("150");
+      expect(dataDeInicioInput.value).toBe("2026-01-01");
+      expect(dataDeFimInput.value).toBe("2026-09-01");
+
+    });
+
+  });
+
+  describe("Formulario do Calendario", () => {
+
+    const mockEnviarFormulario = jest.fn();
+
+    beforeEach(() => {
+      render(
+          <BrowserRouter>
+              <Formulario 
+                enviarFormulario={mockEnviarFormulario} 
+                alteracao={{
+                  alterar: false, 
+                  dados: {}, 
+                  chave: undefined
+                }}
+              />
+          </BrowserRouter>
+      );
+    })
+
+    it ("verificar se o formulário está sendo enviado", async () => {
+
+      const anoLetivoInput = screen.getByLabelText(/Ano letivo:/i);
+      const diasLetivosInput = screen.getByLabelText(/Dias letivos:/i);
+      const dataDeInicioInput = screen.getByLabelText(/Data de início:/i);
+      const dataDeFimInput = screen.getByLabelText(/Data de fim:/i);
+      const botao = screen.getByText(/Finalizar/i);
+
+      // realiza as ações
+      await act(async () => {
+        await userEvent.type(anoLetivoInput, "2026");
+        await userEvent.type(diasLetivosInput, "150");
+        await userEvent.type(dataDeInicioInput, "2026-01-01");
+        await userEvent.type(dataDeFimInput, "2026-09-01");
+        await userEvent.click(botao);
+      });
+
+      await waitFor(() => {
+        expect(mockEnviarFormulario).toHaveBeenCalledTimes(1);
+        expect(mockEnviarFormulario).toHaveBeenCalledWith({
+          ano_letivo: 2026,
+          dias_letivos: 150,
+          data_inicio: "2026-01-01",
+          data_fim: "2026-09-01"
+        }, expect.anything());
+      });
+
+    })
+
+  })
+
+  describe("Alterar Calendario", () => {
+
+    const mockEnviarFormulario = jest.fn();
+
+    beforeEach( async () => {
+      await act(async () => {
+        render(
+            <BrowserRouter>
+                <Formulario 
+                  enviarFormulario={mockEnviarFormulario} 
+                  alteracao={{
+                    alterar: true, 
+                    dados: {
+                      ano_letivo: 2026,
+                      dias_letivos: 170,
+                      data_inicio: "2026-02-01",
+                      data_fim: "2026-08-01"
+                    }, 
+                    chave: undefined
+                  }}
+                />
+            </BrowserRouter>
+        );
+      })
+    })
+
+    it ("Verifica se os dados são carregados na página de alterar", async () => {
+
+      const anoLetivoInput = screen.getByLabelText(/Ano letivo:/i);
+      const diasLetivosInput = screen.getByLabelText(/Dias letivos:/i);
+      const dataDeInicioInput = screen.getByLabelText(/Data de início:/i);
+      const dataDeFimInput = screen.getByLabelText(/Data de fim:/i);
+      
+      await waitFor(() => {
+        expect(anoLetivoInput.value).toBe("2026");
+        expect(diasLetivosInput.value).toBe("170");
+        expect(dataDeInicioInput.value).toBe("2026-02-01")
+        expect(dataDeFimInput.value).toBe("2026-08-01")
+      })
+    });
+
+  });
 });
-

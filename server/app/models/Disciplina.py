@@ -26,4 +26,4 @@ class Disciplina(db.Model):
     ementa = db.Column(db.String(255), nullable = True, doc = "Ementa da disciplina")
     bibliografia = db.Column(db.String(255), nullable = True, doc = "Bibliografia da disciplina")
 
-    aulas = db.relationship('Aula', backref='disciplina', lazy=True, doc="Relacionamento com a entidade Aula. Cada disciplina deve ter uma ou várias aulas associadas.")
+    aulas = db.relationship('Aula', backref='disciplina', lazy=True, cascade = 'all, delete-orphan', doc="Relacionamento com a entidade Aula. Cada disciplina deve ter uma ou várias aulas associadas.")

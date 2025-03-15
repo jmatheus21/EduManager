@@ -58,7 +58,7 @@ def test_cadastrar_usuario_valido_do_tipo_professor(client, app):
         assert usuario["nome"] == "John Cena", "O nome do usuário deve ser 'John Cena'."
         assert usuario["email"] == "jcena@hotmail.com", "O email do usuário deve ser 'jcena@hotmail.com'."
         assert checar_senha("bocaAberta123", usuario["senha"]), "A senha do usuário não está correta."
-        assert usuario["telefone"] == "79 9 9988-7766", "O telefone do usuário deve ser '79 9 99887766'."
+        assert usuario["telefone"] == "79 9 9988-7766", "O telefone do usuário deve ser '79 9 9988-7766'."
         assert usuario["endereco"] == "Rua das Flores, N° 124, Centro, Carira-Sergipe", "O endereço do usuário deve ser 'Rua das Flores, N° 124, Centro, Carira-Sergipe'."
         assert usuario["horario_de_trabalho"] == "Seg-Sex,13h-17h", "O horário de trabalho do usuário deve ser 'Seg-Sex,13h-17h'."
         assert usuario["tipo"] == "p", "O tipo do usuário deve ser 'p', ou seja, um professor."
@@ -68,7 +68,6 @@ def test_cadastrar_usuario_valido_do_tipo_professor(client, app):
         assert usuario["disciplinas"] == ["MAT123", "FIS789"], "Os códigos das disciplinas devem ser '['MAT123', 'FIS789']'."
 
         for cargo in usuario["cargos"]:
-            cargo["data_contrato"] = cargo["data_contrato"]
             cargo["salario"] = float(cargo["salario"])
 
         assert usuario["cargos"] == [{"nome": "Professor", "salario": 3060.0, "data_contrato": "2027-12-31"}, 
@@ -282,3 +281,30 @@ def test_cadastrar_usuario_dados_invalidos_do_tipo_funcionario(client, app):
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
         assert len(response.json["erro"]) == 6, "Deve haver 6 erros de validação."
+
+def test_cadastrar_usuario_com_cargos_do_mesmo_nome(client, app):
+
+    with app.app_context():
+        dados_invalidos = {
+            "cpf": "12345678901",
+            "nome": "John Cena",
+            "email": "jcena@hotmail.com",
+            "senha": "bocaAberta123",
+            "telefone": "79 9 9988-7766",
+            "endereco": "Rua das Flores, N° 124, Centro, Carira-Sergipe",
+            "horario_de_trabalho": "Seg-Sex,13h-17h",
+            "data_de_nascimento": "1990-04-02",
+            "tipo": "f",
+            "formacao": None,
+            "escolaridade": "Superior Completo",
+            "habilidades": "Informática básica",
+            "disciplinas": [],
+            "cargos": [{"nome": "Professor", "salario": 3060.0, "data_contrato": "2027-12-31"}, {"nome": "Professor", "salario": 1040.0, "data_contrato": "2027-12-31"}]
+        }
+
+        response = client.post('/usuario/', json=dados_invalidos)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        assert "erro" in response.json, "A resposta deve conter mensagens de erro."
+        assert len(response.json["erro"]) == 1, "Deve haver 1 erro na saída"
+        assert "Usuário não pode ter dois cargos com o mesmo nome" in response.json["erro"], "Deve exibir um erro sobre cargos com mesmo nome"

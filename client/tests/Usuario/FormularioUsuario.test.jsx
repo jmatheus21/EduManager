@@ -68,7 +68,7 @@ describe("ConsultarUsuario Component", () => {
     fireEvent.click(screen.getByText(/Finalizar/i));
 
     expect(await screen.findByText(/O nome é obrigatório/i)).toBeInTheDocument();
-    expect(await screen.findByText(/O email é obrigatório/i)).toBeInTheDocument();
+    expect(await screen.findByText(/O e-mail é obrigatório/i)).toBeInTheDocument();
     expect(await screen.findByText(/O CPF é obrigatório/i)).toBeInTheDocument();
     expect(await screen.findByText(/A data de nascimento é obrigatória/i)).toBeInTheDocument();
     expect(await screen.findByText(/O horário de trabalho é obrigatório/i)).toBeInTheDocument();

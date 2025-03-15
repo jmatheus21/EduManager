@@ -6,4 +6,4 @@ class Cargo(db.Model):
     salario = db.Column(db.Numeric(10, 2), nullable=False)
     data_contrato = db.Column(db.Date, nullable=False)
 
-    usuario_cpf = db.Column(db.String(20), db.ForeignKey('usuario.cpf'), nullable=False)
+    usuario_cpf = db.Column(db.String(20), db.ForeignKey('usuario.cpf', ondelete ='CASCADE', onupdate ='CASCADE'), nullable=False)

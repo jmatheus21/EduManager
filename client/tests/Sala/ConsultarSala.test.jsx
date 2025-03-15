@@ -1,14 +1,15 @@
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import  { ConsultarDisciplina } from "../../src/pages/Disciplina"
+import  { ConsultarSala } from "../../src/pages/Sala"
+import useApi from "../../src/hooks/useApi";
 
 // Mock do useLocation e useNavigate
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
     useLocation: () => ({
-        pathname: "/disciplina"
+        pathname: "/sala"
     }),
     useNavigate: jest.fn(),
 }));
@@ -24,15 +25,15 @@ jest.mock("../../src/hooks/useApi", () => ({
 }));
 
 /**
- * Testes unitários para o componente ConsultarDisciplina.
+ * Testes unitários para o componente ConsultarSala.
  * Verifica a renderização inicial, a interação do usuário e o carregamento de dados.
  */
-describe("ConsultarDisciplina", () => {
+describe("ConsultarSala", () => {
 
     beforeEach(() => {
         render(
             <BrowserRouter>
-                <ConsultarDisciplina/>
+                <ConsultarSala/>
             </BrowserRouter>
         );
     })
@@ -40,38 +41,37 @@ describe("ConsultarDisciplina", () => {
     it("renderiza o formulário corretamente", async () => {
         
         // Verifica se o título da página foi renderizado
-        expect(await screen.getByText(/Consultar Disciplinas/i)).toBeVisible();
+        expect(await screen.getByText(/Consultar Salas/i)).toBeVisible();
 
-        // // Verifica se o campo "Código:" foi renderizado
-        expect(screen.getByPlaceholderText("Exemplo: MAT001")).toBeVisible();
+        // // Verifica se o campo "Número:" foi renderizado
+        expect(screen.getByLabelText(/Número:/i)).toBeVisible();
 
         // // Verifica se o botão foi renderizado
         expect(screen.getByText(/Buscar/i)).toBeVisible();
 
-        // // Verifica se o campo "Nome" foi renderizado
-        expect(screen.getByRole("columnheader", { name: /Nome/i })).toBeVisible();   
+        // // Verifica se o campo "Número" foi renderizado
+        expect(screen.getByRole("columnheader", { name: /Número/i })).toBeVisible();   
         
-        // // Verifica se o campo "Código" foi renderizado
-        expect(screen.getByRole("columnheader", { name: /Código/i })).toBeVisible();
+        // // Verifica se o campo "Capacidade" foi renderizado
+        expect(screen.getByRole("columnheader", { name: /Capacidade/i })).toBeVisible();
 
-        // // Verifica se o campo "Carga Horária" foi renderizado
-        expect(screen.getByRole("columnheader", { name: /Carga Horária/i })).toBeVisible();
+        // // Verifica se o campo "Localização" foi renderizado
+        expect(screen.getByRole("columnheader", { name: /Localização/i })).toBeVisible();
     });
 
     it("verifica se é possível inserir dados no campo de busca", async () => {
         render(
             <BrowserRouter>
-                <ConsultarDisciplina/>
+                <ConsultarSala/>
             </BrowserRouter>
         );
 
-        const camposBusca = screen.getAllByPlaceholderText("Exemplo: MAT001");
-        const campoBusca = camposBusca[0];
+        const campoBusca = screen.getByLabelText(/Número:/i);
 
         await act( async () => {
-            await userEvent.type(campoBusca, "MAT101");
+            await userEvent.type(campoBusca, "123");
         });
 
-        expect(campoBusca.value).toBe("MAT101");
+        expect(campoBusca.value).toBe("123");
     });
 });

@@ -31,6 +31,10 @@ def cadastrar_usuario() -> jsonify:
     usuario_existente = db.session.get(Usuario, data['cpf'])
     if usuario_existente:
         return jsonify({"erro": ["Usuário já existe"]}), 400
+
+    email_existente = db.session.query(Usuario).filter_by(email= data['email']).first()
+    if email_existente:
+        return jsonify({"erro": ["E-mail já existe"]}), 400
     
     data['data_de_nascimento'] = string_para_data(data['data_de_nascimento'])
     
@@ -67,6 +71,12 @@ def cadastrar_usuario() -> jsonify:
     
     for cargo in data['cargos']:
         cargo['data_contrato'] = string_para_data(cargo['data_contrato'])
+
+        cargo_existente = db.session.query(Cargo).filter_by(nome=cargo['nome'], usuario_cpf=novo_usuario.cpf).first()
+
+        if cargo_existente:
+            return jsonify({"erro": ["Usuário não pode ter dois cargos com o mesmo nome"]}), 400
+            
         novo_cargo = Cargo(nome = cargo['nome'], salario = cargo['salario'], data_contrato = cargo['data_contrato'], usuario_cpf=novo_usuario.cpf)
         db.session.add(novo_cargo)
         db.session.commit()

@@ -17,20 +17,20 @@ const colunas = [
  */
 const ConsultarSala = () => {
   // Configuração padrão
-  const api = useApi("/api");
+  const { fetchData, loading, error, data } = useApi("/api");
 
   /**
    * Efeito para buscar as salas ao carregar o componente.
    */
   useEffect(() => {
-    api.fetchData("/sala");
+    fetchData("/sala");
   }, []);
 
   // Exibe mensagem de carregamento enquanto os dados estão sendo buscados
-  if (api.loading) return <p>Carregando...</p>;
+  if (loading) return <p>Carregando...</p>;
 
   // Exibe mensagem de erro caso ocorra um erro na requisição
-  if (api.error) return <p>Erro: {api.error}</p>;
+  if (error) return <p>Erro: {error}</p>;
 
   return (
     <Container fluid>
@@ -43,7 +43,7 @@ const ConsultarSala = () => {
         max={100}
         entidade={"sala"}
       />
-      <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
+      <Listagem colunas={colunas} data={data} pk={colunas[0].field} />
     </Container>
   );
 };

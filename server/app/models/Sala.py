@@ -22,4 +22,4 @@ class Sala(db.Model):
     localizacao = db.Column(db.String(100), nullable=False, doc="Localização da sala (máximo 100 caracteres).")
     capacidade = db.Column(db.Integer, nullable=False, doc="Capacidade da sala (número inteiro positivo).")
 
-    turmas = db.relationship('Turma', backref='sala', lazy=True, doc="Relacionamento com a entidade Turma. Cada sala pode ter várias turmas associadas.")
+    turmas = db.relationship('Turma', backref='sala', lazy=True, cascade='save-update, merge, refresh-expire', doc="Relacionamento com a entidade Turma. Cada sala pode ter várias turmas associadas.")

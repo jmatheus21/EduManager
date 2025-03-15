@@ -232,13 +232,13 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
         erros.append("O atributo 'email' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 100 caracteres, além de precisar ter o @")
 
     if not senha or not isinstance(senha, str) or len(senha) < 5 or len(senha) > 100:
-        erros.append("O atributo 'senha' deve ter no mínimo 5 caracteres e no máximo 100 caracteres")
+        erros.append("O atributo 'senha' é obrigatório e deve ter no mínimo 5 caracteres e no máximo 100 caracteres")
 
-    if not isinstance(telefone, str) or not validar_telefone(telefone):
-        erros.append("O atributo 'telefone' não segue o formato estabelecido 'DD 9 XXXX-XXXX'")
+    if not telefone or not isinstance(telefone, str) or not validar_telefone(telefone):
+        erros.append("O atributo 'telefone' é obrigatório e não segue o formato estabelecido 'XX 9 XXXX-XXXX'")
     
-    if not isinstance(endereco, str) or len(endereco) < 10 or len(endereco) > 255:
-        erros.append("O atributo 'endereco' deve ter no mínimo 10 caracteres e no máximo 255 caracteres")
+    if not endereco or not isinstance(endereco, str) or len(endereco) < 10 or len(endereco) > 255:
+        erros.append("O atributo 'endereco' é obrigatório e deve ter no mínimo 10 caracteres e no máximo 255 caracteres")
 
     if not horario_de_trabalho or not isinstance(horario_de_trabalho, str) or len(horario_de_trabalho) < 5 or len(horario_de_trabalho) > 20 or not validar_horario_completo(horario_de_trabalho):
         erros.append("O atributo 'horario_de_trabalho' é obrigatório e deve ter no mínimo 10 caracteres e no máximo 20 caracteres")

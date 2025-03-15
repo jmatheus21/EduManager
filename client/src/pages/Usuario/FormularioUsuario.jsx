@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Col, Container, Form, Row, Alert } from "react-bootstrap";
 import useApi from "../../hooks/useApi";
 import { IMaskInput } from "react-imask";
@@ -19,7 +19,7 @@ const minData = `${anoAtual - 100}-01-01`;
  * @returns {JSX.Element} O componente de formulário para cadastrar ou alterar um usuário.
  */
 const FormularioUsuario = () => {
-  const { control, register, setError, getValues, handleSubmit, clearErrors, watch, reset, formState: { errors } } = useForm({
+  const { control, register, setError, handleSubmit, clearErrors, watch, formState: { errors } } = useForm({
     shouldFocusError: false,
     defaultValues: {
       cargos: [],
@@ -35,16 +35,6 @@ const FormularioUsuario = () => {
   const api = useApi("/api");
   const navigate = useNavigate();
   const { chave } = useParams();
-
-  // const validateArrayNotEmpty = (value) => {
-
-  //   if (fields.length === 0) {
-  //     setError("cargos", { type: "void"});
-  //     return false; // Impede o envio do formulário
-  //   }
-  //   clearErrors("cargos"); // Limpa o erro se o array não estiver vazio
-  //   return true;
-  // };
 
   /**
    * Função para lidar com o envio do formulário.
@@ -64,6 +54,8 @@ const FormularioUsuario = () => {
     data.cpf = data.cpf.replace(/\D/g, '');
     data.disciplinas = data.disciplinas.split(',').map((disciplina) => disciplina.trim());
 
+    console.log(data);
+
     try {
       if (location.pathname.includes("alterar")) {
         await api.updateData(`/usuario/${chave}`, data);
@@ -76,17 +68,19 @@ const FormularioUsuario = () => {
       }
     } catch (error) {
 
+      console.error(error.message);
+
       if (error.message == "Usuário já existe") {
         setError("cpf", { type: "equal" });
       }
 
-      console.log(error.message.includes("Disciplinas inválidas"));
+      if (error.message == "E-mail já existe") {
+        setError("email", { type: "equal" });
+      }
 
       if (error.message.includes("Disciplinas inválidas")) {
         setError("disciplinas", { type: "absence" });
       }
-
-      console.error(error.message);
     }
 
   };
@@ -138,10 +132,11 @@ const FormularioUsuario = () => {
                     {...register('email', { required: true, minLength: 3, maxLength: 100,  validate: (value) => isEmail(value)})}
                   />
                   <Alert variant="white" className={`${errors.email? "" : "d-none"} text-danger`}>
-                    {errors?.email?.type == "required" && "O email é obrigatório"}
-                    {errors?.email?.type == "minLength" && "O email deve ter no mínimo 3 caracteres"}
-                    {errors?.email?.type == "maxLength" && "O email deve ter no máximo 100 caracteres"}
-                    {errors?.email?.type == "validate" && "O email está no formato errado ou não é um email válido"}
+                    {errors?.email?.type == "required" && "O e-mail é obrigatório"}
+                    {errors?.email?.type == "equal" && "O e-mail pertence a outro usuário"}
+                    {errors?.email?.type == "minLength" && "O e-mail deve ter no mínimo 3 caracteres"}
+                    {errors?.email?.type == "maxLength" && "O e-mail deve ter no máximo 100 caracteres"}
+                    {errors?.email?.type == "validate" && "O e-mail está no formato errado ou não é um e-mail válido"}
                   </Alert>
                 </Form.Group>
               </Col>
@@ -188,7 +183,7 @@ const FormularioUsuario = () => {
               </Col>
               <Col>
                 <Form.Group className="d-flex flex-column gap-1">
-                  <Form.Label htmlFor="telefone">Telefone:</Form.Label>
+                  <Form.Label htmlFor="telefone">Telefone: <span className="text-danger">*</span></Form.Label>
                   <Controller
                     name="telefone"
                     control={control}
@@ -205,8 +200,8 @@ const FormularioUsuario = () => {
                     )}
                   />
                   <Alert variant="white" className={`${errors.telefone? "" : "d-none"} text-danger`}>
+                    {errors?.telefone?.type == "required" && "O telefone é obrigatório"}
                     {errors?.telefone?.type == "maxLength" && "O telefone deve ter no máximo 50 caracteres"}
-                    {errors?.telefone?.type == "pattern" && "Formato de telefone inválido. Utilize o formato: 99 9 9999-9999"}
                   </Alert>
                 </Form.Group>
               </Col>
@@ -246,16 +241,17 @@ const FormularioUsuario = () => {
             <Row className="gap-5">
               <Col>
                 <Form.Group className="d-flex flex-column gap-1">
-                  <Form.Label htmlFor="endereco">Endereço:</Form.Label>
+                  <Form.Label htmlFor="endereco">Endereço: <span className="text-danger">*</span></Form.Label>
                   <Form.Control
                     id="endereco"
                     as="textarea"
                     style={{ resize: 'none' }}
                     className="p-2"
                     placeholder="Exemplo: Rua das Flores, N° 24, Bairro Industrial, Carira/SE"
-                    {...register('endereco', { required: false, minLength: 10, maxLength: 255 })}
+                    {...register('endereco', { required: true, minLength: 10, maxLength: 255 })}
                   />
                   <Alert variant="white" className={`${errors.endereco? "" : "d-none"} text-danger`}>
+                    {errors?.endereco?.type == "required" && "O endereço é obrigatório"}
                     {errors?.endereco?.type == "minLength" && "O endereço deve ter no mímimo 10 caracteres"}
                     {errors?.endereco?.type == "maxLength" && "O endereço deve ter no máximo 255 caracteres"}
                   </Alert>

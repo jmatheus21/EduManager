@@ -3,8 +3,8 @@ from app.extensions import db
 # Tabela de associação para o relacionamento Muitos para Muitos entre aluno e turma
 aluno_turma = db.Table(
     'aluno_turma',
-    db.Column('aluno_matricula', db.String(50), db.ForeignKey('aluno.matricula'), primary_key=True),
-    db.Column('turma_id', db.Integer, db.ForeignKey('turma.id'), primary_key=True)
+    db.Column('aluno_matricula', db.String(50), db.ForeignKey('aluno.matricula', ondelete='CASCADE', onupdate = 'CASCADE'), primary_key=True),
+    db.Column('turma_id', db.Integer, db.ForeignKey('turma.id', ondelete='CASCADE', onupdate = 'CASCADE'), primary_key=True)
 )
 
 class Aluno (db.Model):
@@ -15,4 +15,4 @@ class Aluno (db.Model):
     endereco = db.Column(db.String(255), nullable=True)
     data_de_nascimento = db.Column(db.Date, nullable=False)
 
-    boletins = db.relationship('Boletim', back_populates='aluno')
+    boletins = db.relationship('Boletim', back_populates='aluno', cascade = 'all, delete')

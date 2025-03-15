@@ -106,7 +106,10 @@ const useApi = (baseUrl) => {
       const response = await fetch(`${baseUrl}${endpoint}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Erro ao deletar recurso");
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.erro || "Erro ao criar recurso");
+      }
       // setData((prevData) =>
       //   prevData.filter((item) => item.id !== endpoint.split("/").pop())
       // );

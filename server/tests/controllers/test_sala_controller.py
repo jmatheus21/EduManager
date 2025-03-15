@@ -5,7 +5,7 @@ Os testes verificam as operações básicas de CRUD (Create, Read, Update, Delet
 incluindo cadastro, listagem, busca, atualização e remoção de salas no banco de dados.
 """
 
-from app.models import Sala
+from app.models import Sala, Calendario, Turma
 from app.extensions import db
 
 
@@ -139,7 +139,27 @@ def test_alterar_sala(client, app):
         assert dados['localizacao'] == "Bloco A, 2º Andar", "A localização da sala deve ser 'Bloco A, 2º Andar'."
 
 
-def test_deletar_sala(client, app):
+# def test_deletar_sala(client, app):
+#     """Testa a exclusão de uma sala.
+
+#     Este teste verifica se a requisição DELETE para a rota '/sala/{numero}' retorna o status code 200 (OK)
+#     e se a resposta contém uma mensagem de sucesso.
+
+#     Args:
+#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+#     """
+#     with app.app_context():
+#         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
+#         db.session.add(sala)
+#         db.session.commit()
+
+#         response = client.delete(f'/sala/{sala.numero}')
+#         assert response.status_code == 200, "O status code deve ser 200 (OK)."
+#         assert response.json["mensagem"] == "Sala deletada com sucesso!"
+
+
+def test_deletar_sala_valido(client, app):
     """Testa a exclusão de uma sala.
 
     Este teste verifica se a requisição DELETE para a rota '/sala/{numero}' retorna o status code 200 (OK)
@@ -154,6 +174,43 @@ def test_deletar_sala(client, app):
         db.session.add(sala)
         db.session.commit()
 
+        calendario = Calendario(ano_letivo = 2026, data_inicio = "2026-01-15", data_fim = "2026-09-15", dias_letivos = 150)
+        db.session.add(calendario)
+        db.session.commit()
+
+        turmaDaManha = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'M', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
+        turmaDaTarde = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'V', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
+        db.session.add(turmaDaManha, turmaDaTarde)
+        db.session.commit()
+
         response = client.delete(f'/sala/{sala.numero}')
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Sala deletada com sucesso!"
+
+def test_deletar_sala_turmas_ativas(client, app):
+    """Testa a exclusão de uma sala com turmas ativas.
+
+    Este teste verifica se a requisição DELETE para a rota '/sala/{numero}' retorna o status code 400
+    e se a resposta contém uma mensagem de erro.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
+        db.session.add(sala)
+        db.session.commit()
+
+        calendario = Calendario(ano_letivo = 2026, data_inicio = "2026-01-15", data_fim = "2026-09-15", dias_letivos = 150)
+        db.session.add(calendario)
+        db.session.commit()
+
+        turmaDaManha = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'M', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
+        turmaDaTarde = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'V', status ='A', sala_numero = 101, calendario_ano_letivo = 2026)
+        db.session.add_all([turmaDaManha, turmaDaTarde])
+        db.session.commit()
+
+        response = client.delete(f'/sala/{sala.numero}')
+        assert response.status_code == 400, "O status code deve ser 400"
+        assert response.json["erro"] == "Não é possível remover a sala, pois há turmas ativas associadas a essa sala"
