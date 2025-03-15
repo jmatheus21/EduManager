@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Col, Container, Form, Row, Alert } from "react-bootstrap";
 import useApi from "../../hooks/useApi";
 import { IMaskInput } from "react-imask";
@@ -19,7 +19,7 @@ const minData = `${anoAtual - 100}-01-01`;
  * @returns {JSX.Element} O componente de formulário para cadastrar ou alterar um usuário.
  */
 const FormularioUsuario = () => {
-  const { control, register, setError, handleSubmit, clearErrors, watch, formState: { errors } } = useForm({
+  const { control, register, setError, handleSubmit, clearErrors, watch, reset, formState: { errors } } = useForm({
     shouldFocusError: false,
     defaultValues: {
       cargos: [],
@@ -33,8 +33,37 @@ const FormularioUsuario = () => {
   // Configuração padrão
   const [alterar, setAlterar] = useState(false);
   const api = useApi("/api");
+  const url = useLocation(); // nao tem
   const navigate = useNavigate();
   const { chave } = useParams();
+
+  /**
+   * Efeito para carregar os dados do usuário quando o componente é montado ou quando o caminho da URL ou o parâmetro `chave` mudam.
+   * Se o caminho da URL incluir "alterar", o título do formulário será alterado para "Alterar" e os dados do usuário serão carregados.
+   */
+  useEffect(() => {
+    const carregarDados = async () => {
+      if (url.pathname.includes("alterar")) {
+        setAlterar(true);
+
+        try {
+          const response = await api.fetchData(`/usuario/${chave}`);
+          if (response) {
+            reset({
+              ...response,
+              disciplinas: response.disciplinas.map(item => {
+                return item.codigo
+              }).join(",")
+            });
+          }
+        } catch (error) {
+          console.error("Erro ao carregar dados do usuário:", error);
+        }
+      }
+    };
+  
+    carregarDados();
+  }, [url.pathname, chave]);
 
   /**
    * Função para lidar com o envio do formulário.
@@ -53,8 +82,6 @@ const FormularioUsuario = () => {
 
     data.cpf = data.cpf.replace(/\D/g, '');
     data.disciplinas = data.disciplinas.split(',').map((disciplina) => disciplina.trim());
-
-    console.log(data);
 
     try {
       if (location.pathname.includes("alterar")) {
@@ -81,6 +108,8 @@ const FormularioUsuario = () => {
       if (error.message.includes("Disciplinas inválidas")) {
         setError("disciplinas", { type: "absence" });
       }
+
+
     }
 
   };
@@ -88,7 +117,7 @@ const FormularioUsuario = () => {
   /**
      * Função para, na alteração, voltar a página de informações
      */
-    const funcaoVoltar = () => navigate(`/usuario/${cpf}`);
+    const funcaoVoltar = () => navigate(`/usuario/${chave}`);
   
     // Exibe mensagem de carregamento enquanto os dados estão sendo buscados
     if (alterar && api.loading) return <p>Carregando...</p>;
@@ -161,7 +190,7 @@ const FormularioUsuario = () => {
                   <Alert variant="white" className={`${errors.cpf? "" : "d-none"} text-danger`}>
                     {errors?.cpf?.type == "equal" && "Já existe um usuário com esse CPF"}
                     {errors?.cpf?.type == "required" && "O CPF é obrigatório"}
-                  </Alert> 
+                  </Alert>
                 </Form.Group>
               </Col>
             </Row>
@@ -225,13 +254,13 @@ const FormularioUsuario = () => {
                   </Alert>
                   </Form.Group>
                 </Col>
-                <Col>
+                <Col className={`${alterar? "d-none" : ""}`}>
                   <Form.Group className="d-flex flex-column gap-1">
                     <Form.Label htmlFor="tipo">Tipo: <span className="text-danger">*</span></Form.Label>
                     <Form.Select 
                       id="tipo" 
                       className="p-2" 
-                      {...register('tipo', { required: true })}>
+                      {...register('tipo', { required: alterar? false : true })}>
                       <option value="p">Professor</option>
                       <option value="f">Funcionário</option>
                     </Form.Select>
@@ -258,7 +287,7 @@ const FormularioUsuario = () => {
                 </Form.Group>
               </Col>
             </Row>
-            <Row className="gap-5">
+            <Row className={`${alterar? "d-none" : ""} gap-5`}>
               <Col>
                 <Form.Group className="d-flex flex-column gap-1">
                   <Form.Label htmlFor="senha" data-testid="senha">Senha: <span className="text-danger">*</span></Form.Label>
@@ -267,7 +296,7 @@ const FormularioUsuario = () => {
                     type="password"
                     className="p-2"
                     placeholder="No mínimo 5 caracteres"
-                    {...register('senha', { required: true, minLength: 5, maxLength: 100 })}
+                    {...register('senha', { required: alterar? false : true, minLength: alterar? 0 : 5, maxLength: 100 })}
                   />
                   <Alert variant="white" className={`${errors.senha? "" : "d-none"} text-danger`}>
                     {errors?.senha?.type == "required" && "A senha é obrigatória"}
@@ -284,7 +313,7 @@ const FormularioUsuario = () => {
                     type="password"
                     className="p-2"
                     placeholder="Digite a senha novamente"
-                    {...register('confirmar_senha', { required: true, minLength: 5, maxLength: 100, validate: (value) => value == senha })}
+                    {...register('confirmar_senha', { required: alterar? false : true, minLength: alterar? 0 : 5, maxLength: 100, validate: (value) => alterar? true : (value == senha) })}
                   />
                   <Alert variant="white" className={`${errors.confirmar_senha? "" : "d-none"} text-danger`}>
                     {errors?.confirmar_senha?.type == "required" && "A senha a ser confirmada é obrigatória"}

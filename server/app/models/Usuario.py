@@ -55,5 +55,5 @@ class Usuario(db.Model):
         'Disciplina',
         secondary=professor_disciplina,
         backref=db.backref('professores', lazy=True),
-        lazy=True, cascade = 'all, delete', doc = "Relacionamento com a entidade Disciplina. Cada usuário do tipo professor pode ensinar várias disciplinas."
+        lazy=True, doc = "Relacionamento com a entidade Disciplina. Cada usuário do tipo professor pode ensinar várias disciplinas."
     )

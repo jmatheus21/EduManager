@@ -1,9 +1,8 @@
 import React from "react";
-import { render, screen, waitFor, act, logRoles } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { InfoSala } from "../../src/pages/Sala";
-import useApi from "../../src/hooks/useApi";
 
 // Mock do useLocation e useNavigate
 jest.mock("react-router-dom", () => ({

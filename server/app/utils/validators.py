@@ -190,7 +190,7 @@ def validar_turma ():
     pass
 
 
-def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone : str, endereco : str, horario_de_trabalho : str, data_de_nascimento: str, tipo : str, formacao : str, escolaridade : str, habilidades : str, disciplinas : list, cargos : list) -> list:
+def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone : str, endereco : str, horario_de_trabalho : str, data_de_nascimento: str, tipo : str, formacao : str, escolaridade : str, habilidades : str, disciplinas : list, cargos : list, new_user : bool = True) -> list:
     """Valida os dados de um usuário.
 
     Esta função verifica se os dados fornecidos para um usuário estão dentro dos critérios esperados.
@@ -231,7 +231,7 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
     if not email or not isinstance(email, str) or len(email) < 3 or len(email) > 100 or ('@' not in email):
         erros.append("O atributo 'email' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 100 caracteres, além de precisar ter o @")
 
-    if not senha or not isinstance(senha, str) or len(senha) < 5 or len(senha) > 100:
+    if new_user and (not senha or not isinstance(senha, str) or len(senha) < 5 or len(senha) > 100):
         erros.append("O atributo 'senha' é obrigatório e deve ter no mínimo 5 caracteres e no máximo 100 caracteres")
 
     if not telefone or not isinstance(telefone, str) or not validar_telefone(telefone):
@@ -281,14 +281,3 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
         erros.extend(erros_cargos)
 
     return erros
-
-
-
-
-    
-       
-
-
-
-
-    
