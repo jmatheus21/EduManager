@@ -10,13 +10,12 @@ const dia = data.getDate() < 10 ? "0" + data.getDate() : data.getDate();
 const mes = (data.getMonth() + 1) < 10 ? "0" + (data.getMonth() + 1) : (data.getMonth() + 1);
 const hoje = `${data.getFullYear()}-${mes}-${dia}`;
 
-const formatarMoeda = (valor) => {
+export const formatarMoeda = (valor) => {
     return valor.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
+        style: 'currency',
+        currency: 'BRL',
     });
-  };
-
+};
 
 const FormularioCargo = ({ fields, append, remove, erro, setError, clearErrors }) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -119,7 +118,7 @@ const FormularioCargo = ({ fields, append, remove, erro, setError, clearErrors }
                 <thead>
                     <tr>
                         <th className='py-2'>Nome</th>
-                        <th className='py-2 text-center'>Salário mensal (R$)</th>
+                        <th className='py-2 text-center'>Salário mensal</th>
                         <th className='py-2 text-center'>Data de contrato</th>
                         <th className='py-2 text-center'>Remover</th>
                     </tr>

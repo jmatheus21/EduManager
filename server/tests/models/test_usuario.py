@@ -98,3 +98,68 @@ def test_buscar_usuarios(app):
         assert usuario_buscado.escolaridade == None
         assert usuario_buscado.habilidades == None
 
+def test_alterar_usuario(app):
+    """Testa a atualização dos dados de um usuário no banco de dados.
+
+    Este teste verifica se os dados de um usuário podem ser atualizados corretamente
+    e se os novos dados são persistidos no banco de dados.
+
+    Args:
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        usuario = Usuario(cpf="12345678901", nome="John Cena", email="jcena@hotmail.com", senha=gerar_hashing("bocaAberta123"), telefone="79 9 9988-7766", endereco="Rua das Flores, N° 124, Centro, Carira-Sergipe", horario_de_trabalho="Seg-Sex,13h-17h", data_de_nascimento=string_para_data("1990-04-02"), tipo="p", formacao="Licenciatura em Matemática" ,escolaridade=None, habilidades=None)
+        db.session.add(usuario)
+        db.session.commit()
+
+        usuario_original = db.session.get(Usuario, "12345678901")
+        usuario_original.cpf = "12345678901"
+        usuario_original.nome = "John John"
+        usuario_original.email = "jjhon@hotmail.com"
+        usuario_original.senha = gerar_hashing("bocaAberta123")
+        usuario_original.telefone = "79 9 9988-7758"
+        usuario_original.endereco = "Rua das Aves, N° 32, Centro, Carira-Sergipe"
+        usuario_original.horario_de_trabalho = ""
+        usuario_original.data_de_nascimento = string_para_data("1991-04-02")
+        usuario_original.tipo = "p"
+        usuario_original.formacao = "Bacharelado em Matemática"
+        usuario_original.escolaridade = None
+        usuario_original.habilidades = None
+        
+        db.session.commit()
+
+        usuario_alterado = db.session.get(Usuario, "12345678901")
+        assert usuario_alterado is not None
+        assert usuario_alterado.cpf == "12345678901"
+        assert usuario_alterado.nome == "John John"
+        assert usuario_alterado.email == "jjhon@hotmail.com"
+        assert checar_senha("bocaAberta123", usuario_alterado.senha)
+        assert usuario_original.telefone == "79 9 9988-7758"
+        assert usuario_alterado.endereco == "Rua das Aves, N° 32, Centro, Carira-Sergipe"
+        assert usuario_alterado.horario_de_trabalho == ""
+        assert usuario_alterado.data_de_nascimento == string_para_data("1991-04-02")
+        assert usuario_alterado.tipo == "p"
+        assert usuario_alterado.formacao == "Bacharelado em Matemática"
+        assert usuario_alterado.escolaridade == None
+        assert usuario_alterado.habilidades == None
+
+def test_remover_usuario(app):
+    """Testa a remoção de um usuário do banco de dados.
+
+    Este teste verifica se um usuário pode ser removido corretamente do banco de dados
+    e se o usuário não pode mais ser encontrado após a remoção.
+
+    Args:
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        usuario = Usuario(cpf="12345678901", nome="John Cena", email="jcena@hotmail.com", senha=gerar_hashing("bocaAberta123"), telefone="79 9 9988-7766", endereco="Rua das Flores, N° 124, Centro, Carira-Sergipe", horario_de_trabalho="Seg-Sex,13h-17h", data_de_nascimento=string_para_data("1990-04-02"), tipo="p", formacao="Licenciatura em Matemática" ,escolaridade=None, habilidades=None)
+        db.session.add(usuario)
+        db.session.commit()
+
+        usuario_adicionado = db.session.get(Usuario, "12345678901")
+        db.session.delete(usuario_adicionado)
+        db.session.commit()
+
+        usuario_deletado = db.session.get(Usuario, "12345678901")
+        assert usuario_deletado is None

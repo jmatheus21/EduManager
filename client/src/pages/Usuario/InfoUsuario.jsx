@@ -4,11 +4,12 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoInfo, ModalRemover, Listagem } from "../../components";
 import { inverterData, formatarCpf } from "../../components/Listagem.jsx";
 import useApi from "../../hooks/useApi";
+import { formatarMoeda } from "../Cargo/FormularioCargo.jsx";
 
 const colunas = [
   { field: "id", headerName: "#", flex: 1, align: "center", headerAlign: "center" },
   { field: "nome", headerName: "Nome", flex: 1, align: "center", headerAlign: "center" },
-  { field: "salario", headerName: "Salário mensal (R$)", flex: 1, align: "center", headerAlign: "center"},
+  { field: "salario", headerName: "Salário mensal", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => formatarMoeda(Number(value))},
   { field: "data_contrato", headerName: "Data de contrato", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => inverterData(value) },
 ];
 
@@ -67,18 +68,19 @@ const InfoUsuario = () => {
 
   const exibirDisciplinas = (disciplinas) => {
     return disciplinas.map((item, index) => {
-      if (disciplinas.length == 1) {
+      if (disciplinas.length == 1 || (disciplinas.length - 1) == index) {
         return (<span key={index}>{item.nome} ({item.codigo})</span>)
-      } else if ((disciplinas.length - 1) == index) {
-        return (<span key={index}> e {item.nome} ({item.codigo})</span>)
+      } else if ((disciplinas.length - 2) == index) {
+        return (<span key={index}>{item.nome} ({item.codigo}) e </span>)
       } else {
-        return (<span key={index}>{item.nome} ({item.codigo},)</span>)
+        return (<span key={index}>{item.nome} ({item.codigo}), </span>)
       }
     })
   }
 
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
+      {api.data && console.log(api.data)}
       <Titulo>Informações do Usuário</Titulo>
       {successParam && (
         <Alert variant="success" className="p-3 mt-3">
@@ -93,7 +95,7 @@ const InfoUsuario = () => {
           </Col>
           <Col>
             <h5>Tipo:</h5>
-            {api.data && <p>{api.data.tipo == "p" ? "Professor" : "Funcionário"}</p>}
+            {api.data && <p data-testid="usuario_tipo">{api.data.tipo == "p" ? "Professor" : "Funcionário"}</p>}
           </Col>
         </Row>
         <Row>
@@ -155,7 +157,7 @@ const InfoUsuario = () => {
         estado={show}
         funcaoFechar={handleClose}
         funcaoRemover={RemoverUsuario}
-        entidade={"Usuario"}
+        entidade={"Usuário"}
       />
     </Container>
   );
