@@ -4,7 +4,7 @@ class Turma(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     ano = db.Column(db.Integer, nullable = False)
     serie = db.Column(db.CHAR(1), nullable = False)
-    nivel_ensino = db.Column(db.String(30), nullable = False)
+    nivel_de_ensino = db.Column(db.String(30), nullable = False)
     turno = db.Column(db.CHAR(1), nullable = False)
     status = db.Column(db.CHAR(1), nullable = False, default='A')
 
