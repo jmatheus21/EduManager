@@ -1,59 +1,87 @@
 import React from "react";
-import { render, within, screen, fireEvent } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
-import ConsultarUsuario from "../../src/pages/Usuario/ConsultarUsuario";
+import  { ConsultarUsuario } from "../../src/pages/Usuario"
 
 // Mock do useLocation e useNavigate
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useLocation: () => ({
-    pathname: '/usuario',
-    search: '?success=false',
+      pathname: "/usuario"
   }),
   useNavigate: jest.fn(),
 }));
 
-describe("ConsultarUsuario component", () => {
+jest.mock("../../src/hooks/useApi", () => ({
+  __esModule: true,
+  default: () => ({
+      fetchData: jest.fn().mockResolvedValue({ success: true }),
+      loading: false,
+      error: null,
+      data: []
+  })
+}));
 
-  it("renderiza os componentes corretamente", async () => {
+/**
+ * Testes unitários para o componente ConsultarUsuario.
+ * Verifica a renderização inicial, a interação do usuário e o carregamento de dados.
+ */
+describe("ConsultarUsuario", () => {
 
-    render(
-      <BrowserRouter>
-          <ConsultarUsuario />
-      </BrowserRouter>
-    );
+  beforeEach(() => {
+      render(
+          <BrowserRouter>
+              <ConsultarUsuario/>
+          </BrowserRouter>
+      );
+  })
 
-    // Verifica se o título da página foi renderizado
-    expect(await screen.getByText(/Consultar Usuários/i)).toBeInTheDocument();
-  
-    // Verifica se o campo foi renderizado
-    expect(await screen.getByAllLabelText(/CPF:/i)).toBeInTheDocument(); // teste ai
+  it ("renderiza o formulário corretamente", async () => {
+      
+      // Verifica se o título da página foi renderizado
+      expect(await screen.getByText(/Consultar Usuários/i)).toBeVisible();
 
-    // expect(within(screen.getBy).getByText(/CPF/i)).toBeInTheDocument(); 
-    expect(await screen.getByText(/Nome/i)).toBeInTheDocument();
-    expect(await screen.getByText(/Tipo/i)).toBeInTheDocument();
-    expect(await screen.getByText(/E-mail/i)).toBeInTheDocument();
-    expect(await screen.getByText(/Telefone/i)).toBeInTheDocument(); 
-    expect(await screen.getByText(/Data de Nascimento/i)).toBeInTheDocument();
+      // // Verifica se o campo 'CPF' foi renderizado
+      expect(screen.getByPlaceholderText("Exemplo: 99988877765")).toBeVisible();
 
-    // Verifica se o botão foi renderizado
-    expect(await screen.getByText(/Buscar/i)).toBeInTheDocument();
+      // // Verifica se o botão foi renderizado
+      expect(screen.getByText(/Buscar/i)).toBeVisible();
+
+      // // Verifica se o campo 'CPF' foi renderizado
+      expect(screen.getByRole("columnheader", { name: /CPF/i })).toBeVisible();   
+      
+      // // Verifica se o campo 'Nome' foi renderizado
+      expect(screen.getByRole("columnheader", { name: /Nome/i })).toBeVisible();
+
+      // // Verifica se o campo 'Tipo' foi renderizado
+      expect(screen.getByRole("columnheader", { name: /Tipo/i })).toBeVisible();
+
+      // // Verifica se o campo "E-mail" foi renderizado
+      expect(screen.getByRole("columnheader", { name: /E-mail/i })).toBeVisible();
+
+      // // Verifica se o campo 'Telefone' foi renderizado
+      expect(screen.getByRole("columnheader", { name: /Telefone/i })).toBeVisible();
+
+      // // Verifica se o campo 'Data de Nascimento' foi renderizado
+      expect(screen.getByRole("columnheader", { name: /Data de Nascimento/i })).toBeVisible();
   });
 
-  it("verifica se o usuário consegue digitar no campo de buscar", () => {
+  it ("verifica se é possível inserir dados no campo de busca", async () => {
+      render(
+          <BrowserRouter>
+              <ConsultarUsuario/>
+          </BrowserRouter>
+      );
 
-    render(
-      <BrowserRouter>
-        <ConsultarUsuario />
-      </BrowserRouter>
-    );
+      const camposBusca = screen.getAllByPlaceholderText("Exemplo: 99988877765");
+      const campoBusca = camposBusca[0];
 
-    const campoBuscar = screen.getByLabelText(/CPF:/i);
-    fireEvent.change(campoBuscar, { target: { value: "111.111.111-11" }});
+      await act( async () => {
+          await userEvent.type(campoBusca, "99988877765");
+      });
 
-    fireEvent.click(screen.getByText(/Buscar/i));
-
-    expect(campoBuscar.value).toBe("111.111.111-11");
+      expect(campoBusca.value).toBe("99988877765");
   });
-  
 });
+

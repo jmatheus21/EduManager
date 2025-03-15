@@ -23,4 +23,4 @@ class Calendario(db.Model):
     data_fim = db.Column(db.Date, nullable = False, doc = "Data de fim do calendário (Deve ser no formato 'YYYY-MM-DD', em que YYYY representa o ano, MM o mês e DD o dia)")
     dias_letivos = db.Column(db.Integer, nullable = False, doc = "Número de dias letivos no calendário (número inteiro positivo entre 50 e 200).")
 
-    turmas = db.relationship('Turma', backref='calendario', lazy=True, doc="Relacionamento com a entidade Turma. Cada calendário pode ter várias turmas associadas.")
+    turmas = db.relationship('Turma', backref='calendario', lazy=True, cascade = 'all, delete-orphan', doc="Relacionamento com a entidade Turma. Cada calendário pode ter várias turmas associadas.")

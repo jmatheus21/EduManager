@@ -48,3 +48,31 @@ def buscar_usuario(cpf : str) -> jsonify:
         jsonify: Resposta JSON contendo os dados do usuário encontrado.
     """
     return usuario_controller.buscar_usuario(cpf)
+
+@usuario_bp.route("/<string:cpf>", methods=['PUT'])
+def alterar_usuario(cpf: str) -> jsonify:
+    """Rota para alterar os dados de uma usuário existente.
+
+    Esta rota recebe o cpf de um usuário e os novos dados via JSON, e chama o controlador para realizar a atualização.
+
+    Args:
+        cpf (str): O cpf do usuário a ser alterado.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem e os dados atualizados do usuário.
+    """
+    return usuario_controller.alterar_usuario(cpf)
+
+@usuario_bp.route("/<string:cpf>", methods=['DELETE'])
+def remover_usuario(cpf: str) -> jsonify:
+    """Rota para remover um usuário existente.
+
+    Esta rota recebe o cpf de um usuário e chama o controlador para realizar a remoção.
+
+    Args:
+        cpf (str): O CPF do usuário a ser removido.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso.
+    """
+    return usuario_controller.remover_usuario(cpf)

@@ -8,7 +8,7 @@ class Turma(db.Model):
     turno = db.Column(db.CHAR(1), nullable = False)
     status = db.Column(db.CHAR(1), nullable = False, default='A')
 
-    sala_numero = db.Column(db.Integer, db.ForeignKey('sala.numero'), nullable = False)
-    calendario_ano_letivo = db.Column(db.Integer, db.ForeignKey('calendario.ano_letivo'), nullable = False)
+    sala_numero = db.Column(db.Integer, db.ForeignKey('sala.numero', ondelete = 'SET NULL', onupdate = 'CASCADE'), nullable = True)
+    calendario_ano_letivo = db.Column(db.Integer, db.ForeignKey('calendario.ano_letivo', ondelete = 'CASCADE', onupdate = 'CASCADE'), nullable = False)
 
-    aulas = db.relationship('Aula', backref='turma', lazy=True)
+    aulas = db.relationship('Aula', backref='turma', lazy=True, cascade='all, delete-orphan')
