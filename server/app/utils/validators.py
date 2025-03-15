@@ -281,3 +281,14 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
         erros.extend(erros_cargos)
 
     return erros
+
+
+
+
+    
+       
+
+
+
+
+    
