@@ -186,8 +186,61 @@ def validar_disciplina (codigo: str, nome: str, carga_horaria: int, ementa: str,
     return erros
 
 
-def validar_turma ():
-    pass
+def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, status: str, sala_numero: int, calendario_ano_letivo: int):
+    """Valida os dados de uma turma.
+
+    Esta função verifica se os dados fornecidos para uma turma estão dentro dos critérios esperados.
+    Caso haja erros, eles são retornados em uma lista.
+
+    Args:
+        ano (int): O ano da disciplina. Deve ser no mínimo 1 e no máximo 9.
+        serie (str): A série da disciplina. Deve ser representado por um único carácter.
+        nivel_de_ensino (str): O nível de ensino. Deve ter no mínimo 2 caracteres e no máximo 30 caracteres.
+        turno (str): O turno em que a turma será lecionada. Deve ser representado por um único carácter.
+        status (str): O status da turma. Deve ser representado por um único carácter.
+        sala_numero(int): O número da sala de aula. Deve ser maior que 0 e menor que 1.000.
+        calendario_ano_letivo(int): O ano letivo do calendário da turma. Deve ser maior ou igual ao ano atual.
+    Returns:
+        list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
+
+    Exemplo:
+        >>> erros = validar_turma(9, A, "Ensino Fundamental", D, A, 101, 2026)
+        >>> print(erros)
+        []
+    """
+    erros = []
+
+    if not ano or not isinstance(ano, int) or ano < 1 or ano > 9:
+        erros.append("O atributo 'ano' é obrigatório e deve ser no mínimo 1 e no máximo 9")
+
+    if not serie or not isinstance(serie, str) or len(serie) != 1:
+        erros.append("O atributo 'serie' é obrigatório e deve ter apenas 1 caractere")
+
+    if not nivel_de_ensino or not isinstance(nivel_de_ensino, str) or len(nivel_de_ensino) < 2 or len(nivel_de_ensino) > 30:
+        erros.append("O atributo 'nivel_de_ensino' é obrigatório e deve ter no mínimo 2 caracteres máximo 30")
+    
+    if not nivel_de_ensino in ["Ensino Fundamental", "Ensino Médio"]:
+        erros.append("O atributo 'nivel_de_ensino' não tem um valor válido")
+
+    if not turno or not isinstance(turno, str) or len(turno) != 1:
+        erros.append("O atributo 'turno' é obrigatório e deve ter apenas 1 caractere")
+    
+    if not turno in ["M", "V", "N"]:
+        erros.append("O atributo 'turno' não tem um valor válido")
+
+    if not status or not isinstance(status, str) or len(status) != 1:
+        erros.append("O atributo 'status' é obrigatório e deve ter apenas 1 caractere")
+    
+    if not status in ["A", "C"]:
+        erros.append("O atributo 'status' não tem um valor válido")
+
+    if not isinstance(sala_numero, int) or sala_numero < 0 or sala_numero > 1000:
+        erros.append("O atributo 'sala_numero' deve ser no maior que 0 e menor que 1000")
+
+    if not calendario_ano_letivo or not isinstance(calendario_ano_letivo, int) or calendario_ano_letivo < date.today().year:
+        erros.append("O atributo 'calendario_ano_letivo' é obrigatório e deve ser maior ou igual ao ano atual")
+
+    return erros
 
 
 def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone : str, endereco : str, horario_de_trabalho : str, data_de_nascimento: str, tipo : str, formacao : str, escolaridade : str, habilidades : str, disciplinas : list, cargos : list, new_user : bool = True) -> list:
