@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import useApi from "../../hooks/useApi.jsx";
 import { Container } from "react-bootstrap";
-import { BarraDeBusca, Titulo, Listagem } from "../../components";
+import { Titulo, Listagem } from "../../components";
 import { inverterData, formatarCpf } from "../../components/Listagem.jsx"; 
+import BarraDeBusca from "./components/BarraDeBusca.jsx";
 
 const colunas = [
     { field: "cpf", headerName: "CPF", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => formatarCpf(value) },
@@ -39,14 +40,7 @@ const ConsultarUsuario = () => {
     return (
         <Container fluid>
           <Titulo>Consultar Usuários</Titulo>
-          <BarraDeBusca
-            atributoNome={"CPF"}
-            tipo={"text"}
-            placeholder={"Exemplo: 99988877765"}
-            minLength={5}
-            maxLength={20}
-            entidade={"usuario"}
-          />
+          <BarraDeBusca entidade={"usuario"} />
           <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
         </Container>
       );

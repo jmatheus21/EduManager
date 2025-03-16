@@ -130,8 +130,8 @@ const InfoUsuario = () => {
         </Row>
         <Row>
           <Col>
-            <h5>Formação:</h5>
-            {api.data && <p>{api.data.formacao}</p>}
+            <h5>{api.data && api.data.tipo == "p"? "Formação:" : "Escolaridade:"}</h5>
+            {api.data && api.data.tipo == "p"? <p>{api.data.formacao}</p> : <p>{api.data.escolaridade}</p>}
           </Col>
         </Row>
         <Row>
@@ -142,10 +142,8 @@ const InfoUsuario = () => {
         {api.data && <Listagem colunas={colunas} data={api.data.cargos} pk={colunas[0].field} />}
         <Row>
           <Col>
-            <h5>Disciplinas:</h5>
-            <p>
-              {api.data && exibirDisciplinas(api.data.disciplinas)}
-            </p>
+            <h5>{api.data && api.data.tipo == "p"? "Disciplinas:" : "Habilidades:"}</h5>
+              {api.data && api.data.tipo == "p"? exibirDisciplinas(api.data.disciplinas) : <p>{api.data.habilidades}</p>}
           </Col>
         </Row>
       </Container>

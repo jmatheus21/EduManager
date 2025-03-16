@@ -41,6 +41,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
 
     const onSubmit = async (data) => {
 
+      
       if (fields.length === 0) {
         setError("cargos", { type: "void"});
         return;

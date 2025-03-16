@@ -49,14 +49,14 @@ const FormularioUsuario = () => {
    */
   const enviarFormulario = async (data) => {
 
+    // garantir que a chave primária não altera
+    if (alterar) data["cpf"] = chave;
+
     data.cpf = data.cpf.replace(/\D/g, '');
     data.disciplinas = data.disciplinas.split(',').map((disciplina) => disciplina.trim());
 
     try {
       if (alterar) {
-        // garantir que a chave primária não altera
-        data["cpf"] = chave;
-
         await updateData(`/usuario/${chave}`, data);
 
         navigate(`/usuario/${chave}?success=true`);

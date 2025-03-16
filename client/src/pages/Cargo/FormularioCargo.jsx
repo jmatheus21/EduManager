@@ -25,12 +25,12 @@ const FormularioCargo = ({ fields, append, remove, erro, clearErrors }) => {
         const cargoExistente = fields.find(cargo => cargo.nome === data.nome);
     
         if (cargoExistente) {
-            setError("nome", { type: "equals", message: "Este cargo já foi adicionado!" });
+            setError("nome", { type: "equal", message: "Este cargo já foi adicionado!" });
             reset({
                 nome: "",
                 salario: "",
                 data_contrato: ""
-            });
+            }, { keepErrors: true });
             return;
         }
         
@@ -105,15 +105,14 @@ const FormularioCargo = ({ fields, append, remove, erro, clearErrors }) => {
             <Row>
                 <Alert variant="white" className={`${errors? "d-flex" : "d-none"} text-danger justify-content-center pb-1 pt-2`}>
                     {erro?.cargos?.type == "void" && "Nenhum cargo foi cadastrado"}
-                    {erro?.cargos?.type == "equals" && "Este cargo já foi adicionado!"}
                     {erro?.cargos?.type == "equal" && "Este cargo já foi adicionado!"}
-                    {errors?.nome?.type == "equals" && "Este cargo já foi adicionado!"}
-                    {errors?.nome?.type == "required" && "O nome do cargo é obrigatório"}
-                    {errors?.salario?.type == "required" && "O salário é obrigatório"}
-                    {errors?.salario?.type == "min" && "O salário deve ser maior que R$ 100"}
-                    {errors?.salario?.type == "max" && "O salário deve ser menor que R$ 999999999"}
-                    {errors?.data_contrato?.type == "required" && "A data de contrato é obrigatória"}
-                    {errors?.data_contrato?.type == "validate" && "A data de contrato deve ser uma data futura"}
+                    {!erro?.cargos && errors?.nome?.type == "equal" && "Este cargo já foi adicionado!"}
+                    {!erro?.cargos && errors?.nome?.type == "required" && "O nome do cargo é obrigatório"}
+                    {!erro?.cargos && !errors?.nome && errors?.salario?.type == "required" && "O salário é obrigatório"}
+                    {!erro?.cargos && !errors?.nome && errors?.salario?.type == "min" && "O salário deve ser maior que R$ 100"}
+                    {!erro?.cargos && !errors?.nome && errors?.salario?.type == "max" && "O salário deve ser menor que R$ 999999999"}
+                    {!erro?.cargos && !errors?.nome && !errors?.salario && errors?.data_contrato?.type == "required" && "A data de contrato é obrigatória"}
+                    {!erro?.cargos && !errors?.nome && !errors?.salario && errors?.data_contrato?.type == "validate" && "A data de contrato deve ser uma data futura"}
                 </Alert>
             </Row>
         <Container fluid className="mt-3">
