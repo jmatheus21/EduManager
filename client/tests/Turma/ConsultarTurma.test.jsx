@@ -1,21 +1,36 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import  { ConsultarTurma } from "../../src/pages/Turma"
 
 // Mock do useLocation e useNavigate
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
-    useLocation: jest.fn(),
+    useLocation: () => ({
+        pathname: "/turma/consultar",
+        search: "?sucess=true",
+    }),
     useNavigate: jest.fn(),
 }));
+
+jest.mock("../../src/hooks/useApi", () => ({
+    __esModule: true,
+    default: () => ({
+        fetchData: jest.fn().mockResolvedValue({ success: true }),
+        loading: false,
+        error: null,
+        data: []
+    })
+}));
+
 
 /**
  * Testes unitários para o componente ConsultarTurma.
  * Verifica a renderização inicial, a interação do usuário e o carregamento de dados.
  */
 describe("ConsultarTurma", () => {
-    it ("renderiza o formulário corretamente", async () => {
+    it ("renderiza a página corretamente", async () => {
         render(
             <BrowserRouter>
                 <ConsultarTurma/>
@@ -37,8 +52,9 @@ describe("ConsultarTurma", () => {
         // Verifica se o campo "Ano Letivo" foi renderizado
         expect(screen.getByText(/Ano Letivo/i)).toBeInTheDocument();
 
-        // Verifica se o campo "Ano" foi renderizado
-        expect(screen.getByText(/Ano/i)).toBeInTheDocument();
+        // Verifica se o campo "Ano" aparece duas vezes em "Ano Letivo" e em "Ano"
+        const anoHeading = screen.getAllByText(/Ano/i);
+        expect(anoHeading.length).toBe(2);
 
         // Verifica se o campo "Série" foi renderizado
         expect(screen.getByText(/Série/i)).toBeInTheDocument();
@@ -54,29 +70,18 @@ describe("ConsultarTurma", () => {
 
     });
 
-    // it ("exibe a listagem das turmas quando os dados forem carregados", async () => {
-    //     render(
-    //         <BrowserRouter>
-    //             <ConsultarTurma/>
-    //         </BrowserRouter>
-    //     );
-        
-    //     // Simula a resposta da API
-    //     const data = [
-    //         { ano_letivo: 2026, ano: 1, serie: "A", nivel_de_ensino: "Ensino Médio", turno: "V", status: "A"},
-    //         { ano_letivo: 2026, ano: 4, serie: "C", nivel_de_ensino: "Ensino Fundamental", turno: "D", status: "C"},
-    //         { ano_letivo: 2027, ano: 9, serie: "B", nivel_de_ensino: "Ensino Fundamental", turno: "N", status: "C"}
-    //     ];    
+    it("verifica se é possível inserir dados no campo de busca", async () => {
+        render(
+            <BrowserRouter>
+                <ConsultarTurma/>
+            </BrowserRouter>
+        );
 
-    //     // Aguarda a exibição dos dados carregados
-    //     for (const turma of data) {
-    //         expect(await screen.findByText(turma.id.toString())).toBeInTheDocument();
-    //         expect(await screen.findByText(turma.calendario_ano_letivo.toString())).toBeInTheDocument();
-    //         expect(await screen.findByText(turma.ano.toString())).toBeInTheDocument();
-    //         expect(await screen.findByText(turma.serie)).toBeInTheDocument();
-    //         expect(await screen.findByText(turma.nivel_de_ensino)).toBeInTheDocument();
-    //         expect(await screen.findByText(turma.turno)).toBeInTheDocument();
-    //         expect(await screen.findByText(turma.status)).toBeInTheDocument();
-    //     }
-    // });
+        const campoBusca = screen.getByLabelText(/Id da turma:/i);
+
+        await userEvent.type(campoBusca, "1");
+
+        expect(campoBusca.value).toBe("1");
+    });
+
 });

@@ -4,13 +4,13 @@ import { Container } from "react-bootstrap";
 import { BarraDeBusca, Titulo, Listagem, Alerta } from "../../components";
 
 const colunas = [
-    { field: "id", headerName: "Id", flex: 1, align: "center", headerAlign: "center" },
+    { field: "id", headerName: "#", flex: 1, align: "center", headerAlign: "center" },
     { field: "calendario_ano_letivo", headerName: "Ano Letivo", flex: 1, align: "center", headerAlign: "center" },
     { field: "ano", headerName: "Ano", flex: 1, align: "center", headerAlign: "center" },
     { field: "serie", headerName: "Série", flex: 1, align: "center", headerAlign: "center" },
     { field: "nivel_de_ensino", headerName: "Nível de Ensino", flex: 1, align: "center", headerAlign: "center" },
-    { field: "turno", headerName: "Turno", flex: 1, align: "center", headerAlign: "center" },
-    { field: "status", headerName: "Status", flex: 1, align: "center", headerAlign: "center" }
+    { field: "turno", headerName: "Turno", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => value == "M"? "Matutino" : value == "V" ? "Vespertino" : "Noturno" },
+    { field: "status", headerName: "Status", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => value == "A"? "Ativa" : "Consolidada" }
 ];
 
 /**

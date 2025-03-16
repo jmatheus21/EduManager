@@ -225,7 +225,7 @@ def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, statu
     if not turno or not isinstance(turno, str) or len(turno) != 1:
         erros.append("O atributo 'turno' é obrigatório e deve ter apenas 1 caractere")
     
-    if not turno in ["D", "V", "N"]:
+    if not turno in ["M", "V", "N"]:
         erros.append("O atributo 'turno' não tem um valor válido")
 
     if not status or not isinstance(status, str) or len(status) != 1:

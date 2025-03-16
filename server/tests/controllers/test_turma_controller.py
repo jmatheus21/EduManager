@@ -5,7 +5,6 @@ Os testes verificam as operações básicas de CRUD (Create, Read, Update, Delet
 incluindo cadastro, listagem, busca, atualização e remoção de turmas no banco de dados.
 """
 
-from datetime import datetime
 from app.models import Turma, Sala, Calendario
 from app.extensions import db
 from app.utils.date_helpers import string_para_data
@@ -186,6 +185,39 @@ def test_cadastrar_turma_dados_invalidos(client, app):
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
         assert len(response.json["erro"]) == 4, "Deve haver 3 erros de validação."
+
+def test_cadastrar_turma_com_horario_invalido(client, app):
+    """Testa o cadastro de uma turma em uma horário que já existe outra turma.
+
+    Este teste verifica se a requisição POST para a rota '/turma' retorna o status code 400 (Bad Request)
+    e se a resposta contém mensagens de erro de que o horário da turma está ocupado.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencias(app)
+
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        db.session.add(turma)
+        db.session.commit()
+
+        dados_invalidos = {
+            "ano": 1,
+            "serie": "A",
+            "nivel_de_ensino": "Ensino Fundamental",
+            "turno": "D",
+            "status": "A",
+            "sala_numero": 101,
+            "calendario_ano_letivo": 2026
+        }
+
+        response = client.post('/turma/', json=dados_invalidos)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        assert "erro" in response.json, "A resposta deve conter mensagens de erro."
+        assert "Já existe uma turma no mesmo horário" in response.json["erro"], "Deve retornar uma mensagem de erro no horário"
 
 
 def test_listar_turmas(client, app):

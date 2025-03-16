@@ -21,13 +21,17 @@ def cadastrar_turma() -> jsonify:
     """
     data = request.get_json()
 
-    erros = validar_turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
+    erros = validar_turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'], status="A")
     if erros:
-        return jsonify({"erro": erros}), 400
+        return jsonify({"erro": erros }), 400
     
-    turma_existente = db.session.query(Turma).filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
+    turma_existente = db.session.query(Turma).filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
     if turma_existente is not None:
         return jsonify({"erro": ["Turma já existe"]}), 400
+    
+    turma_no_mesmo_horario = db.session.query(Turma).filter_by(sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'], turno=data['turno']).first()
+    if turma_no_mesmo_horario is not None:
+        return jsonify({"erro": ["Já existe uma turma no mesmo horário"]}), 400
     
     calendario_existente = db.session.query(Calendario).filter_by(ano_letivo=data['calendario_ano_letivo']).first()
     if calendario_existente is None:
@@ -37,7 +41,7 @@ def cadastrar_turma() -> jsonify:
     if sala_existente is None:
         return jsonify({"erro": ["Sala não existe"]}), 400
     
-    nova_turma = Turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
+    nova_turma = Turma(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status="A", sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo'])
     db.session.add(nova_turma)
     db.session.commit()
     return jsonify({"mensagem": "Turma criada com sucesso!", "data": {"id": nova_turma.id, "ano": nova_turma.ano, "serie": nova_turma.serie, "nivel_de_ensino": nova_turma.nivel_de_ensino, "turno": nova_turma.turno, "status": nova_turma.status, "sala_numero": nova_turma.sala_numero, "calendario_ano_letivo": nova_turma.calendario_ano_letivo}}), 201
