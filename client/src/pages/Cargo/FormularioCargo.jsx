@@ -17,15 +17,16 @@ export const formatarMoeda = (valor) => {
     });
 };
 
-const FormularioCargo = ({ fields, append, remove, erro, setError, clearErrors }) => {
-    const { register, handleSubmit, reset, formState: { errors } } = useForm();
+const FormularioCargo = ({ fields, append, remove, erro, clearErrors }) => {
+    const { register, handleSubmit, reset, setError, formState: { errors } } = useForm();
 
-    const adicionarCargo = (data) => {
+    const adicionarCargo = async (data) => {
+        
         const cargoExistente = fields.find(cargo => cargo.nome === data.nome);
-
+    
         if (cargoExistente) {
-            setError("cargos", { type: "equal" });
-            reset({ 
+            setError("nome", { type: "equals", message: "Este cargo já foi adicionado!" });
+            reset({
                 nome: "",
                 salario: "",
                 data_contrato: ""
@@ -104,7 +105,9 @@ const FormularioCargo = ({ fields, append, remove, erro, setError, clearErrors }
             <Row>
                 <Alert variant="white" className={`${errors? "d-flex" : "d-none"} text-danger justify-content-center pb-1 pt-2`}>
                     {erro?.cargos?.type == "void" && "Nenhum cargo foi cadastrado"}
+                    {erro?.cargos?.type == "equals" && "Este cargo já foi adicionado!"}
                     {erro?.cargos?.type == "equal" && "Este cargo já foi adicionado!"}
+                    {errors?.nome?.type == "equals" && "Este cargo já foi adicionado!"}
                     {errors?.nome?.type == "required" && "O nome do cargo é obrigatório"}
                     {errors?.salario?.type == "required" && "O salário é obrigatório"}
                     {errors?.salario?.type == "min" && "O salário deve ser maior que R$ 100"}

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import useApi from "../../hooks/useApi.jsx";
 import { Container } from "react-bootstrap";
-import { BarraDeBusca, Titulo, Listagem, Alerta } from "../../components";
+import { BarraDeBusca, Titulo, Listagem } from "../../components";
 
 const colunas = [
     { field: "id", headerName: "#", flex: 1, align: "center", headerAlign: "center" },
@@ -46,7 +46,6 @@ const ConsultarTurma = () => {
                 min={1}
                 entidade={"turma"}
             />
-            <Alerta type={true} entidade={"Turma"} />
             <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
         </Container>
     );

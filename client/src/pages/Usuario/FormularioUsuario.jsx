@@ -66,7 +66,7 @@ const FormularioUsuario = () => {
         navigate("/usuario?success=true&type=cadastro");
       }
     } catch (error) {
-      throw Error(error.message);
+      throw new Error(error.message);
     }
   };
   

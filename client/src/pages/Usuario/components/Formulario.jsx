@@ -41,16 +41,34 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
 
     const onSubmit = async (data) => {
 
-        if (fields.length === 0) {
-            setError("cargos", { type: "void"});
-            return;
+      if (fields.length === 0) {
+        setError("cargos", { type: "void"});
+        return;
+      }
+
+      try {
+
+        await enviarFormulario(data);  
+
+      } catch (error) {
+        
+        if (error.message.includes("Usuário já existe")) {
+          setError("cpf", { type: "equal" });
         }
 
-        try {
-            enviarFormulario(data);            
-        } catch (error) {
-            console.log(error);
+        if (error.message.includes("E-mail já existe")) {
+          setError("email", { type: "equal" });
         }
+        
+        if (error.message.includes("Disciplinas inválidas")) {
+          setError("disciplinas", { type: "absence" });
+        }
+
+        if (error.message.includes("Usuário não pode ter dois cargos com o mesmo nome")) {
+          setError("cargos", { type: "equal" });
+        }
+
+      }
     }
 
     /**
@@ -102,12 +120,13 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
               </Col>
               <Col>
                 <Form.Group className="d-flex flex-column gap-1">
-                  <Form.Label htmlFor="cpf">CPF: <span className="text-danger">*</span></Form.Label>
+                  <Form.Label htmlFor="cpf">CPF: <span className={`${alterar? "d-none" : ""} text-danger`}>*</span></Form.Label>
                   <Controller
                     name="cpf"
                     control={control}
+                    disabled={alterar}
                     defaultValue=""
-                    rules={{ required: true }}
+                    rules={{ required: !alterar }}
                     render={({ field }) => (
                       <IMaskInput
                         {...field}
@@ -259,7 +278,6 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                 append={append}
                 remove={remove}
                 erro={errors}
-                setError={setError}
                 clearErrors={clearErrors}
               />
             </Row>
