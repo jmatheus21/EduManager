@@ -33,10 +33,12 @@ def create_app():
     from .routes.usuario_routes import usuario_bp
     from .routes.disciplina_routes import disciplina_bp
     from .routes.turma_routes import turma_bp
+    from .routes.aluno_routes import aluno_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
     app.register_blueprint(calendario_bp, url_prefix="/calendario")
     app.register_blueprint(usuario_bp, url_prefix="/usuario")
     app.register_blueprint(disciplina_bp, url_prefix="/disciplina")
     app.register_blueprint(turma_bp, url_prefix="/turma")
+    app.register_blueprint(aluno_bp, url_prefix="/aluno")
     
     return app

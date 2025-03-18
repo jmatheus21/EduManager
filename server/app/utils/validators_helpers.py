@@ -77,6 +77,41 @@ def validar_data_de_nascimento(data_de_nascimento: str) -> bool:
         return True
     except ValueError:
         return False  # Data inválida (ex: 32-01-2020)
+    
+def validar_data_de_nascimento_aluno(data_de_nascimento: str) -> bool:
+    """
+    Valida se a data de nascimento está no formato "YYYY-MM-DD" e se o ano de nascimento 
+    está dentro do intervalo permitido, definido dinamicamente como:
+      - Ano mínimo: (ano atual - 100)
+      - Ano máximo: (ano atual - 6)
+
+    Observações:
+      - A data deve representar uma data válida.
+      - A função retorna True se o formato estiver correto e o ano estiver dentro do intervalo permitido; 
+        caso contrário, retorna False.
+
+    Args:
+        data_de_nascimento (str): A data de nascimento a ser validada.
+
+    Returns:
+        bool: True se a data estiver no formato correto e dentro do intervalo permitido, 
+              False caso contrário.
+    """
+    padrao = r"^\d{4}-\d{2}-\d{2}$"
+    if not re.match(padrao, data_de_nascimento):
+        return False  # Formato inválido
+
+    try:
+        data_nascimento = datetime.strptime(data_de_nascimento, "%Y-%m-%d")  # Validação da data
+        ano_de_nascimento = data_nascimento.year
+        ano_atual = datetime.now().year
+
+        ano_minimo = ano_atual - 100
+        ano_maximo = ano_atual - 6  
+
+        return ano_minimo <= ano_de_nascimento <= ano_maximo
+    except ValueError:
+        return False  
 
 
 def validar_data_contrato (data_contrato: str) -> bool:
