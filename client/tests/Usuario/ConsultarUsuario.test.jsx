@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import  { ConsultarUsuario } from "../../src/pages/Usuario"
@@ -40,10 +40,10 @@ describe("ConsultarUsuario", () => {
   it ("renderiza o formulário corretamente", async () => {
       
       // Verifica se o título da página foi renderizado
-      expect(await screen.getByText(/Consultar Usuários/i)).toBeVisible();
+      expect(screen.getByText(/Consultar Usuários/i)).toBeVisible();
 
       // // Verifica se o campo 'CPF' foi renderizado
-      expect(screen.getByPlaceholderText("Exemplo: 99988877765")).toBeVisible();
+      expect(screen.getByPlaceholderText("Exemplo: 999.888.777-66")).toBeVisible();
 
       // // Verifica se o botão foi renderizado
       expect(screen.getByText(/Buscar/i)).toBeVisible();
@@ -74,14 +74,12 @@ describe("ConsultarUsuario", () => {
           </BrowserRouter>
       );
 
-      const camposBusca = screen.getAllByPlaceholderText("Exemplo: 99988877765");
+      const camposBusca = screen.getAllByPlaceholderText("Exemplo: 999.888.777-66");
       const campoBusca = camposBusca[0];
 
-      await act( async () => {
-          await userEvent.type(campoBusca, "99988877765");
-      });
+      await userEvent.type(campoBusca, "999.888.777-66");
 
-      expect(campoBusca.value).toBe("99988877765");
+      expect(campoBusca.value).toBe("999.888.777-66");
   });
 });
 

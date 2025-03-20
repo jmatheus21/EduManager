@@ -11,7 +11,7 @@ from ..models import Disciplina
 from app.utils.validators import validar_disciplina
 
 
-def cadastrar_disciplina() -> jsonify:
+def cadastrar_disciplina(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra uma nova disciplina no banco de dados.
 
     Esta função recebe os dados de uma disciplina via JSON, valida os dados e, se válidos, cadastra a disciplina no banco de dados.
@@ -35,7 +35,7 @@ def cadastrar_disciplina() -> jsonify:
     return jsonify({"mensagem": "Disciplina criada com sucesso!", "data": {"codigo": nova_disciplina.codigo, "nome": nova_disciplina.nome, "carga_horaria": nova_disciplina.carga_horaria, "ementa": nova_disciplina.ementa, "bibliografia": nova_disciplina.bibliografia}}), 201
 
 
-def listar_disciplinas() -> jsonify:
+def listar_disciplinas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as disciplinas cadastradas no banco de dados.
 
     Returns:
@@ -45,7 +45,7 @@ def listar_disciplinas() -> jsonify:
     return jsonify([{"codigo": disciplina.codigo, "nome": disciplina.nome, "carga_horaria": disciplina.carga_horaria, "ementa": disciplina.ementa, "bibliografia": disciplina.bibliografia} for disciplina in disciplinas]), 200
 
 
-def buscar_disciplina(codigo: str) -> jsonify:
+def buscar_disciplina(codigo: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Busca uma disciplina específica pelo código.
 
     Args:
@@ -58,7 +58,7 @@ def buscar_disciplina(codigo: str) -> jsonify:
     return jsonify({"codigo": disciplina.codigo, "nome": disciplina.nome, "carga_horaria": disciplina.carga_horaria, "ementa": disciplina.ementa, "bibliografia": disciplina.bibliografia}), 200
 
 
-def alterar_disciplina(codigo: str) -> jsonify:
+def alterar_disciplina(codigo: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Altera os dados de uma disciplina existente.
 
     Esta função recebe o código de uma disciplina e os novos dados via JSON, valida os dados e, se válidos, atualiza a disciplina no banco de dados.
@@ -91,7 +91,7 @@ def alterar_disciplina(codigo: str) -> jsonify:
     return jsonify({"mensagem": "Disciplina atualizada com sucesso!", "data": {"codigo": disciplina.codigo, "nome": disciplina.nome, "carga_horaria": disciplina.carga_horaria, "ementa": disciplina.ementa, "bibliografia": disciplina.bibliografia}}), 200
 
 
-def remover_disciplina(codigo: str) -> jsonify:
+def remover_disciplina(codigo: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Remove uma disciplina existente do banco de dados.
 
     Args:

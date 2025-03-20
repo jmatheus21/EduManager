@@ -16,3 +16,10 @@ class Aluno (db.Model):
     data_de_nascimento = db.Column(db.Date, nullable=False)
 
     boletins = db.relationship('Boletim', back_populates='aluno', cascade = 'all, delete')
+
+    turmas = db.relationship(
+        'Turma',
+        secondary=aluno_turma,
+        backref=db.backref('alunos', lazy=True),
+        lazy=True, doc = "Relacionamento com a entidade Turma. Cada aluno pode participar de várias turmas ao longo do tempo na escola."
+    )

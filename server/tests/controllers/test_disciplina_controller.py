@@ -7,7 +7,7 @@ incluindo cadastro, listagem, busca, atualização e remoção de disciplinas no
 
 from app.models import Disciplina
 from app.extensions import db
-
+from tests.user_event import usuario_entra_no_sistema
 
 def test_cadastrar_disciplina(client, app):
     """Testa o cadastro de uma disciplina com dados válidos.
@@ -22,6 +22,9 @@ def test_cadastrar_disciplina(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_validos = {
             "codigo": "MAT001", 
             "nome": "Matemática",
@@ -54,6 +57,9 @@ def test_cadastrar_disciplina_dados_invalidos(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "codigo": "MMAATT000011", 
             "nome": "Ma", 
@@ -79,6 +85,9 @@ def test_listar_disciplina(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014.")
         db.session.add(disciplina)
         db.session.commit()
@@ -101,6 +110,9 @@ def test_buscar_disciplina(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014.")
         db.session.add(disciplina)
         db.session.commit()
@@ -127,6 +139,9 @@ def test_alterar_disciplina(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014.")
         db.session.add(disciplina)
         db.session.commit()
@@ -162,6 +177,9 @@ def test_deletar_disciplina(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+        
         disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=120, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro: Zahar, 2014.")
         db.session.add(disciplina)
         db.session.commit()

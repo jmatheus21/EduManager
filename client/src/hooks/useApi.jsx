@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState } from "react"; 
+import apiClient from "../axiosConfig";
 
 /**
  * Hook personalizado para comunicação com uma API RESTful.
@@ -20,17 +21,14 @@ const useApi = (baseUrl) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        method: "GET",
+      const response = await apiClient.get(`${baseUrl}${endpoint}`, {
         headers: { "Content-Type": "application/json" },
       });
-      if (!response.ok) throw new Error("Erro ao buscar dados");
-      const result = await response.json();
-      setData(result);
-      return result;
+      setData(response.data)
+      return response.data
     } catch (err) {
-      setError(err.erro);
-      throw err;
+      setError(err.response?.data?.erro || err.message);
+      throw new Error(err.response?.data?.erro);
     } finally {
       setLoading(false);
     }
@@ -46,20 +44,13 @@ const useApi = (baseUrl) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      const response = await apiClient.post(`${baseUrl}${endpoint}`, body, {
+        headers: { "Content-Type": "application/json" }
       });
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.erro || "Erro ao criar recurso");
-      }
-      const result = await response.json();
-      setData((prevData) => [...(prevData || []), result]);
+      setData((prevData) => [...(prevData || []), response.data]);
     } catch (err) {
-      setError(err.message);
-      throw err;
+      setError(err.response?.data?.erro || err.message);
+      throw new Error(err.response?.data?.erro);
     } finally {
       setLoading(false);
     }
@@ -75,20 +66,12 @@ const useApi = (baseUrl) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      await apiClient.put(`${baseUrl}${endpoint}`, body, {
+        headers: { "Content-Type": "application/json" }
       });
-
-      if (!response.ok) throw new Error(response.json());
-      const result = await response.json();
-      // setData((prevData) =>
-      //   prevData.map((item) => (item.id === result.id ? result : item))
-      // );
     } catch (err) {
-      setError(err.message);
-      throw err;
+      setError(err.response?.data?.erro || err.message);
+      throw new Error(err.response?.data?.erro);
     } finally {
       setLoading(false);
     }
@@ -103,19 +86,10 @@ const useApi = (baseUrl) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
-        method: "DELETE",
-      });
-      if (!response.ok) {
-        const errorResponse = await response.json();
-        throw new Error(errorResponse.erro || "Erro ao criar recurso");
-      }
-      // setData((prevData) =>
-      //   prevData.filter((item) => item.id !== endpoint.split("/").pop())
-      // );
+      await apiClient.delete(`${baseUrl}${endpoint}`);
     } catch (err) {
-      setError(err.message);
-      throw err;
+      setError(err.response?.data?.erro || err.message);
+      throw new Error(err.response?.data?.erro);
     } finally {
       setLoading(false);
     }

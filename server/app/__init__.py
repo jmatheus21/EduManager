@@ -11,15 +11,15 @@ class CustomJSONProvider(DefaultJSONProvider):
             return o.strftime('%Y-%m-%d')
         return super().default(o)
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
     
     # Configura o JSON provider customizado
     app.json_provider_class = CustomJSONProvider
     app.json = app.json_provider_class(app)
     
-    CORS(app, origins=["http://localhost:5173"])
-    app.config.from_object(Config)
+    CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+    app.config.from_object(config_class)
 
     # Inicializa o banco de dados
     db.init_app(app)
@@ -33,10 +33,12 @@ def create_app():
     from .routes.usuario_routes import usuario_bp
     from .routes.disciplina_routes import disciplina_bp
     from .routes.turma_routes import turma_bp
+    from .routes.login_routes import auth_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
     app.register_blueprint(calendario_bp, url_prefix="/calendario")
     app.register_blueprint(usuario_bp, url_prefix="/usuario")
     app.register_blueprint(disciplina_bp, url_prefix="/disciplina")
     app.register_blueprint(turma_bp, url_prefix="/turma")
+    app.register_blueprint(auth_bp, url_prefix="/auth")
     
     return app

@@ -53,15 +53,15 @@ const BarraDeBusca = ({
     event.preventDefault();
 
     try {
-      const response = await api.fetchData(`/${entidade}/${chave}`);
+      const response = await api.fetchData(`/usuario/${chave}`);
 
       if (response) {
-        navigate(`/${entidade}/${chave}`);
+        navigate(`/usuario/${chave}`);
       }
     } catch (error) {
       setTipoAlerta("danger");
       setMensagemAlerta(
-        `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} ${chave} não foi encontrad${entidade.endsWith("a") ? "a" : "o"}`
+        `Usuário com CPF ${chave} não foi encontrado`
       );
     }
   };

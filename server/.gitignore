@@ -27,3 +27,4 @@ build/
 
 # Arquivos de testes
 .pytest_cache/
+instance/

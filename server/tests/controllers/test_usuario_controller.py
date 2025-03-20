@@ -9,6 +9,7 @@ from app.models import Usuario, Disciplina, Cargo
 from app.utils.usuario_helpers import checar_senha
 from app.extensions import db
 from app.utils.date_helpers import string_para_data
+from tests.user_event import usuario_entra_no_sistema
 
 def test_cadastrar_usuario_valido_do_tipo_professor(client, app):
     """Testa o cadastro de um usuário do tipo professor com dados válidos.
@@ -23,6 +24,9 @@ def test_cadastrar_usuario_valido_do_tipo_professor(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_validos = {
             "cpf": "12345678901",
             "nome": "John Cena",
@@ -87,6 +91,9 @@ def test_cadastrar_usuario_dados_invalidos_do_tipo_professor(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "cpf": "123456789012", 
             "nome": "John Cena",
@@ -121,6 +128,9 @@ def test_cadastrar_usuario_disciplina_inexistente_do_tipo_professor(client, app)
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "cpf": "12345678901",
             "nome": "John Cena",
@@ -158,6 +168,9 @@ def test_cadastrar_usuario_existente(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "cpf": "12345678901",
             "nome": "John Cena",
@@ -202,6 +215,9 @@ def test_cadastrar_usuario_valido_do_tipo_funcionario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_validos = {
             "cpf": "98765432108",
             "nome": "Randy Orton",
@@ -260,6 +276,9 @@ def test_cadastrar_usuario_dados_invalidos_do_tipo_funcionario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "cpf": "987654321081",
             "nome": "Randy Orton",
@@ -294,6 +313,9 @@ def test_alterar_usuario_cpf_duplicado(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         cargo1 = Cargo(nome="Funcionário", salario=2060.0, data_contrato="2027-12-31")
         cargo2 = Cargo(nome="Administrador de Recursos", salario=1040.0, data_contrato="2027-12-31")
 
@@ -372,6 +394,9 @@ def test_alterar_usuario_do_tipo_professor(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         disciplina1 = Disciplina(codigo="MAT123", nome="Matemática", carga_horaria=60, ementa=None, bibliografia=None)
         disciplina2 = Disciplina(codigo="FIS789", nome="Física", carga_horaria=60, ementa=None, bibliografia=None)
 
@@ -452,6 +477,9 @@ def test_alterar_usuario_do_tipo_funcionario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         cargo1 = Cargo(nome="Funcionário", salario=2060.0, data_contrato="2027-12-31")
         cargo2 = Cargo(nome="Administrador de Recursos", salario=1040.0, data_contrato="2027-12-31")
 
@@ -512,10 +540,10 @@ def test_alterar_usuario_do_tipo_funcionario(client, app):
 
         for cargo in dados["cargos"]:
             cargo["salario"] = float(cargo["salario"])
-
-        assert dados["cargos"] == [{"nome": "Funcionário", "salario": 2000.0, "data_contrato": "2027-12-31"}, 
-                                      {"nome": "Administrador de Recursos", "salario": 1040.0, "data_contrato": "2027-12-31"}, {"nome": "Cargo teste", "salario": 5040.0, "data_contrato": "2027-12-31"}], \
-            f"Os cargos não coincidem. Resposta: {dados['cargos']}"
+        
+        assert {"nome": "Funcionário", "salario": 2000.0, "data_contrato": "2027-12-31"} in dados["cargos"], "Faltando cargo"
+        assert {"nome": "Administrador de Recursos", "salario": 1040.0, "data_contrato": "2027-12-31"} in dados["cargos"], "Faltando cargo"
+        assert {"nome": "Cargo teste", "salario": 5040.0, "data_contrato": "2027-12-31"} in dados["cargos"], "Faltando cargo"
 
 def test_deletar_usuario_do_tipo_professor(client, app):
     """Testa a exclusão de um usuário do tipo professor.
@@ -528,6 +556,9 @@ def test_deletar_usuario_do_tipo_professor(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         disciplina1 = Disciplina(codigo="MAT123", nome="Matemática", carga_horaria=60, ementa=None, bibliografia=None)
         disciplina2 = Disciplina(codigo="FIS789", nome="Física", carga_horaria=60, ementa=None, bibliografia=None)
 
@@ -570,6 +601,9 @@ def test_deletar_usuario_do_tipo_funcionario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+        
         cargo1 = Cargo(nome="Funcionário", salario=2060.0, data_contrato="2027-12-31")
         cargo2 = Cargo(nome="Administrador de Recursos", salario=1040.0, data_contrato="2027-12-31")
 

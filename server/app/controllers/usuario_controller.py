@@ -14,7 +14,7 @@ from app.utils.usuario_helpers import gerar_hashing
 from app.utils.date_helpers import string_para_data
 
 
-def cadastrar_usuario() -> jsonify:
+def cadastrar_usuario(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo usuário no banco de dados.
 
     Esta função recebe os dados de um usuário via JSON, valida os dados e, se válidos, cadastra o usuário no banco de dados.
@@ -84,7 +84,7 @@ def cadastrar_usuario() -> jsonify:
     return jsonify({"mensagem": "Usuário criado com sucesso!", "data": {"cpf": novo_usuario.cpf, "nome": novo_usuario.nome, "email": novo_usuario.email, "senha": novo_usuario.senha, "telefone": novo_usuario.telefone, "endereco": novo_usuario.endereco, "horario_de_trabalho": novo_usuario.horario_de_trabalho, "data_de_nascimento": novo_usuario.data_de_nascimento, "tipo": novo_usuario.tipo, "formacao": novo_usuario.formacao, "escolaridade": novo_usuario.escolaridade, "habilidades": novo_usuario.habilidades, "disciplinas": [d.codigo for d in novo_usuario.disciplinas], "cargos": [{"nome": c.nome, "salario": c.salario, "data_contrato": c.data_contrato} for c in novo_usuario.cargos]}}), 201
 
 
-def listar_usuarios() -> jsonify:
+def listar_usuarios(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas os usuários cadastradas no banco de dados.
 
     Returns:
@@ -94,7 +94,7 @@ def listar_usuarios() -> jsonify:
     return jsonify([{"cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [{"codigo": disciplina.codigo, "nome": disciplina.nome} for disciplina in usuario.disciplinas], "cargos": [{"nome": cargo.nome, "salario": cargo.salario, "data_contrato": cargo.data_contrato} for cargo in usuario.cargos]} for usuario in usuarios]), 200
 
 
-def buscar_usuario(cpf : str):
+def buscar_usuario(cpf : str, current_user_cpf: str, current_user_role: str):
     """Busca um usuário específico pelo cpf.
 
     Args:
@@ -107,7 +107,7 @@ def buscar_usuario(cpf : str):
     return jsonify({"cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [{"codigo": disciplina.codigo, "nome": disciplina.nome} for disciplina in usuario.disciplinas], "cargos": [{"id" : cargo.id, "nome": cargo.nome, "salario": cargo.salario, "data_contrato": cargo.data_contrato} for cargo in usuario.cargos]}), 200
 
 
-def alterar_usuario(cpf: str) -> jsonify:
+def alterar_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Altera os dados de um usuário existente.
 
     Esta função recebe o cpf de um aluno e os novos dados via JSON, valida os dados e, se válidos, atualiza o usuário no banco de dados.
@@ -222,7 +222,7 @@ def alterar_usuario(cpf: str) -> jsonify:
     return jsonify({"mensagem": "Usuário atualizado com sucesso!", "data": {"cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [d.codigo for d in usuario.disciplinas], "cargos": [{"nome": c.nome, "salario": c.salario, "data_contrato": c.data_contrato} for c in usuario.cargos]}}), 200
 
 
-def remover_usuario(cpf: str) -> jsonify:
+def remover_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Remove um usuário existente do banco de dados.
 
     Args:

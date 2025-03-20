@@ -11,7 +11,7 @@ from ..models import Sala, Turma, Calendario
 from app.utils.validators import validar_sala
 
 
-def cadastrar_sala() -> jsonify:
+def cadastrar_sala(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra uma nova sala no banco de dados.
 
     Esta função recebe os dados de uma sala via JSON, valida os dados e, se válidos, cadastra a sala no banco de dados.
@@ -35,7 +35,7 @@ def cadastrar_sala() -> jsonify:
     return jsonify({"mensagem": "Sala criada com sucesso!", "data": {"numero": nova_sala.numero, "localizacao": nova_sala.localizacao, "capacidade": nova_sala.capacidade}}), 201
 
 
-def listar_salas() -> jsonify:
+def listar_salas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as salas cadastradas no banco de dados.
 
     Returns:
@@ -45,7 +45,7 @@ def listar_salas() -> jsonify:
     return jsonify([{"numero": sala.numero, "localizacao": sala.localizacao, "capacidade": sala.capacidade} for sala in salas]), 200
 
 
-def buscar_sala(numero: int) -> jsonify:
+def buscar_sala(numero: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Busca uma sala específica pelo número.
 
     Args:
@@ -58,7 +58,7 @@ def buscar_sala(numero: int) -> jsonify:
     return jsonify({"numero": sala.numero, "localizacao": sala.localizacao, "capacidade": sala.capacidade}), 200
 
 
-def alterar_sala(numero: int) -> jsonify:
+def alterar_sala(numero: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Altera os dados de uma sala existente.
 
     Esta função recebe o número de uma sala e os novos dados via JSON, valida os dados e, se válidos, atualiza a sala no banco de dados.
@@ -88,7 +88,7 @@ def alterar_sala(numero: int) -> jsonify:
 
     return jsonify({"mensagem": "Sala atualizada com sucesso!", "data": {"numero": sala.numero, "localizacao": sala.localizacao, "capacidade": sala.capacidade}}), 200
 
-def remover_sala(numero: int) -> jsonify:
+def remover_sala(numero: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Remove uma sala existente do banco de dados.
 
     Args:

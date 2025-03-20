@@ -41,6 +41,7 @@ const ConsultarDisciplina = () => {
                 placeholder={"Exemplo: MAT001"}
                 minLength={6}
                 maxLength={10}
+                rota={"disciplina"}
                 entidade={"disciplina"}
             />
             <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />

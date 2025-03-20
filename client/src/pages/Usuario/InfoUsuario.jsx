@@ -80,7 +80,6 @@ const InfoUsuario = () => {
 
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
-      {api.data && console.log(api.data)}
       <Titulo>Informações do Usuário</Titulo>
       {successParam && (
         <Alert variant="success" className="p-3 mt-3">
@@ -131,7 +130,7 @@ const InfoUsuario = () => {
         <Row>
           <Col>
             <h5>{api.data && api.data.tipo == "p"? "Formação:" : "Escolaridade:"}</h5>
-            {api.data && api.data.tipo == "p"? <p>{api.data.formacao}</p> : <p>{api.data.escolaridade}</p>}
+            {api.data && api.data.tipo == "p"? (<p>{api?.data?.formacao}</p>) : (<p>{api?.data?.escolaridade}</p>)}
           </Col>
         </Row>
         <Row>
@@ -143,7 +142,7 @@ const InfoUsuario = () => {
         <Row>
           <Col>
             <h5>{api.data && api.data.tipo == "p"? "Disciplinas:" : "Habilidades:"}</h5>
-              {api.data && api.data.tipo == "p"? exibirDisciplinas(api.data.disciplinas) : <p>{api.data.habilidades}</p>}
+              {api.data && api.data.tipo == "p"? exibirDisciplinas(api?.data?.disciplinas) : (<p>{api?.data?.habilidades}</p>)}
           </Col>
         </Row>
       </Container>
