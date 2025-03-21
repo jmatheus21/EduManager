@@ -13,6 +13,7 @@ import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pag
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
 import { ConsultarTurma, FormularioTurma } from "./pages/Turma";
 import { ConsultarAluno, FormularioAluno } from "./pages/Aluno";
+import { ConsultarAula, FormularioAula } from "./pages/Aula";
 import "./index.css";
 
 const criarMenu = (entidade) => {
@@ -76,12 +77,18 @@ createRoot(document.getElementById("root")).render(
             {/* <Route path=":chave" element={<InfoTurma />} />
             <Route path="alterar/:chave" element={<FormularioTurma />}/> */}
           </Route>
-            <Route path="aluno" element={<GerenciarProtegido menus={criarMenu("aluno")} />}>
+          <Route path="aluno" element={<GerenciarProtegido menus={criarMenu("aluno")} />}>
             <Route index element={<ConsultarAluno />} />
             <Route path="cadastrar" element={<FormularioAluno />} />
             {/* <Route path=":chave" element={<InfoAluno />} />
             <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
-        </Route>
+          </Route>
+          <Route path="aula" element={<GerenciarProtegido menus={criarMenu("aula")} />}>
+            <Route index element={<ConsultarAula />} />
+            <Route path="cadastrar" element={<FormularioAula />} />
+            {/* <Route path=":chave" element={<InfoAula />} />
+            <Route path="alterar/:chave" element={<FormularioAula />}/> */}
+          </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>

@@ -25,7 +25,7 @@ def test_cadastrar_usuario(app):
         db.session.add(usuario)
         db.session.commit()
 
-        usuario_adicionado = db.session.get(Usuario, "12345678901")
+        usuario_adicionado = db.session.query(Usuario).filter_by(cpf="12345678901").first()
         assert usuario_adicionado is not None
         assert usuario_adicionado.cpf == "12345678901"
         assert usuario_adicionado.nome == "John Cena"
@@ -83,7 +83,7 @@ def test_buscar_usuarios(app):
         db.session.add(usuario)
         db.session.commit()
 
-        usuario_buscado = db.session.get(Usuario, "12345678901")
+        usuario_buscado = db.session.query(Usuario).filter_by(cpf="12345678901").first()
         assert usuario_buscado is not None
         assert usuario_buscado.cpf == "12345678901"
         assert usuario_buscado.nome == "John Cena"
@@ -112,7 +112,7 @@ def test_alterar_usuario(app):
         db.session.add(usuario)
         db.session.commit()
 
-        usuario_original = db.session.get(Usuario, "12345678901")
+        usuario_original = db.session.query(Usuario).filter_by(cpf="12345678901").first()
         usuario_original.cpf = "12345678901"
         usuario_original.nome = "John John"
         usuario_original.email = "jjhon@hotmail.com"
@@ -128,7 +128,7 @@ def test_alterar_usuario(app):
         
         db.session.commit()
 
-        usuario_alterado = db.session.get(Usuario, "12345678901")
+        usuario_alterado = db.session.query(Usuario).filter_by(cpf="12345678901").first()
         assert usuario_alterado is not None
         assert usuario_alterado.cpf == "12345678901"
         assert usuario_alterado.nome == "John John"
@@ -157,9 +157,9 @@ def test_remover_usuario(app):
         db.session.add(usuario)
         db.session.commit()
 
-        usuario_adicionado = db.session.get(Usuario, "12345678901")
+        usuario_adicionado = db.session.query(Usuario).filter_by(cpf="12345678901").first()
         db.session.delete(usuario_adicionado)
         db.session.commit()
 
-        usuario_deletado = db.session.get(Usuario, "12345678901")
+        usuario_deletado = db.session.query(Usuario).filter_by(cpf="12345678901").first()
         assert usuario_deletado is None

@@ -33,7 +33,7 @@ def login() -> jsonify:
 
 def validate(current_user_cpf: str, current_user_role: str) -> jsonify:
     
-    usuario = db.session.get(Usuario, current_user_cpf)
+    usuario = db.session.query(Usuario).filter_by(cpf=current_user_cpf).first()
     if not usuario:
         return jsonify({ "autenticado": False, "mensagem": "Usuário não existe"}), 401
     
