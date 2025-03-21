@@ -76,7 +76,6 @@ def test_cadastrar_turma(client, app):
             "serie": "A",
             "nivel_de_ensino": "Ensino Fundamental",
             "turno": "M",
-            "turno": "M",
             "status": "A",
             "sala_numero": 101,
             "calendario_ano_letivo": 2026
@@ -96,7 +95,6 @@ def test_cadastrar_turma(client, app):
         assert turma["ano"] == 9, "O ano da turma deve ser 9."
         assert turma["serie"] == "A", "A serie da turma deve ser A."
         assert turma["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
-        assert turma["turno"] == "M", "O turno da turma deve ser M."
         assert turma["turno"] == "M", "O turno da turma deve ser M."
         assert turma["status"] == "A", "O status da turma deve ser A."
         assert turma["sala_numero"] == 101, "O numero da sala da turma deve ser 101."
@@ -122,7 +120,6 @@ def test_cadastrar_turma_calendario_inexistente(client, app):
             "ano": 9,
             "serie": "A",
             "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "M",
             "turno": "M",
             "status": "A",
             "sala_numero": 101,
@@ -155,7 +152,6 @@ def test_cadastrar_turma_sala_inexistente(client, app):
             "serie": "A",
             "nivel_de_ensino": "Ensino Fundamental",
             "turno": "M",
-            "turno": "M",
             "status": "A",
             "sala_numero": 101,
             "calendario_ano_letivo": 2026
@@ -184,7 +180,7 @@ def test_cadastrar_turma_dados_invalidos(client, app):
             "ano": 13,
             "serie": "Aberta",
             "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "D",
+            "turno": "",
             "status": "A",
             "sala_numero": 101,
             "calendario_ano_letivo": 2026
@@ -193,8 +189,7 @@ def test_cadastrar_turma_dados_invalidos(client, app):
         response = client.post('/turma/', json=dados_invalidos)
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert len(response.json["erro"]) == 3, "Deve haver 3 erros de validação."
-
+        assert len(response.json["erro"]) == 4, "Deve haver 3 erros de validação."
 
 def test_cadastrar_turma_com_horario_invalido(client, app):
     """Testa o cadastro de uma turma em uma horário que já existe outra turma.
@@ -211,7 +206,6 @@ def test_cadastrar_turma_com_horario_invalido(client, app):
         usuario_entra_no_sistema(client, app)
 
         turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -219,7 +213,6 @@ def test_cadastrar_turma_com_horario_invalido(client, app):
             "ano": 1,
             "serie": "A",
             "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "M",
             "turno": "M",
             "status": "A",
             "sala_numero": 101,
@@ -293,7 +286,7 @@ def test_buscar_turma(client, app):
 def test_alterar_turma(client, app):
     """Testa a atualização dos dados de uma turma.
 
-    Este teste verifica se a requisição PUT para a rota '/turma/{id}' retorna o status code 200 (OK),
+    Este teste verifica se a requisição PUT para a rota '/turma/{numero}' retorna o status code 200 (OK),
     se a resposta contém uma mensagem de sucesso e se os dados da turma foram atualizados corretamente.
 
     Args:
@@ -305,14 +298,13 @@ def test_alterar_turma(client, app):
         usuario_entra_no_sistema(client, app)
 
         turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
         # Dados para atualização
         dados_atualizacao = {
             "ano": 9,
-            "serie": "M",
+            "serie": "D",
             "nivel_de_ensino": "Ensino Fundamental",
             "turno": "N",
             "status": "A",
@@ -325,7 +317,7 @@ def test_alterar_turma(client, app):
         assert response.json["mensagem"] == "Turma atualizada com sucesso!"
         dados = response.json["data"]
         assert dados["ano"] == 9, "O ano da turma deve ser 9."
-        assert dados["serie"] == "M", "A serie da turma deve ser M."
+        assert dados["serie"] == "D", "A serie da turma deve ser D."
         assert dados["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
         assert dados["turno"] == "N", "O turno da turma deve ser N."
         assert dados["status"] == "A", "O status da turma deve ser A."
@@ -347,7 +339,6 @@ def test_deletar_turma(client, app):
         criar_dependencias(app)
         usuario_entra_no_sistema(client, app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
