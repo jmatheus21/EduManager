@@ -8,6 +8,7 @@ incluindo cadastro, listagem, busca, atualização e remoção de alunos no banc
 from app.models import Aluno, Turma, Sala, Calendario
 from app.extensions import db
 from app.utils.date_helpers import string_para_data
+from tests.user_event import usuario_entra_no_sistema
 
 
 def criar_dependencias(app):
@@ -41,6 +42,7 @@ def test_cadastrar_aluno(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        usuario_entra_no_sistema(client, app)
         criar_dependencias(app)
 
         dados_validos = {
@@ -80,6 +82,7 @@ def test_cadastrar_aluno_existente(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        usuario_entra_no_sistema(client, app)
         criar_dependencias(app)
 
         aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
@@ -113,6 +116,8 @@ def test_cadastrar_aluno_turma_inexistente(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        usuario_entra_no_sistema(client, app)
+
         dados = {
             "nome": "João Pedro dos Santos",
             "email": "joaopedro@email.com",
@@ -139,6 +144,7 @@ def test_cadastrar_aluno_dados_invalidos(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        usuario_entra_no_sistema(client, app)
         criar_dependencias(app)
 
         dados_invalidos = {
@@ -168,6 +174,7 @@ def test_listar_alunos(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        usuario_entra_no_sistema(client, app)
         criar_dependencias(app)
 
         aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
@@ -193,6 +200,7 @@ def test_buscar_aluno(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        usuario_entra_no_sistema(client, app)
         criar_dependencias(app)
 
         aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))

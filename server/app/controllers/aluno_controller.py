@@ -11,10 +11,14 @@ from ..models import Aluno, Turma
 from app.utils.validators import validar_aluno
 
 
-def cadastrar_aluno() -> jsonify:
+def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo aluno no banco de dados.
 
     Esta função recebe os dados de um aluno via JSON, valida os dados e, se válidos, cadastra o aluno no banco de dados.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados da turma cadastrada, ou uma mensagem de erro em caso de dados inválidos.
@@ -57,8 +61,12 @@ def cadastrar_aluno() -> jsonify:
     return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento}}), 201
 
 
-def listar_alunos() -> jsonify:
+def listar_alunos(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas os alunos cadastrados no banco de dados.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma lista de alunos com seus respectivos dados.
@@ -68,11 +76,13 @@ def listar_alunos() -> jsonify:
     return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento} for aluno in alunos]), 200
 
 
-def buscar_aluno(matricula: str) -> jsonify:
+def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Busca um aluno específico pela matrícula.
 
     Args:
         matricula (str): A matricula do aluno a ser buscado.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados do aluno encontrado.
