@@ -8,7 +8,7 @@ import HomePage from "./pages/Home/HomePage.jsx";
 import Gerenciar from "./pages/Gerenciar/Gerenciar.jsx";
 import Login from "./pages/Login/Login.jsx";
 import { ConsultarSala, FormularioSala, InfoSala } from "./pages/Sala";
-import { ConsultarDisciplina, FormularioDisciplina } from "./pages/Disciplina";
+import { ConsultarDisciplina, FormularioDisciplina, InfoDisciplina } from "./pages/Disciplina";
 import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pages/Calendario";
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
 import { ConsultarTurma, FormularioTurma } from "./pages/Turma";
@@ -55,8 +55,8 @@ createRoot(document.getElementById("root")).render(
           <Route path="disciplina" element={<GerenciarProtegido menus={criarMenu("disciplina")} />}>
             <Route index element={<ConsultarDisciplina />} />
             <Route path="cadastrar" element={<FormularioDisciplina />} />
-            {/* <Route path=":chave" element={<InfoDisciplina />} />
-            <Route path="alterar/:chave" element={<FormularioDisciplina />} /> */}
+            <Route path=":chave" element={<InfoDisciplina />} />
+            <Route path="alterar/:chave" element={<FormularioDisciplina />} />
           </Route>
           <Route path="calendario" element={<GerenciarProtegido menus={criarMenu("calendario")} />}>
             <Route index element={<ConsultarCalendario />} />

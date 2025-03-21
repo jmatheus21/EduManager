@@ -143,55 +143,56 @@ describe("FormularioDisciplina Component", () => {
           carga_horaria: 60,
           ementa: "Aritmética e Álgebra",
           bibliografia: "Matemática - Volume 1"
-        });
+        }, expect.anything());
       });
 
     })
 
   })
 
-  // describe("Alterar Disciplina", () => {
+  describe("Alterar Disciplina", () => {
 
-  //   const mockEnviarFormulario = jest.fn();
+    const mockEnviarFormulario = jest.fn();
 
-  //   beforeEach( async () => {
-  //     await act(async () => {
-  //       render(
-  //           <BrowserRouter>
-  //               <Formulario 
-  //                 enviarFormulario={mockEnviarFormulario} 
-  //                 alteracao={{
-  //                   alterar: true, 
-  //                   dados: {
-  //                     codigo: "MAT101",
-  //                     nome: "Matemática 1",
-  //                     carga_horaria: 90,
-  //                     ementa: "Aritmética e Álgebra",
-  //                     bibliografia: "Matemática - Volume 1"
-  //                   }, 
-  //                   chave: undefined
-  //                 }}
-  //               />
-  //           </BrowserRouter>
-  //       );
-  //     })
+    beforeEach( async () => {
+      await act(async () => {
+        render(
+            <BrowserRouter>
+                <Formulario 
+                  enviarFormulario={mockEnviarFormulario} 
+                  alteracao={{
+                    alterar: true, 
+                    dados: {
+                      codigo: "MAT101",
+                      nome: "Matemática 1",
+                      carga_horaria: 90,
+                      ementa: "Aritmética e Álgebra",
+                      bibliografia: "Matemática - Volume 1"
+                    }, 
+                    chave: undefined
+                  }}
+                />
+            </BrowserRouter>
+        );
+      })
 
-  //   })
+    })
 
-    // it ("Verifica se os dados são carregados na página de alterar", async () => {
+    it ("Verifica se os dados são carregados na página de alterar", async () => {
 
-    //   const codigoInput = screen.getByLabelText(/Código:/i);
-    //   const nomeInput = screen.getByLabelText(/Nome:/i);
-    //   const cargaHorariaInput = screen.getByLabelText(/Carga Horária:/i);
-    //   const ementaInput = screen.getByLabelText(/Ementa:/i);
-    //   const bibliografiaInput = screen.getByLabelText(/Bibliografia:/i);
+      const codigoInput = screen.getByLabelText(/Código:/i);
+      const nomeInput = screen.getByLabelText(/Nome:/i);
+      const cargaHorariaInput = screen.getByLabelText(/Carga Horária:/i);
+      const ementaInput = screen.getByLabelText(/Ementa:/i);
+      const bibliografiaInput = screen.getByLabelText(/Bibliografia:/i);
 
-    //   await waitFor(() => {
-    //     expect(codigoInput.value).toBe("MAT101");
-    //     expect(nomeInput.value).toBe("Matemática 1");
-    //     expect(cargaHorariaInput.value).toBe("90");
-    //     expect(ementaInput.value).toBe("Aritmética e Álgebra");
-    //     expect(bibliografiaInput.value).toBe("Matemática - Volume 1")
-    //   })
-    // });
+      await waitFor(() => {
+        expect(codigoInput.value).toBe("MAT101");
+        expect(nomeInput.value).toBe("Matemática 1");
+        expect(cargaHorariaInput.value).toBe("90");
+        expect(ementaInput.value).toBe("Aritmética e Álgebra");
+        expect(bibliografiaInput.value).toBe("Matemática - Volume 1")
+      })
+    });
   });
+});

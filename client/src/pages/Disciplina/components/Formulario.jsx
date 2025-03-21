@@ -58,7 +58,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
   const funcaoVoltar = () => navigate(`/disciplina/${chave}`);
 
   return (
-        <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(onSubmit)}>
+        <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(enviarFormulario)}>
             <Container fluid className="d-grid gap-3">
                 <Row className="gap-5">
                     <Col>
@@ -85,10 +85,11 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                             <Form.Label htmlFor="codigo">Código: <span className="text-danger">*</span></Form.Label>
                             <Form.Control
                                 id="codigo"
+                                disabled={alterar}
                                 type="text"
                                 className="p-2"
                                 placeholder="Exemplo: MAT101"
-                                {...register("codigo", { required: true, minLength: 6, maxLength: 10, pattern: /^[A-Z]{3}\d{3}$/ })}
+                                {...register("codigo", { required: !alterar, minLength: 6, maxLength: 10, pattern: /^[A-Z]{3}\d{3}$/ })}
                             />
                         </Form.Group>
                         <Alert variant="white" className={`${errors.codigo ? "" : "d-none"} text-danger`}>
