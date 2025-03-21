@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoInfo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
 import { inverterData } from "../../components/Listagem.jsx"; 
+import { Alert } from "@mui/material";
 
 /**
  * Componente para exibir informações detalhadas de um calendário.
@@ -62,11 +63,11 @@ const InfoCalendario = () => {
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações do Calendário</Titulo>
       {successParam && (
-        <Alert variant="success" className="p-3 mt-3">
+        <Alert severity="success" className="p-3 mt-3 d-flex align-content-center gap-3">
           Calendário alterado com sucesso!
         </Alert>
       )}
-      <Container fluid className="my-4 d-grid gap-3">
+      <Container fluid className="mb-4 d-grid gap-3">
         <Row>
           <Col>
             <h5>Ano Letivo:</h5>

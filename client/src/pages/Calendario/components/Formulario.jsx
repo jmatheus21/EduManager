@@ -41,13 +41,14 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
    * @param {Event} event - O evento de submissão do formulário.
    */
   const onSubmit = async (data) => {
+
+    console.log(data)
  
     try {
       
       enviarFormulario(data);
 
     } catch (error) {
-      console.error(error.message);
 
       if (error.message === "Calendário já existe") {
         setError("ano_letivo", { type: "equal" });
@@ -61,7 +62,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
   const funcaoVoltar = () => navigate(`/calendario/${chave}`);
 
   return (
-      <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(enviarFormulario)}>
+      <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(onSubmit)}>
         <Container fluid className="d-grid gap-3">
           <Row className="gap-5">
             <Col>
@@ -100,7 +101,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
               </Form.Group>
             </Col>
           </Row>
-          <Row className="gap-5">
+          <Row className="gap-lg-5 gap-4">
             <Col>
               <Form.Group className="d-flex flex-column gap-1">
                 <Form.Label htmlFor="data_inicio">Data de início: <span className="text-danger">*</span></Form.Label>
