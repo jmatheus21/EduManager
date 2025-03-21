@@ -11,7 +11,8 @@ import { ConsultarSala, FormularioSala, InfoSala } from "./pages/Sala";
 import { ConsultarDisciplina, FormularioDisciplina } from "./pages/Disciplina";
 import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pages/Calendario";
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
-import { ConsultarTurma, FormularioTurma} from "./pages/Turma";
+import { ConsultarTurma, FormularioTurma } from "./pages/Turma";
+import { ConsultarAluno, FormularioAluno } from "./pages/Aluno";
 import "./index.css";
 
 const criarMenu = (entidade) => {
@@ -41,9 +42,9 @@ const HomePageProtegida = withProtectedRoute(HomePage)
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
+    <AuthProvider>
         <Routes>
-          <Route path="login" element={<Login />} />
+        <Route path="login" element={<Login />} />
           <Route index element={<HomePageProtegida />} />
           <Route path="sala" element={<GerenciarProtegido menus={criarMenu("sala")} />}>
             <Route index element={<ConsultarSala />} />
@@ -75,6 +76,12 @@ createRoot(document.getElementById("root")).render(
             {/* <Route path=":chave" element={<InfoTurma />} />
             <Route path="alterar/:chave" element={<FormularioTurma />}/> */}
           </Route>
+            <Route path="aluno" element={<GerenciarProtegido menus={criarMenu("aluno")} />}>
+            <Route index element={<ConsultarAluno />} />
+            <Route path="cadastrar" element={<FormularioAluno />} />
+            {/* <Route path=":chave" element={<InfoAluno />} />
+            <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
+        </Route>
         </Routes>
       </AuthProvider>
     </BrowserRouter>
