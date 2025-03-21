@@ -22,7 +22,7 @@ def criar_dependencias(app):
                 db.session.add(calendario)
                 sala = Sala(numero=101, capacidade=50, localizacao="Bloco A, 1° andar")
                 db.session.add(sala)
-                turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero= 101, calendario_ano_letivo= 2026)
+                turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
                 db.session.add(turma)
 
             db.session.commit()
@@ -44,18 +44,15 @@ def test_cadastrar_aluno(client, app):
         criar_dependencias(app)
 
         dados_validos = {
-            "matricula": "202600000001",
             "nome": "João Pedro dos Santos",
             "email": "joaopedro@email.com",
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-10",
-            "id": 1,
+            "id_turma": 1,
         }
 
         response = client.post('/aluno/', json=dados_validos)
-
-        print("Resposta da API:", response.json)
 
         assert response.status_code == 201, "O status code deve ser 201 (Created)."
         assert "mensagem" in response.json, "A resposta deve conter uma mensagem."
@@ -90,13 +87,12 @@ def test_cadastrar_aluno_existente(client, app):
         db.session.commit()
 
         dados = {
-            "matricula": "202600000001",
             "nome": "João Pedro dos Santos",
             "email": "joaopedro@email.com",
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-10",
-            "id": 1,
+            "id_turma": 1,
         }
 
         response = client.post('/aluno/', json=dados)
@@ -118,13 +114,12 @@ def test_cadastrar_aluno_turma_inexistente(client, app):
     """
     with app.app_context():
         dados = {
-            "matricula": "202600000001",
             "nome": "João Pedro dos Santos",
             "email": "joaopedro@email.com",
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-10",
-            "id": 1,
+            "id_turma": 1,
         }
 
         response = client.post('/aluno/', json=dados)
@@ -147,20 +142,19 @@ def test_cadastrar_aluno_dados_invalidos(client, app):
         criar_dependencias(app)
 
         dados_invalidos = {
-            "matricula": "20260000001", # 11 caracteres
-            "nome": "João Pedro dos Santos",
-            "email": "joaopedro@email.com",
+            "nome": "",
+            "email": "",
             "telefone": "79 9 12345-678", # Formato inválido
-            "endereco": "Bairro X, Rua A",
-            "data_de_nascimento": "2011-09-10",
-            "id": 1,
+            "endereco": "",
+            "data_de_nascimento": "3200-09-10",
+            "id_turma": 1,
         }
 
         response = client.post('/aluno/', json=dados_invalidos)
 
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert len(response.json["erro"]) == 2, "Deve haver 2 erros de validação."
+        assert len(response.json["erro"]) == 5, "Deve haver 5 erros de validação."
 
 
 def test_listar_alunos(client, app):

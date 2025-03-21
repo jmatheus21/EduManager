@@ -279,7 +279,7 @@ def test_buscar_turma(client, app):
 def test_alterar_turma(client, app):
     """Testa a atualização dos dados de uma turma.
 
-    Este teste verifica se a requisição PUT para a rota '/turma/{numero}' retorna o status code 200 (OK),
+    Este teste verifica se a requisição PUT para a rota '/turma/{id}' retorna o status code 200 (OK),
     se a resposta contém uma mensagem de sucesso e se os dados da turma foram atualizados corretamente.
 
     Args:

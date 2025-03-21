@@ -26,7 +26,6 @@ class Aluno (db.Model):
         data_de_nascimento (date): Data de nascimento do aluno (YYYY-MM-DD / YYYY representa o ano, MM o mês e DD o dia).
         boletins: Relacionamento com a entidade Boletim. Cada aluno deve ter um boletim associado a ele.
     """
-
     matricula = db.Column(db.String(15), primary_key=True, doc="Matricula do aluno (chave primária).")
     nome = db.Column(db.String(100), nullable=False, doc="Nome do aluno (máximo 100 caracteres).")
     email = db.Column(db.String(100), unique=True, nullable=False, doc="Email do aluno (máximo 100 caracteres).")
@@ -36,11 +35,10 @@ class Aluno (db.Model):
 
     boletins = db.relationship('Boletim', back_populates='aluno', cascade = 'all, delete', doc="Relacionamento com a entidade Boletim. Cada aluno deve ter um boletim associado a ele.")
 
-    """
+
     turma_id = db.relationship(
         'Turma',
         secondary=aluno_turma,
         backref=db.backref('professores', lazy=True), # Alterar
         lazy=True, doc = "Relacionamento com a entidade Turma. Cada aluno pode estar em várias turmas."
     )
-    """

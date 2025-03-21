@@ -53,14 +53,13 @@ As validações garantem que os dados estejam dentro dos critérios esperados e 
 """
 
 
-def validar_aluno(matricula: str, nome: str, email: str, telefone: str, endereco: str, data_de_nascimento: str):
+def validar_aluno(nome: str, email: str, telefone: str, endereco: str, data_de_nascimento: str):
     """Valida os dados de um aluno.
 
     Esta função verifica se os dados fornecidos para uma aluno estão dentro dos critérios esperados.
     Caso haja erros, eles são retornados em uma lista.
 
     Args:
-        matricula (str): A matrícula do aluno. Deve ter no mínimo 12 e máximo 50 caracteres.
         nome (str): O nome do aluno. Deve ser no mínimo 3 e no máximo 100.
         email (str): O email do aluno. Deve ter entre 3 e 100 caracteres, além disso, deve ter um caractere '@'.
         telefone (str): O telefone do aluno. Deve ser fornecido no formato "DD 9 XXXX-XXXX", onde X é um caractere númerico inteiro.
@@ -77,9 +76,6 @@ def validar_aluno(matricula: str, nome: str, email: str, telefone: str, endereco
     """
     erros = []
 
-    if not matricula or not isinstance(matricula, str) or len(matricula) < 12 or len(matricula) > 15:
-        erros.append("O atributo 'matrícula' é obrigatório e deve ter no mínimo 12 caracteres e no máximo 15 caracteres")
-        
     if not nome or not isinstance(nome, str) or len(nome) < 3 or len(nome) > 100:
         erros.append("O atributo 'nome' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 100 caracteres")
     

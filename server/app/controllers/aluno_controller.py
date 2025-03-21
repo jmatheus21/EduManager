@@ -22,12 +22,21 @@ def cadastrar_aluno() -> jsonify:
 
     data = request.get_json()
 
-    #  "202600000001"
-    erros = validar_aluno(matricula=data['matricula'], nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
+    erros = validar_aluno(nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
     if erros:
         return jsonify({"erro": erros }), 400
+
+    # Verifica se a turma existe
+    # id -> id_turma
+    turma_existente = db.session.get(Turma, data["id_turma"])
+    if turma_existente is None:
+        return jsonify({"erro": ["Turma não existe"]}), 400
+
+    # criar lógica para matrícula
+    id = db.session.query(Aluno).count() + 1
+    matricula = f"{turma_existente.calendario_ano_letivo}000{id:05d}"
     
-    aluno_existente = db.session.query(Aluno).filter_by(matricula=data['matricula']).first()
+    aluno_existente = db.session.query(Aluno).filter_by(matricula=matricula).first()
     if aluno_existente is not None:
         return jsonify({"erro": ["Matrícula já existe"]}), 400
 
@@ -36,18 +45,13 @@ def cadastrar_aluno() -> jsonify:
         return jsonify({"erro": ["E-mail já existe"]}), 400
     
     # Verifica se a turma está aberta
-    # id -> turma_id
-    turma_fechada = db.session.query(Turma).filter_by(id=data['turma_id']).first()
+    # id -> id_turma
+    turma_fechada = db.session.query(Turma).filter_by(id=data['id_turma']).first()
     if turma_fechada is not None and turma_fechada.status == "C":
         return jsonify({"erro": ["A turma está fechada, portanto, não é possível cadastrar mais alunos"]}), 400
 
-    # Verifica se a turma existe
-    # id -> turma_id
-    turma_existente = db.session.query(Turma).filter_by(id=data['turma_id']).first()
-    if turma_existente is None:
-        return jsonify({"erro": ["Turma não existe"]}), 400
     
-    novo_aluno = Aluno(matricula=data['matricula'], nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
+    novo_aluno = Aluno(matricula=matricula, nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
     db.session.add(novo_aluno)
     db.session.commit()
     return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento}}), 201
