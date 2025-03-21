@@ -41,6 +41,7 @@ const ConsultarSala = () => {
         placeholder={"Exemplo: 10"}
         min={1}
         max={100}
+        rota={"sala"}
         entidade={"sala"}
       />
       <Listagem colunas={colunas} data={data} pk={colunas[0].field} />

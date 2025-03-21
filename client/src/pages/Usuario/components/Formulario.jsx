@@ -52,6 +52,8 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
         await enviarFormulario(data);  
 
       } catch (error) {
+
+        console.log(error.message)
         
         if (error.message.includes("Usuário já existe")) {
           setError("cpf", { type: "equal" });
@@ -357,6 +359,9 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                   </Alert>
                 </Form.Group>
               </Col>
+            </Row>
+            <Row>
+                <p>Os campos com <span className="text-danger">*</span> são obrigatórios.</p>
             </Row>
           </Container>
           <Container fluid className="mt-3">

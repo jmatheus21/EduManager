@@ -7,7 +7,7 @@ incluindo cadastro, listagem, busca, atualização e remoção de calendários n
 
 from app.models import Calendario
 from app.extensions import db
-
+from tests.user_event import usuario_entra_no_sistema
 
 def test_cadastrar_calendario(client, app):
     """Testa o cadastro de um calendário com dados válidos.
@@ -22,6 +22,9 @@ def test_cadastrar_calendario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_validos = {
             "ano_letivo": 2026,
             "data_inicio": "2026-02-17",
@@ -52,6 +55,9 @@ def test_cadastrar_calendario_dados_invalidos(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "ano_letivo": 2024,
             "data_inicio": "2024-02-17",
@@ -75,6 +81,9 @@ def test_cadastrar_calendario_existente(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        
+        usuario_entra_no_sistema(client, app)
+        
         dados_invalidos = {
             "ano_letivo": 2026,
             "data_inicio": "2026-02-17",
@@ -105,6 +114,9 @@ def test_listar_calendarios(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        
+        usuario_entra_no_sistema(client, app)
+        
         calendario = Calendario(ano_letivo=2026, data_inicio="2026-02-17", data_fim="2026-11-27", dias_letivos=150)
         db.session.add(calendario)
         db.session.commit()
@@ -127,6 +139,9 @@ def test_buscar_calendario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        
+        usuario_entra_no_sistema(client, app)
+        
         calendario = Calendario(ano_letivo=2026, data_inicio="2026-02-17", data_fim="2026-11-27", dias_letivos=150)
         db.session.add(calendario)
         db.session.commit()
@@ -152,6 +167,9 @@ def test_alterar_calendario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        
+        usuario_entra_no_sistema(client, app)
+        
         calendario = Calendario(ano_letivo=2026, data_inicio="2026-02-01", data_fim="2026-09-01", dias_letivos=50)
         db.session.add(calendario)
         db.session.commit()
@@ -185,6 +203,9 @@ def test_deletar_calendario(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+        
+        usuario_entra_no_sistema(client, app)
+        
         calendario = Calendario(ano_letivo=2026, data_inicio="2026-02-01", data_fim="2026-09-01", dias_letivos=50)
         db.session.add(calendario)
         db.session.commit()

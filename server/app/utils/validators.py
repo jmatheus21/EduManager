@@ -1,5 +1,5 @@
 from datetime import date
-from .validators_helpers import validar_telefone, validar_data, validar_data_de_nascimento, validar_data_contrato, validar_horario_completo, validar_horario_trabalho
+from .validators_helpers import validar_data_contrato, validar_telefone, validar_data, validar_data_de_nascimento, validar_data_de_nascimento_aluno, validar_horario_completo, validar_horario_trabalho
 from .date_helpers import string_para_data
 from .disciplina_helpers import validar_codigo
 
@@ -45,8 +45,53 @@ def validar_sala(numero: int, capacidade: int, localizacao: str) -> list:
     return erros
 
 
-def validar_aluno ():
-    pass
+"""
+Módulo de Validação de Alunos.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+
+def validar_aluno(nome: str, email: str, telefone: str, endereco: str, data_de_nascimento: str):
+    """Valida os dados de um aluno.
+
+    Esta função verifica se os dados fornecidos para uma aluno estão dentro dos critérios esperados.
+    Caso haja erros, eles são retornados em uma lista.
+
+    Args:
+        nome (str): O nome do aluno. Deve ser no mínimo 3 e no máximo 100.
+        email (str): O email do aluno. Deve ter entre 3 e 100 caracteres, além disso, deve ter um caractere '@'.
+        telefone (str): O telefone do aluno. Deve ser fornecido no formato "DD 9 XXXX-XXXX", onde X é um caractere númerico inteiro.
+        endereco (strr): O endereço do aluno. Deve ter no mínimo 10 caracteres e no máximo 255 caracteres.
+        data_de_nascimento: A data de nascimento do aluno. Deve seguir o formato 'YYYY-MM-DD', em que YYYY representa o ano, MM o mês e DD o dia. Além disso, deve ser uma data válida e o aluno deve ter entre 6 e 100 anos.
+
+    Returns:
+        list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
+
+    Exemplo:
+        >>> erros = validar_aluno("202600000001", "João Pedro dos Santos", "joaopedro@email.com", "79 9 1234-5678", "Bairro X, Rua A", "2011-09-10")
+        >>> print(erros)
+        []
+    """
+    erros = []
+
+    if not nome or not isinstance(nome, str) or len(nome) < 3 or len(nome) > 100:
+        erros.append("O atributo 'nome' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 100 caracteres")
+    
+    if not email or not isinstance(email, str) or len(email) < 3 or len(email) > 100 or ('@' not in email):
+        erros.append("O atributo 'email' é obrigatório e deve ter no mínimo 3 caracteres e no máximo 100 caracteres, além de precisar ter o @")
+
+    if not telefone or not isinstance(telefone, str) or not validar_telefone(telefone):
+        erros.append("O atributo 'telefone' é obrigatório e não segue o formato estabelecido 'XX 9 XXXX-XXXX'")
+
+    if not endereco or not isinstance(endereco, str) or len(endereco) < 10 or len(endereco) > 100:
+        erros.append("O atributo 'endereço' é obrigatório e deve ter no mínimo 10 letras e no máximo 255 caracteres")
+
+    if not data_de_nascimento or not isinstance(data_de_nascimento, str) or not validar_data_de_nascimento_aluno(data_de_nascimento):
+        erros.append("O atributo 'data_de_nascimento' é obrigatório, deve ser uma data válida e o aluno deve ter entre 6 e 100 anos")
+
+    return erros
 
 
 def validar_calendario(ano_letivo: int, data_inicio: str, data_fim: str, dias_letivos: int) -> list:
@@ -338,10 +383,3 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
 
 
 
-    
-       
-
-
-
-
-    

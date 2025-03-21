@@ -39,13 +39,14 @@ def test_login_helpers():
         cpf_original = "000.000.000-00"
 
         # Usando gerar_token
-        token = gerar_token(cpf_original)
+        token = gerar_token(cpf_original, "f")
 
         # Testando o gerar_token
         assert token is not None
 
         # Usando o validar_token
-        cpf = validar_token(token)
+        payload = validar_token(token)
+        cpf = payload["usuario_cpf"]
 
         # Testando o validar_token
         assert cpf == cpf_original

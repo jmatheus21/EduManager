@@ -132,6 +132,9 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
               </Form.Group>
             </Col>
           </Row>
+          <Row>
+              <p>Os campos com <span className="text-danger">*</span> são obrigatórios.</p>
+          </Row>
         </Container>
         {
           alterar? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />

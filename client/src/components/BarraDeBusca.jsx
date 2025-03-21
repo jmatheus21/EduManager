@@ -26,6 +26,7 @@ const BarraDeBusca = ({
   max,
   minLength,
   maxLength,
+  rota,
   entidade,
 }) => {
   const [chave, setChave] = useState(1);
@@ -59,10 +60,10 @@ const BarraDeBusca = ({
     event.preventDefault();
 
     try {
-      const response = await api.fetchData(`/${entidade}/${chave}`);
+      const response = await api.fetchData(`/${rota}/${chave}`);
 
       if (response) {
-        navigate(`/${entidade}/${chave}`);
+        navigate(`/${rota}/${chave}`);
       }
     } catch (error) {
       setTipoAlerta("danger");

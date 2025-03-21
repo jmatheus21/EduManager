@@ -11,7 +11,7 @@ from ..models import Calendario
 from app.utils.validators import validar_calendario
 from app.utils.date_helpers import string_para_data
 
-def cadastrar_calendario() -> jsonify:
+def cadastrar_calendario(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo calendário no banco de dados.
 
     Esta função recebe os dados de um calendário via JSON, valida os dados e, se válidos, cadastra o calendário no banco de dados.
@@ -35,7 +35,7 @@ def cadastrar_calendario() -> jsonify:
     return jsonify({"mensagem": "Calendário criado com sucesso!", "data": {"ano_letivo": novo_calendario.ano_letivo, "data_inicio": novo_calendario.data_inicio, "data_fim": novo_calendario.data_fim, "dias_letivos": novo_calendario.dias_letivos}}), 201
 
 
-def listar_calendarios() -> jsonify:
+def listar_calendarios(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todos os calendários cadastrados no banco de dados.
 
     Returns:
@@ -45,7 +45,7 @@ def listar_calendarios() -> jsonify:
     return jsonify([{"ano_letivo": calendario.ano_letivo, "data_inicio": calendario.data_inicio, "data_fim": calendario.data_fim, "dias_letivos": calendario.dias_letivos} for calendario in calendarios]), 200
 
 
-def buscar_calendario(ano_letivo: int) -> jsonify:
+def buscar_calendario(ano_letivo: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Busca um calendário específico pelo ano letivo correspondente.
 
     Args:
@@ -58,7 +58,7 @@ def buscar_calendario(ano_letivo: int) -> jsonify:
     return jsonify({"ano_letivo": calendario.ano_letivo, "data_inicio": calendario.data_inicio, "data_fim": calendario.data_fim, "dias_letivos": calendario.dias_letivos}), 200
 
 
-def alterar_calendario(ano_letivo: int) -> jsonify:
+def alterar_calendario(ano_letivo: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Altera os dados de um calendário existente.
 
     Esta função recebe o ano letivo de um calendário e os novos dados via JSON, valida os dados e, se válidos, atualiza o calendário no banco de dados.
@@ -91,7 +91,7 @@ def alterar_calendario(ano_letivo: int) -> jsonify:
     return jsonify({"mensagem": "Calendário atualizado com sucesso!", "data": {"ano_letivo": calendario.ano_letivo, "data_inicio": calendario.data_inicio, "data_fim": calendario.data_fim, "dias_letivos": calendario.dias_letivos}}), 200
 
 
-def remover_calendario(ano_letivo: int) -> jsonify:
+def remover_calendario(ano_letivo: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Remove um calendário existente do banco de dados.
 
     Args:

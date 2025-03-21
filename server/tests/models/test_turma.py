@@ -131,7 +131,7 @@ def test_alterar_turma(app):
 
         turma_original = db.session.get(Turma, turma.id)
         turma_original.ano = 9
-        turma_original.serie = "D"
+        turma_original.serie = "M"
         turma_original.nivel_de_ensino = "Fundamental"
         turma_original.turno = "V"
         turma_original.status = "A"
@@ -142,7 +142,7 @@ def test_alterar_turma(app):
         turma_alterada = db.session.get(Turma, turma.id)
         assert turma_alterada is not None
         assert turma_alterada.ano == 9
-        assert turma_alterada.serie == "D"
+        assert turma_alterada.serie == "M"
         assert turma_alterada.nivel_de_ensino == "Fundamental"
         assert turma_alterada.turno == "V"
         assert turma_alterada.status == "A"

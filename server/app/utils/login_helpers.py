@@ -9,13 +9,14 @@ from datetime import datetime, timedelta, timezone
 from flask import current_app
 
 
-def gerar_token(usuario_cpf: str) -> str:
+def gerar_token(usuario_cpf: str, usuario_tipo: str) -> str:
     """Gera um token JWT para autenticação de um usuário.
 
-    O token gerado contém o CPF do usuário e uma data de expiração (1 hora a partir da geração).
+    O token gerado contém o CPF do usuário e uma data de expiração (6 hora a partir da geração).
 
     Args:
         usuario_cpf (str): O CPF do usuário que será incluído no token.
+        usuario_tipo (str): O tipo do usuário (Funcionário ou Professor)
 
     Returns:
         str: O token JWT gerado, codificado como uma string.
@@ -27,7 +28,8 @@ def gerar_token(usuario_cpf: str) -> str:
     """
     payload = {
         "usuario_cpf": usuario_cpf,
-        "exp": datetime.now(timezone.utc) + timedelta(hours=1)
+        "role": usuario_tipo,
+        "exp": datetime.now(timezone.utc) + timedelta(hours=6)
     }
 
     return jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
@@ -51,7 +53,7 @@ def validar_token(token: str | bytes) -> str | None:
     """
     try:
         payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
-        return payload['usuario_cpf']
+        return payload
     except jwt.ExpiredSignatureError:
         return None
     except jwt.InvalidTokenError:

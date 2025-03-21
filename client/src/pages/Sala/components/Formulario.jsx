@@ -113,6 +113,9 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                 { errors.localizacao?.type === "maxLength" && "A localização deve ter no máximo 100 caracteres" }
                 </Alert>
             </Form.Group>
+            <Row>
+              <p>Os campos com <span className="text-danger">*</span> são obrigatórios.</p>
+            </Row>
             </Container>
             {
             alterar ? <BotaoAlterar funcaoVoltar={funcaoVoltar} /> : <BotaoCadastrar />

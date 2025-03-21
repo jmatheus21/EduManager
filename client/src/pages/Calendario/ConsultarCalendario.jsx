@@ -44,7 +44,8 @@ const ConsultarCalendario = () => {
         tipo={"number"}
         placeholder={`Exemplo: ${anoAtual}`}
         min={anoAtual}
-        entidade={"calendario"}
+        rota={"calendario"}
+        entidade={"calendário"}
       />
       <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />
     </Container>

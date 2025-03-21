@@ -7,7 +7,7 @@ incluindo cadastro, listagem, busca, atualização e remoção de salas no banco
 
 from app.models import Sala, Calendario, Turma
 from app.extensions import db
-
+from tests.user_event import usuario_entra_no_sistema
 
 def test_cadastrar_sala(client, app):
     """Testa o cadastro de uma sala com dados válidos.
@@ -22,6 +22,9 @@ def test_cadastrar_sala(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_validos = {
             "numero": 101,
             "capacidade": 30,
@@ -51,6 +54,9 @@ def test_cadastrar_sala_calendario_ine(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_validos = {
             "numero": 101,
             "capacidade": 30,
@@ -80,6 +86,9 @@ def test_cadastrar_sala_dados_invalidos(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         dados_invalidos = {
             "numero": 0, 
             "capacidade": -10, 
@@ -103,6 +112,9 @@ def test_listar_salas(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
         db.session.add(sala)
         db.session.commit()
@@ -125,6 +137,9 @@ def test_buscar_sala(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
         db.session.add(sala)
         db.session.commit()
@@ -149,6 +164,9 @@ def test_alterar_sala(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
         db.session.add(sala)
         db.session.commit()
@@ -169,26 +187,6 @@ def test_alterar_sala(client, app):
         assert dados['localizacao'] == "Bloco A, 2º Andar", "A localização da sala deve ser 'Bloco A, 2º Andar'."
 
 
-# def test_deletar_sala(client, app):
-#     """Testa a exclusão de uma sala.
-
-#     Este teste verifica se a requisição DELETE para a rota '/sala/{numero}' retorna o status code 200 (OK)
-#     e se a resposta contém uma mensagem de sucesso.
-
-#     Args:
-#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
-#         db.session.add(sala)
-#         db.session.commit()
-
-#         response = client.delete(f'/sala/{sala.numero}')
-#         assert response.status_code == 200, "O status code deve ser 200 (OK)."
-#         assert response.json["mensagem"] == "Sala deletada com sucesso!"
-
-
 def test_deletar_sala_valido(client, app):
     """Testa a exclusão de uma sala.
 
@@ -200,6 +198,9 @@ def test_deletar_sala_valido(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+
         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
         db.session.add(sala)
         db.session.commit()
@@ -228,6 +229,9 @@ def test_deletar_sala_turmas_ativas(client, app):
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
+
+        usuario_entra_no_sistema(client, app)
+        
         sala = Sala(numero=101, capacidade=30, localizacao="Bloco A, 1º Andar")
         db.session.add(sala)
         db.session.commit()

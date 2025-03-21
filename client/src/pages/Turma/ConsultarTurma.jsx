@@ -44,6 +44,7 @@ const ConsultarTurma = () => {
                 tipo={"number"}
                 placeholder={"Exemplo: 1"}
                 min={1}
+                rota={"turma"}
                 entidade={"turma"}
             />
             <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />

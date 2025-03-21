@@ -11,7 +11,7 @@ from ..models import Turma, Calendario, Sala
 from app.utils.validators import validar_turma
 
 
-def cadastrar_turma() -> jsonify:
+def cadastrar_turma(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra uma nova turma no banco de dados.
 
     Esta função recebe os dados de uma turma via JSON, valida os dados e, se válidos, cadastra a turma no banco de dados.
@@ -47,7 +47,7 @@ def cadastrar_turma() -> jsonify:
     return jsonify({"mensagem": "Turma criada com sucesso!", "data": {"id": nova_turma.id, "ano": nova_turma.ano, "serie": nova_turma.serie, "nivel_de_ensino": nova_turma.nivel_de_ensino, "turno": nova_turma.turno, "status": nova_turma.status, "sala_numero": nova_turma.sala_numero, "calendario_ano_letivo": nova_turma.calendario_ano_letivo}}), 201
 
 
-def listar_turmas() -> jsonify:
+def listar_turmas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as turmas cadastradas no banco de dados.
 
     Returns:
@@ -57,7 +57,7 @@ def listar_turmas() -> jsonify:
     return jsonify([{"id": turma.id, "ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo} for turma in turmas]), 200
 
 
-def buscar_turma(id: int) -> jsonify:
+def buscar_turma(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Busca uma turma específica pelo número.
 
     Args:
@@ -70,7 +70,7 @@ def buscar_turma(id: int) -> jsonify:
     return jsonify({"id": turma.id, "ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo}), 200
 
 
-def alterar_turma(id: int) -> jsonify:
+def alterar_turma(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Altera os dados de uma turma existente.
 
     Esta função recebe o id de uma turma e os novos dados via JSON, valida os dados e, se válidos, atualiza a turma no banco de dados.
@@ -115,7 +115,7 @@ def alterar_turma(id: int) -> jsonify:
     return jsonify({"mensagem": "Turma atualizada com sucesso!", "data": {"id": turma.id, "ano": turma.ano, "serie": turma.serie, "nivel_de_ensino": turma.nivel_de_ensino, "turno": turma.turno, "status": turma.status, "sala_numero": turma.sala_numero, "calendario_ano_letivo": turma.calendario_ano_letivo}}), 200
 
 
-def remover_turma(id: int) -> jsonify:
+def remover_turma(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Remove uma turm existente do banco de dados.
 
     Args:

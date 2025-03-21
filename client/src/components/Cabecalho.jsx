@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
 import { FaBars } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import apiClient from "../axiosConfig";
+import { useAuth } from "../contexts/AuthContext";
 
 /**
  * Componente para exibir o cabeçalho da página.
@@ -13,6 +15,20 @@ import { useLocation } from "react-router-dom";
 const Cabecalho = ({ menus }) => {
   const [showMenu, setShowMenu] = useState(false);
   const url = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const logout = async (e) => {
+    e.preventDefault();
+    
+    try {
+      await apiClient("/api/auth/logout");
+
+      navigate("/login");
+    } catch (erro) {
+      console.erro(erro.message)
+    }
+  }
 
   return (
     <div>
@@ -31,8 +47,8 @@ const Cabecalho = ({ menus }) => {
 
           <Navbar.Collapse className="justify-content-end d-none d-lg-flex">
             <Nav className="d-flex align-items-center gap-3">
-              <p className="text-light">username</p>
-              <Nav.Link href="/" className="text-light">
+              <p className="text-light">{user ? user.nome : "Carregando..."}</p>
+              <Nav.Link onClick={logout} className="text-light">
                 <IoLogOutOutline size={30} />
               </Nav.Link>
             </Nav>
