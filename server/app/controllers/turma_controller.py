@@ -94,6 +94,14 @@ def alterar_turma(id: int) -> jsonify:
     turma_existente = Turma.query.filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
     if turma_existente is not None:
         return jsonify({"erro": ["Turma já existe"]}), 400
+    
+    calendario_existente = db.session.query(Calendario).filter_by(ano_letivo=data['calendario_ano_letivo']).first()
+    if calendario_existente is None:
+        return jsonify({"erro": ["Calendário não existe"]}), 400
+    
+    sala_existente = db.session.query(Sala).filter_by(numero=data['sala_numero']).first()
+    if sala_existente is None:
+        return jsonify({"erro": ["Sala não existe"]}), 400
 
     turma.ano = data['ano']
     turma.serie = data['serie']

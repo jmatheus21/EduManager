@@ -208,8 +208,8 @@ def test_deletar_sala_valido(client, app):
         db.session.add(calendario)
         db.session.commit()
 
-        turmaDaManha = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'M', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
-        turmaDaTarde = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'V', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
+        turmaDaManha = Turma(ano = 1, serie = 'A', nivel_de_ensino = 'Fundamental',turno = 'M', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
+        turmaDaTarde = Turma(ano = 1, serie = 'A', nivel_de_ensino = 'Fundamental',turno = 'V', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
         db.session.add(turmaDaManha, turmaDaTarde)
         db.session.commit()
 
@@ -236,8 +236,8 @@ def test_deletar_sala_turmas_ativas(client, app):
         db.session.add(calendario)
         db.session.commit()
 
-        turmaDaManha = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'M', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
-        turmaDaTarde = Turma(ano = 1, serie = 'A', nivel_ensino = 'Fundamental',turno = 'V', status ='A', sala_numero = 101, calendario_ano_letivo = 2026)
+        turmaDaManha = Turma(ano = 1, serie = 'A', nivel_de_ensino = 'Fundamental',turno = 'M', status ='C', sala_numero = 101, calendario_ano_letivo = 2026)
+        turmaDaTarde = Turma(ano = 1, serie = 'A', nivel_de_ensino = 'Fundamental',turno = 'V', status ='A', sala_numero = 101, calendario_ano_letivo = 2026)
         db.session.add_all([turmaDaManha, turmaDaTarde])
         db.session.commit()
 

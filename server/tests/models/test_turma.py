@@ -41,7 +41,7 @@ def test_cadastrar_turma(app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -51,7 +51,7 @@ def test_cadastrar_turma(app):
         assert turma_adicionada.ano == 9
         assert turma_adicionada.serie == "A"
         assert turma_adicionada.nivel_de_ensino == "Fundamental"
-        assert turma_adicionada.turno == "D"
+        assert turma_adicionada.turno == "M"
         assert turma_adicionada.status == "A"
         assert turma_adicionada.sala_numero == 101
         assert turma_adicionada.calendario_ano_letivo == 2026
@@ -69,7 +69,7 @@ def test_listar_turmas(app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -79,7 +79,7 @@ def test_listar_turmas(app):
         assert turmas[0].ano == 9
         assert turmas[0].serie == "A"
         assert turmas[0].nivel_de_ensino == "Fundamental"
-        assert turmas[0].turno == "D"
+        assert turmas[0].turno == "M"
         assert turmas[0].status == "A"
         assert turmas[0].sala_numero == 101
         assert turmas[0].calendario_ano_letivo == 2026
@@ -97,7 +97,7 @@ def test_buscar_turma(app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -107,7 +107,7 @@ def test_buscar_turma(app):
         assert turma_buscada.ano == 9
         assert turma_buscada.serie == "A"
         assert turma_buscada.nivel_de_ensino == "Fundamental"
-        assert turma_buscada.turno == "D"
+        assert turma_buscada.turno == "M"
         assert turma_buscada.status == "A"
         assert turma_buscada.sala_numero == 101
         assert turma_buscada.calendario_ano_letivo == 2026
@@ -125,7 +125,7 @@ def test_alterar_turma(app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
@@ -162,7 +162,7 @@ def test_remover_turma(app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        turma = Turma(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
         db.session.add(turma)
         db.session.commit()
 
