@@ -1,6 +1,7 @@
 from datetime import date
-from .validators_helpers import validar_data_contrato, validar_telefone, validar_data, validar_data_de_nascimento, validar_data_de_nascimento_aluno, validar_horario_completo, validar_horario_trabalho
+from .validators_helpers import validar_data_contrato, validar_telefone, validar_data, validar_data_de_nascimento, validar_data_de_nascimento_aluno, validar_horario_completo, validar_horario_trabalho, validar_hora, validar_dia_da_semana
 from .date_helpers import string_para_data
+from .hour_helpers import string_para_hora
 from .disciplina_helpers import validar_codigo
 
 
@@ -419,20 +420,25 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_
         []
     """
     erros = []
+    
+    if not hora_inicio or not isinstance(hora_inicio, str) or not validar_hora(hora_inicio):
+        erros.append("O atributo 'hora_inicio' é obrigatório e deve ter o formato correto")
 
-    # Validação dias_da_semana
+    if not hora_fim or not isinstance(hora_fim, str) or not validar_hora(hora_fim):
+        erros.append("O atributo 'hora_fim' é obrigatório e deve ter o formato correto")
+
     if not dias_da_semana or not isinstance(dias_da_semana, str) or dias_da_semana < 5 or dias_da_semana > 7:
         erros.append("O campo 'dias_da_semana' é obrigatório e deve ser no mínimo 5 e no máximo 7 ")
+    elif not validar_dia_da_semana(dias_da_semana):
+        erros.append("Os dias da semana não são válidos")
 
-    # Validação usuario_cpf
     if not usuario_cpf or not isinstance(usuario_cpf, str) or len(usuario_cpf) == 11:
         erros.append("O campo 'usuario_cpf' é obrigatório e deve ter 11 caracteres")
 
-    # Validação disciplina_codigo
     if not disciplina_codigo or not isinstance(disciplina_codigo, str) or len(disciplina_codigo) < 6 or len(disciplina_codigo) > 10:
         erros.append("O campo 'disciplina_codigo' é obrigatório e deve ter no máximo 10 caracteres e no mínimo 6 caracteres")
 
-    # Validação turma_id
     if not isinstance(turma_id, int) or turma_id <= 0:
         erros.append("O campo 'turma_id' é obrigatório e deve ser um número inteiro positivo")
-
+    
+    return erros

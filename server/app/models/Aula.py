@@ -26,7 +26,6 @@ class Aula (db.Model):
     hora_inicio = db.Column(db.Time, nullable=False, doc="O horário de início da aula (Deve ser no formato 'HH:MM', em que HH representa as horas e MM representa os minutos).")
     hora_fim = db.Column(db.Time, nullable=False, doc="O horário de fim da aula (Deve ser no formato 'HH:MM', em que HH representa as horas e MM representa os minutos).")
     dias_da_semana = db.Column(ARRAY(db.String(3)), nullable=False, doc="Os dias da semana que a aula ocorre (máximo de 100 caracteres).")
-    # professor_cpf = db.Column(db.String(20), db.ForeignKey('usuario.cpf', ondelete = 'CASCADE', onupdate = 'CASCADE'), nullable=False, doc="O cpf do professor que ministra a aula (máximo de 20 caracteres).")
     usuario_cpf = db.Column(db.String(20), db.ForeignKey('usuario.cpf', ondelete = 'CASCADE', onupdate = 'CASCADE'), nullable=False, doc="O cpf do professor que ministra a aula (máximo de 20 caracteres).")
     disciplina_codigo = db.Column(db.String(10), db.ForeignKey('disciplina.codigo', ondelete = 'CASCADE', onupdate = 'CASCADE'), nullable=False, doc="O código da discplina referente a aula (máximo de 10 caracteres).")
     turma_id = db.Column(db.Integer, db.ForeignKey('turma.id', ondelete = 'CASCADE', onupdate = 'CASCADE'), nullable=False, doc="O id da turma referente a aula (Número inteiro positivo).")
