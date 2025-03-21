@@ -231,6 +231,14 @@ def validar_disciplina (codigo: str, nome: str, carga_horaria: int, ementa: str,
     return erros
 
 
+"""
+Módulo de Validação de Turmas.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+
 def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, status: str, sala_numero: int, calendario_ano_letivo: int):
     """Valida os dados de uma turma.
 
@@ -381,5 +389,50 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
     return erros
 
 
+"""
+Módulo de Validação de Aulas.
 
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+
+def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_cpf: str, disciplina_codigo: str, turma_id: int ):
+    """Valida os dados de uma aula.
+
+    Esta função verifica se os dados fornecidos para uma turma estão dentro dos critérios esperados.
+    Caso haja erros, eles são retornados em uma lista.
+
+    Args:
+        hora_inicio (str): Hora de início no formato 'HH:MM'.
+        hora_fim (str): Hora de fim no formato 'HH:MM'.
+        dias_da_semana (str): Os dias da disciplina. Deve ter no mínimo 5 caracteres e máximo 7.
+        usuario_cpf (str): O CPF do usuário. Deve ter obrigatoriamente 11 caracteres.
+        disciplina_codigo (str): O código da disciplina. Deve ter no mínimo 6 caracteres e no máximo 10.
+        turma_id (int): O id da turma. Deve ser no mínimo 0.
+    Returns:
+        list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
+
+    Exemplo:
+        >>> erros = validar_aula("08:00", "09:00", "Segunda", "12345678900", "MAT001", 1)
+        >>> print(erros)
+        []
+    """
+    erros = []
+
+    # Validação dias_da_semana
+    if not dias_da_semana or not isinstance(dias_da_semana, str) or dias_da_semana < 5 or dias_da_semana > 7:
+        erros.append("O campo 'dias_da_semana' é obrigatório e deve ser no mínimo 5 e no máximo 7 ")
+
+    # Validação usuario_cpf
+    if not usuario_cpf or not isinstance(usuario_cpf, str) or len(usuario_cpf) == 11:
+        erros.append("O campo 'usuario_cpf' é obrigatório e deve ter 11 caracteres")
+
+    # Validação disciplina_codigo
+    if not disciplina_codigo or not isinstance(disciplina_codigo, str) or len(disciplina_codigo) < 6 or len(disciplina_codigo) > 10:
+        erros.append("O campo 'disciplina_codigo' é obrigatório e deve ter no máximo 10 caracteres e no mínimo 6 caracteres")
+
+    # Validação turma_id
+    if not isinstance(turma_id, int) or turma_id <= 0:
+        erros.append("O campo 'turma_id' é obrigatório e deve ser um número inteiro positivo")
 
