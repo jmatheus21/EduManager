@@ -12,7 +12,7 @@ import { ConsultarDisciplina, FormularioDisciplina } from "./pages/Disciplina";
 import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pages/Calendario";
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
 import { ConsultarTurma, FormularioTurma, InfoTurma } from "./pages/Turma";
-import { ConsultarAluno, FormularioAluno } from "./pages/Aluno";
+import { ConsultarAluno, FormularioAluno, InfoAluno } from "./pages/Aluno";
 import Matricula from "./pages/Matricula/Matricula.jsx"
 import "./index.css";
 
@@ -80,14 +80,14 @@ createRoot(document.getElementById("root")).render(
           <Route path="aluno" element={<GerenciarProtegido menus={criarMenu("aluno")} />}>
             <Route index element={<ConsultarAluno />} />
             <Route path="cadastrar" element={<FormularioAluno />} />
-            {/* <Route path=":chave" element={<InfoAluno />} />
-            <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
+            <Route path=":chave" element={<InfoAluno />} />
+            <Route path="alterar/:chave" element={<FormularioAluno />} />
           </Route>
           <Route path="matricula" element={<GerenciarProtegido menus={criarMenu("matricula")} />}>
             <Route index element={<Matricula />} />
             <Route path="cadastrar" element={<FormularioAluno />} />
-            {/* <Route path=":chave" element={<InfoAluno />} />
-            <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
+            <Route path=":chave" element={<InfoAluno />} />
+            {/* <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
           </Route>
         </Routes>
       </AuthProvider>

@@ -13,8 +13,7 @@ from ..middlewares.token_middleware import token_required
 usuario_bp = Blueprint("usuario", __name__)
 
 @usuario_bp.route("/", methods = ['POST'])
-@token_required
-def cadastrar_usuario(current_user_cpf: str, current_user_role: str) -> jsonify:
+def cadastrar_usuario() -> jsonify:
     """Rota para cadastrar um novo usuário.
 
     Esta rota recebe os dados de um usuário via JSON e chama o controlador para realizar o cadastro.
@@ -26,7 +25,7 @@ def cadastrar_usuario(current_user_cpf: str, current_user_role: str) -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo uma mensagem e os dados do usuário cadastrado.
     """
-    return usuario_controller.cadastrar_usuario(current_user_cpf, current_user_role)
+    return usuario_controller.cadastrar_usuario()
 
 
 @usuario_bp.route("/", methods=['GET'])

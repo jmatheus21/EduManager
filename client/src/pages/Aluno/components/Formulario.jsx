@@ -74,7 +74,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
   const funcaoVoltar = () => navigate(`/aluno/${chave}`);
 
   return (
-        <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(enviarFormulario)}>
+        <Form className="flex-fill d-flex flex-column justify-content-between mt-4" onSubmit={handleSubmit(onSubmit)}>
             <Container fluid className="d-grid gap-3">
             <Row className="gap-5">
                 <Col>

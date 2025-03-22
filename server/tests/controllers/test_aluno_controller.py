@@ -23,10 +23,13 @@ def criar_dependencias(app):
                 db.session.add(calendario)
                 sala = Sala(numero=101, capacidade=50, localizacao="Bloco A, 1° andar")
                 db.session.add(sala)
-                turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
-                db.session.add(turma)
+                turma1 = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
+                db.session.add(turma1)
+                turma2 = Turma(ano=1, serie="B", nivel_de_ensino="Ensino Médio", turno="N", status="C", sala_numero=101, calendario_ano_letivo=2026)
+                db.session.add(turma2)
 
             db.session.commit()
+    return turma1, turma2
 
 
 def test_cadastrar_aluno(client, app):
@@ -175,9 +178,9 @@ def test_listar_alunos(client, app):
     """
     with app.app_context():
         usuario_entra_no_sistema(client, app)
-        criar_dependencias(app)
+        turma1, turma2 = criar_dependencias(app)
 
-        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"), turmas=[turma1, turma2])
         db.session.add(aluno)
         db.session.commit()
 
@@ -201,9 +204,9 @@ def test_buscar_aluno(client, app):
     """
     with app.app_context():
         usuario_entra_no_sistema(client, app)
-        criar_dependencias(app)
+        turma1, turma2 = criar_dependencias(app)
 
-        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"), turmas=[turma1])
         db.session.add(aluno)
         db.session.commit()
 
@@ -222,29 +225,135 @@ def test_buscar_aluno(client, app):
         assert dados["data_de_nascimento"] == "2011-09-10", "A data de nascimento do aluno deve ser 2011-09-10."
 
 
-# def test_alterar_aluno(client, app):
-#     """Testa a atualização dos dados de um aluno.
+def test_alterar_aluno(client, app):
+    """Testa a atualização dos dados de um aluno.
 
-#     Este teste verifica se a requisição PUT para a rota '/aluno/{matricula}' retorna o status code 200 (OK),
-#     se a resposta contém uma mensagem de sucesso e se os dados da aluno foram atualizados corretamente.
+    Este teste verifica se a requisição PUT para a rota '/aluno/{matricula}' retorna o status code 200 (OK),
+    se a resposta contém uma mensagem de sucesso e se os dados da aluno foram atualizados corretamente.
 
-#     Args:
-#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         criar_dependencias(app)
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        usuario_entra_no_sistema(client, app)
+        turma1, turma2 = criar_dependencias(app)
 
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"), turmas=[turma2])
+        db.session.add(aluno)
+        db.session.commit()
 
-# def test_deletar_aluno(client, app):
-#     """Testa a exclusão de um aluno.
+        # Dados para atualização
+        dados_atualizacao = {
+            "nome": "João Pedro dos Santos",
+            "email": "joaopedro123@email.com",
+            "telefone": "79 9 1234-5678",
+            "endereco": "Bairro X, Rua A",
+            "data_de_nascimento": "2011-09-11",
+            "turma_id": 1,
+        }
 
-#     Este teste verifica se a requisição DELETE para a rota '/aluno/{matricula}' retorna o status code 200 (OK)
-#     e se a resposta contém uma mensagem de sucesso.
+        response = client.put(f'/aluno/{aluno.matricula}', json=dados_atualizacao)
 
-#     Args:
-#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         criar_dependencias(app)
+        assert response.status_code == 200, "O status code deve ser 200 (OK)."
+        assert "mensagem" in response.json, "A resposta deve conter uma mensagem."
+        assert "data" in response.json, "A resposta deve conter os dados do aluno."
+        
+        aluno = response.json["data"]
+        
+        assert aluno["matricula"] == "202600000001", "A matrícula do aluno deve ser '202600000001'."
+        assert aluno["nome"] == "João Pedro dos Santos", "O nome do aluno deve ser 'João Pedro dos Santos'."
+        assert aluno["email"] == "joaopedro123@email.com", "O e-mail do aluno deve ser 'joaopedro123@email.com'."
+        assert aluno["telefone"] == "79 9 1234-5678", "O número do aluno deve ser '79 9 1234-5678'."
+        assert aluno["endereco"] == "Bairro X, Rua A", "O endereço do aluno deve ser 'Bairro X, Rua A'."
+        assert aluno["data_de_nascimento"] == "2011-09-11", "A data de nascimento do aluno deve ser '2011-09-11'."
+
+def test_alterar_aluno_turma_inexistente(client, app):
+    """Testa a atualização dos dados de um aluno.
+
+    Este teste verifica se a requisição PUT para a rota '/aluno/{matricula}' retorna o status code 400 (Bad request),
+    se a resposta contém uma mensagem de erro e se os dados da aluno não foram atualizados.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        usuario_entra_no_sistema(client, app)
+        turma1, turma2 = criar_dependencias(app)
+
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"), turmas=[turma1, turma2])
+        db.session.add(aluno)
+        db.session.commit()
+
+        # Dados para atualização
+        dados_atualizacao = {
+            "nome": "João Pedro dos Santos",
+            "email": "joaopedro123@email.com",
+            "telefone": "79 9 1234-5678",
+            "endereco": "Bairro X, Rua A",
+            "data_de_nascimento": "2011-09-11",
+            "turma_id": 3,
+        }
+
+        response = client.put(f'/aluno/{aluno.matricula}', json=dados_atualizacao)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        erro = response.json["erro"]
+        assert "Turma não existe" in erro, "Deve haver um erro de turma inexistente"
+        
+def test_alterar_aluno_turma_fechada(client, app):
+    """Testa a atualização dos dados de um aluno.
+
+    Este teste verifica se a requisição PUT para a rota '/aluno/{matricula}' retorna o status code 400 (Bad request),
+    se a resposta contém uma mensagem de erro e se os dados da aluno não foram atualizados.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        usuario_entra_no_sistema(client, app)
+        turma1, turma2 = criar_dependencias(app)
+
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"), turmas=[turma1])
+        db.session.add(aluno)
+        db.session.commit()
+
+        # Dados para atualização
+        dados_atualizacao = {
+            "nome": "João Pedro dos Santos",
+            "email": "joaopedro123@email.com",
+            "telefone": "79 9 1234-5678",
+            "endereco": "Bairro X, Rua A",
+            "data_de_nascimento": "2011-09-11",
+            "turma_id": 2,
+        }
+
+        response = client.put(f'/aluno/{aluno.matricula}', json=dados_atualizacao)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        erro = response.json["erro"]
+        assert "A turma está fechada" in erro, "Deve haver um erro de turma fechada"
+
+def test_deletar_aluno(client, app):
+     """Testa a exclusão de um aluno.
+
+     Este teste verifica se a requisição DELETE para a rota '/aluno/{matricula}' retorna o status code 200 (OK)
+     e se a resposta contém uma mensagem de sucesso.
+
+     Args:
+         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+     """
+     with app.app_context():
+        usuario_entra_no_sistema(client, app)
+        criar_dependencias(app)
+
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
+        db.session.add(aluno)
+        db.session.commit()
+
+        response = client.delete(f'/aluno/{aluno.matricula}')
+        assert response.status_code == 200, "O status code deve ser 200 (OK)."
+        assert response.json["mensagem"] == "Aluno deletado com sucesso!"

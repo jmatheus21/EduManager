@@ -9,6 +9,7 @@ from flask import request, jsonify
 from app.extensions import db
 from ..models import Aluno, Turma
 from app.utils.validators import validar_aluno
+from app.utils.date_helpers import string_para_data
 
 
 def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -31,7 +32,6 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
         return jsonify({"erro": erros }), 400
 
     # Verifica se a turma existe
-    # id -> turma_id
     turma_existente = db.session.get(Turma, data["turma_id"])
     if turma_existente is None:
         return jsonify({"erro": ["Turma não existe"]}), 400
@@ -58,7 +58,7 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     novo_aluno.turmas.append(turma_existente)
     db.session.add(novo_aluno)
     db.session.commit()
-    return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento, "turma": turma_existente.id}}), 201
+    return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento, "turma_id": turma_existente.id}}), 201
 
 def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
 
@@ -104,7 +104,7 @@ def listar_alunos(current_user_cpf: str, current_user_role: str) -> jsonify:
     """
     alunos = Aluno.query.all()
 
-    return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma": max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo).id} for aluno in alunos]), 200
+    return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma_id": max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo).id} for aluno in alunos]), 200
 
 
 def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -124,4 +124,72 @@ def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) 
     if turma_atual.status != "A":
         turma_atual = "Não matriculado"
 
-    return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma": turma_atual.id}), 200
+    return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma_id": turma_atual.id}), 200
+
+
+def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Altera os dados de um aluno existente.
+
+    Esta função recebe a matrícula de um aluno e os novos dados via JSON, valida os dados e, se válidos, atualiza o aluno no banco de dados.
+
+    Args:
+        matricula (str): A matrícula do aluno a ser alterado.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados do aluno, ou uma mensagem de erro em caso de dados inválidos.
+    """
+    aluno = db.session.query(Aluno).filter_by(matricula=matricula).first()
+    data = request.get_json()
+    
+    erros = validar_aluno(nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
+    if erros:
+        return jsonify({"erro": erros}), 400
+
+    nova_turma = all(turma.id != data['turma_id'] for turma in aluno.turmas) # Indica se a turma já estava relacionada com o aluno
+
+    if nova_turma:
+        # Verifica se a turma existe
+        turma_existente = db.session.get(Turma, data["turma_id"])
+        if turma_existente is None:
+            return jsonify({"erro": ["Turma não existe"]}), 400
+        
+        # Verifica se a turma está aberta
+        turma_fechada = db.session.query(Turma).filter_by(id=data['turma_id']).first()
+        if turma_fechada is not None and turma_fechada.status == "C":
+            return jsonify({"erro": ["A turma está fechada"]}), 400
+
+    if aluno.email != data['email']:
+        email_existente = db.session.query(Aluno).filter_by(email= data['email']).first()
+        if email_existente:
+            return jsonify({"erro": ["E-mail já existe"]}), 400
+        
+    aluno.nome = data['nome']
+    aluno.email = data['email']
+    aluno.telefone = data['telefone']
+    aluno.endereco = data['endereco']
+    aluno.data_de_nascimento = string_para_data(data['data_de_nascimento'])
+
+    # Caso a turma seja nova, adiciona nova turma ao aluno
+    if nova_turma:
+        turma = db.session.get(Turma, data['turma_id'])
+        aluno.turmas.append(turma)
+
+    db.session.commit()
+
+    return jsonify({"mensagem": "Aluno atualizado com sucesso!", "data": {"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento}}), 200
+
+
+def remover_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Remove um aluno existente do banco de dados.
+
+    Args:
+        matrícula (str): A matrícula do aluno a ser removido.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso.
+    """
+    aluno = db.session.query(Aluno).filter_by(matricula=matricula).first()
+    
+    db.session.delete(aluno)
+    db.session.commit()
+    return jsonify({"mensagem": "Aluno deletado com sucesso!"}), 200

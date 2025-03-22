@@ -7,7 +7,7 @@ import { BarraDeBusca, Titulo, Listagem } from "../../components";
 const colunas = [
     { field: "matricula", headerName: "Matrícula", flex: 1, align: "center", headerAlign: "center" },
     { field: "nome", headerName: "Nome", flex: 1, align: "center", headerAlign: "center" },
-    { field: "turma", headerName: "Turma", flex: 1, align: "center", headerAlign: "center" },
+    { field: "turma_id", headerName: "Turma", flex: 1, align: "center", headerAlign: "center" },
     { field: "email", headerName: "E-mail", flex: 1, align: "center", headerAlign: "center" },
     { field: "telefone", headerName: "Telefone", flex: 1, align: "center", headerAlign: "center"},
     { field: "data_de_nascimento", headerName: "Data de Nascimento", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => inverterData(value) },
