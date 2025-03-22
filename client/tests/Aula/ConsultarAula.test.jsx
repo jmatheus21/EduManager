@@ -33,14 +33,14 @@ describe("ConsultarAula", () => {
     it("renderiza a página corretamente", async () => {
         render(
             <BrowserRouter>
-                <ConsultarAula />
+                <ConsultarAula/>
             </BrowserRouter>
         );
 
         // Verifica se o título da página foi renderizado
         expect(await screen.getByText(/Consultar Aulas/i)).toBeInTheDocument();
 
-        // Verifica se o campo "Id da turma:" foi renderizado
+        // Verifica se o campo "Id da aula:" foi renderizado
         expect(screen.getByLabelText(/Id da aula:/i)).toBeInTheDocument();
 
         // Verifica se o botão foi renderizado
@@ -59,10 +59,10 @@ describe("ConsultarAula", () => {
         expect(screen.getByText(/Professor/i)).toBeInTheDocument();
 
         // Verifica se o campo "H.Início" foi renderizado
-        expect(screen.getByText(/H.Início/i)).toBeInTheDocument();
+        expect(screen.getByText(/H. Início/i)).toBeInTheDocument();
 
         // Verifica se o campo "H.Fim" foi renderizado
-        expect(screen.getByText(/H.Fim/i)).toBeInTheDocument();
+        expect(screen.getByText(/H. Fim/i)).toBeInTheDocument();
 
         // Verifica se o campo "Dias da Semana" foi renderizado
         expect(screen.getByText(/Dias da Semana/i)).toBeInTheDocument();

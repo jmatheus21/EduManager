@@ -18,6 +18,7 @@ const cards = [
   { "nome": "Sala", "url": "sala", "icone": <FaDoorOpen size={70} color='#000' />, "auth": false },
   { "nome": "Boletim", "url": "boletim", "icone": <FaClipboardList size={60} color='#000' />, "auth": false },
   { "nome": "Histórico", "url": "historico", "icone": <FaHistory size={50} color='#000' />, "auth": false },
+  { "nome": "Matrícula", "url": "matricula", "icone": <FaUserGraduate size={60} color='#000' />, "auth": false }
 ]
 
 /**

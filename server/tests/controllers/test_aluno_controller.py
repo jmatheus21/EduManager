@@ -51,7 +51,7 @@ def test_cadastrar_aluno(client, app):
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-10",
-            "id_turma": 1,
+            "turma_id": 1,
         }
 
         response = client.post('/aluno/', json=dados_validos)
@@ -95,7 +95,7 @@ def test_cadastrar_aluno_existente(client, app):
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-10",
-            "id_turma": 1,
+            "turma_id": 1,
         }
 
         response = client.post('/aluno/', json=dados)
@@ -124,7 +124,7 @@ def test_cadastrar_aluno_turma_inexistente(client, app):
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-10",
-            "id_turma": 1,
+            "turma_id": 1,
         }
 
         response = client.post('/aluno/', json=dados)
@@ -153,7 +153,7 @@ def test_cadastrar_aluno_dados_invalidos(client, app):
             "telefone": "79 9 12345-678", # Formato inválido
             "endereco": "",
             "data_de_nascimento": "3200-09-10",
-            "id_turma": 1,
+            "turma_id": 1,
         }
 
         response = client.post('/aluno/', json=dados_invalidos)

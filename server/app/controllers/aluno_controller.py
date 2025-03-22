@@ -31,8 +31,8 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
         return jsonify({"erro": erros }), 400
 
     # Verifica se a turma existe
-    # id -> id_turma
-    turma_existente = db.session.get(Turma, data["id_turma"])
+    # id -> turma_id
+    turma_existente = db.session.get(Turma, data["turma_id"])
     if turma_existente is None:
         return jsonify({"erro": ["Turma não existe"]}), 400
 
@@ -49,16 +49,47 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
         return jsonify({"erro": ["E-mail já existe"]}), 400
     
     # Verifica se a turma está aberta
-    # id -> id_turma
-    turma_fechada = db.session.query(Turma).filter_by(id=data['id_turma']).first()
-    if turma_fechada is not None and turma_fechada.status == "C":
+    # id -> turma_id
+    if turma_existente.status != "A":
         return jsonify({"erro": ["A turma está fechada, portanto, não é possível cadastrar mais alunos"]}), 400
 
     
     novo_aluno = Aluno(matricula=matricula, nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
+    novo_aluno.turmas.append(turma_existente)
     db.session.add(novo_aluno)
     db.session.commit()
-    return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento}}), 201
+    return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento, "turma": turma_existente.id}}), 201
+
+def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
+
+    data = request.get_json()
+
+    matricula = data["aluno_matricula"]
+    id = data["turma_id"]
+
+    if not matricula or not isinstance(matricula, str) or len(matricula) != 12:
+        return jsonify({"erro": ["A matrícula do aluno é inválida"]}), 400
+    
+    if not id or not isinstance(id, int) or id <= 0:
+        return jsonify({"erro": ["O id da turma é inválido"]}), 400
+    
+    aluno = db.session.get(Aluno, matricula)
+    if aluno is None:
+        return jsonify({"erro": ["Não existe aluno com essa matrícula"]}), 400
+    
+    turma = db.session.get(Turma, id)
+    if turma is None:
+        return jsonify({"erro": ["Não existe turma com esse id"]}), 400
+    
+    if turma.status != "A":
+        return jsonify({"erro": ["A turma informada não está ativa"]}), 400
+    
+    if turma in aluno.turmas:
+        return jsonify({"erro": ["Aluno já está matriculado nessa turma"]}), 400
+    
+    aluno.turmas.append(turma)
+
+    return jsonify({"messagem": "Aluno matriculado com sucesso!"}), 201
 
 
 def listar_alunos(current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -72,8 +103,8 @@ def listar_alunos(current_user_cpf: str, current_user_role: str) -> jsonify:
         jsonify: Resposta JSON contendo uma lista de alunos com seus respectivos dados.
     """
     alunos = Aluno.query.all()
-    
-    return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento} for aluno in alunos]), 200
+
+    return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma": max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo).id} for aluno in alunos]), 200
 
 
 def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -88,4 +119,9 @@ def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) 
         jsonify: Resposta JSON contendo os dados do aluno encontrado.
     """
     aluno = db.session.get(Aluno, matricula)
-    return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento}), 200
+    turma_atual = max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo)
+
+    if turma_atual.status != "A":
+        turma_atual = "Não matriculado"
+
+    return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma": turma_atual.id}), 200

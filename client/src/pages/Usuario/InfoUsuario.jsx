@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoInfo, ModalRemover, Listagem } from "../../components";
 import { inverterData, formatarCpf } from "../../components/Listagem.jsx";
 import useApi from "../../hooks/useApi";
 import { formatarMoeda } from "../Cargo/FormularioCargo.jsx";
+import { Alert } from "@mui/material";
 
 const colunas = [
   { field: "id", headerName: "#", flex: 1, align: "center", headerAlign: "center" },
@@ -82,7 +83,7 @@ const InfoUsuario = () => {
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações do Usuário</Titulo>
       {successParam && (
-        <Alert variant="success" className="p-3 mt-3">
+        <Alert severity="success" className="p-3 mt-3 d-flex align-content-center gap-3">
           Usuário alterado com sucesso!
         </Alert>
       )}

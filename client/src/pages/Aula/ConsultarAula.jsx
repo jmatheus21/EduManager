@@ -8,8 +8,8 @@ const colunas = [
     { field: "turma_id", headerName: "Turma", flex: 1, align: "center", headerAlign: "center" },
     { field: "disciplina_codigo", headerName: "Disciplina", flex: 1, align: "center", headerAlign: "center" },
     { field: "usuario_cpf", headerName: "Professor", flex: 1, align: "center", headerAlign: "center" },
-    { field: "hora_inicio", headerName: "H.Início", flex: 1, align: "center", headerAlign: "center" },
-    { field: "hora_fim", headerName: "H.Fim", flex: 1, align: "center", headerAlign: "center" },
+    { field: "hora_inicio", headerName: "H. Início", flex: 1, align: "center", headerAlign: "center" },
+    { field: "hora_fim", headerName: "H. Fim", flex: 1, align: "center", headerAlign: "center" },
     { field: "dias_da_semana", headerName: "Dias da Semana", flex: 1, align: "center", headerAlign: "center" }
 ];
 
@@ -40,7 +40,7 @@ const ConsultarAula = () => {
         <Container fluid>
             <Titulo>Consultar Aulas</Titulo>
             <BarraDeBusca
-                atributoNome={"Id da aula"}
+                atributoNome={"Id da Aula"}
                 tipo={"number"}
                 placeholder={"Exemplo: 1"}
                 min={1}

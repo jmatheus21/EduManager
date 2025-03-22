@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Titulo, BotaoInfo, ModalRemover } from "../../components";
 import ModalRemoverSalaErro from "./components/ModalRemoverSala";
 import useApi from "../../hooks/useApi";
+import { Alert } from "@mui/material";
 
 /**
  * Componente para exibir informações detalhadas de uma sala.
@@ -67,7 +68,7 @@ const InfoSala = () => {
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações da Sala</Titulo>
       {successParam && (
-        <Alert variant="success" className="p-3 mt-3">
+        <Alert severity="success" className="p-3 mt-3 d-flex align-content-center gap-3">
           Sala alterada com sucesso!
         </Alert>
       )}

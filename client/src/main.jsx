@@ -13,7 +13,8 @@ import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pag
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
 import { ConsultarTurma, FormularioTurma } from "./pages/Turma";
 import { ConsultarAluno, FormularioAluno } from "./pages/Aluno";
-import { ConsultarAula } from "./pages/Aula";
+import { ConsultarAula, FormularioAula } from "./pages/Aula";
+import Matricula from "./pages/Matricula/Matricula.jsx"
 import "./index.css";
 
 const criarMenu = (entidade) => {
@@ -85,7 +86,7 @@ createRoot(document.getElementById("root")).render(
           </Route>
           <Route path="aula" element={<GerenciarProtegido menus={criarMenu("aula")} />}>
             <Route index element={<ConsultarAula />} />
-            {/* <Route path="cadastrar" element={<FormularioAula />} /> */}
+            <Route path="cadastrar" element={<FormularioAula />} />
             {/* <Route path=":chave" element={<InfoAula />} />
             <Route path="alterar/:chave" element={<FormularioAula />}/> */}
           </Route>

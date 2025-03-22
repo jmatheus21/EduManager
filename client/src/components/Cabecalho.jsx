@@ -32,7 +32,7 @@ const Cabecalho = ({ menus }) => {
 
   return (
     <div>
-      <Navbar bg="primary" variant="dark" expand="lg" className="p-3">
+      <Navbar bg="primary" variant="dark" expand="lg" className="p-2">
         <Container fluid>
           <Button
             className="d-lg-none text-light"
@@ -41,7 +41,7 @@ const Cabecalho = ({ menus }) => {
             <FaBars size={24} />
           </Button>
 
-          <Navbar.Brand href="/" className="fs-2 fw-bold">
+          <Navbar.Brand href="/" className="fs-3 fw-bold">
             EduManager
           </Navbar.Brand>
 

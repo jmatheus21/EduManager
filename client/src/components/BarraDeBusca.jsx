@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Container, Form } from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
 import useApi from "../hooks/useApi.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert"
 
 /**
  * Componente unificado para barra de busca e exibição de alertas.
@@ -66,7 +67,7 @@ const BarraDeBusca = ({
         navigate(`/${rota}/${chave}`);
       }
     } catch (error) {
-      setTipoAlerta("danger");
+      setTipoAlerta("error");
       setMensagemAlerta(
         `${entidade.charAt(0).toUpperCase() + entidade.slice(1)} ${chave} não foi encontrad${entidade.endsWith("a") ? "a" : "o"}`
       );
@@ -114,7 +115,7 @@ const BarraDeBusca = ({
       </Form>
 
       {mensagemAlerta && (
-        <Alert variant={tipoAlerta} className="p-3 mb-3">
+        <Alert severity={tipoAlerta} className="p-3 mb-3 d-flex align-content-center gap-3">
           {mensagemAlerta}
         </Alert>
       )}
