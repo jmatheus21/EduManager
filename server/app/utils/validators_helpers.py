@@ -42,24 +42,25 @@ def validar_data(data : str) -> bool:
 
 
 def validar_hora(hora: str) -> bool:
-    """Valida se uma string está no formato de hora 'HH:MM'. 
+    """Valida se uma string está no formato de hora 'HH:MM:SS'. 
 
     Esta função utiliza uma expressão regular para verificar se a string fornecida
-    segue o formato de data ISO 8601 (horas:minutos). O formato esperado é:
+    segue o formato de data ISO 8601 (horas:minutos:segundos). O formato esperado é:
 
-    HH:MM (exemplo: "06:30")
+    HH:MM:SS (exemplo: "06:30:00")
 
     Critérios de validação:
     - Deve conter exatamente 2 dígitos para as horas.
     - Deve conter exatamente 2 dígitos para os minutos.
-    - Deve seguir o padrão com dois-pontos separando os elementos (HH:MM).
+    - Deve conter exatamente 2 dígitos para os segundos
+    - Deve seguir o padrão com dois-pontos separando os elementos (HH:MM:SS).
     - A string não pode conter caracteres adicionais antes ou depois da hora.
 
     Args:
         hora (str): A string representando a hora a ser validada.
 
     Returns:
-        bool: Retorna `True` se a string corresponder ao formato HH:MM, 
+        bool: Retorna `True` se a string corresponder ao formato HH:MM:SS, 
               caso contrário, retorna `False`."
     """
     # padrao = r"^\d{2}:\d{2}$"  # Corrigido para validar a string com o formato correto
@@ -75,14 +76,18 @@ def validar_hora(hora: str) -> bool:
     # else:
     #     return False
 
-    padrao = r"^\d{2}:\d{2}$" #r"\d{2}:\d{2}$"
-    padrao_hora = hora[:2]
-    padrao_minuto = hora[2:]
+    padrao = r"^\d{2}:\d{2}:\d{2}$" #r"\d{2}:\d{2}$"
+    padrao_hora = int(hora[:2])
+    # padrao_minuto = hora[2:]
+    padrao_minuto = int(hora[3:5])
+    padrao_segundo = int(hora[6:8])
 
-    if (padrao_hora < 5) or (padrao_hora > 23) or (padrao_minuto < 0) or (padrao_minuto > 59):
+    if (padrao_hora < 5) or (padrao_hora > 23) or (padrao_minuto < 0) or (padrao_minuto > 59) or (padrao_segundo < 0) or (padrao_segundo > 59):
         return False
+    else:
+        return True
     
-    return bool(re.match(padrao, hora))
+    # return bool(re.match(padrao, hora))
 
 
 def validar_dia_da_semana(dia_da_semana: str) -> bool:
@@ -104,9 +109,14 @@ def validar_dia_da_semana(dia_da_semana: str) -> bool:
         bool: Retorna `True` se a string corresponder a um dos padrões estabelecidos, 
               caso contrário, retorna `False`."
     """
-    dias_validos = {"Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"}
+    dias_validos = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"]
+
+    if dia_da_semana not in dias_validos:
+        return False
+    else:
+        return True
     
-    return dia_da_semana in dias_validos
+    # return dia_da_semana in dias_validos
 
 
 def validar_data_de_nascimento(data_de_nascimento: str) -> bool:

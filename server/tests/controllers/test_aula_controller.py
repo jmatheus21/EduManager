@@ -10,7 +10,7 @@ from app.extensions import db
 from app.utils.date_helpers import string_para_data
 from app.utils.hour_helpers import string_para_hora, hora_para_string
 from app.utils.usuario_helpers import gerar_hashing
-import datetime
+
 
 def criar_dependencias(app):
     """ Garante que instâncias das entidades `Usuario`, `Disciplina` e `Turma` estejam disponíveis para 
@@ -41,7 +41,41 @@ def criar_dependencias(app):
             db.session.commit()
 
 
+def criar_dependencias_segunda_disciplina(app):
+    """ Garante que instâncias das entidades `Usuario`, `Disciplina` e `Turma` estejam disponíveis para 
+    que testes na classe `aula` possam ser feitos. 
+
+    A criação desta dependência garante que o teste de cadastro de aula no mesmo horário, com o mesmo professor, seja feito.
+    """
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a disciplina existe
+            if not Disciplina.query.filter_by(codigo="MAT002").first():
+                disciplina = Disciplina(codigo="MAT002", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro:Zahar, 2014.")
+                db.session.add(disciplina)
+            
+            # Garante que o usuário existe
+            cargo = Cargo(nome="Professor", salario=2060.0, data_contrato="2027-12-31")
+            if not Usuario.query.filter_by(id=1).first():
+                usuario = Usuario(cpf="12345678910", nome="Alan Ferreira dos Santos", email="alanferreira@email.com", senha=gerar_hashing("bocaAberta123"), telefone="79 9 9999-8888", endereco="Bairro X, Rua A", horario_de_trabalho="Seg-Sex,7h-12h", data_de_nascimento=string_para_data("1998-05-17"), tipo="p", formacao="Licenciatura em Matemática", escolaridade= None, habilidades= None, disciplinas= [disciplina], cargos=[cargo])
+                db.session.add(usuario)
+
+            # Garante que a turma existe
+            if not Turma.query.filter_by(id=1).first():
+                calendario = Calendario(ano_letivo = 2026, data_inicio=string_para_data("2026-02-17"), data_fim=string_para_data("2026-11-27"), dias_letivos=150)
+                db.session.add(calendario)
+                sala = Sala(numero=101, capacidade=50, localizacao="Bloco A, 1° andar")
+                db.session.add(sala)
+                turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero= 101, calendario_ano_letivo= 2026)
+                db.session.add(turma)
+
+            db.session.commit()
+
+
 def criar_dependencias_usuario(app):
+    """ Garante que a instância das entidades `Usuario` esteja disponível para 
+    que testes na classe `aula` possam ser feitos.
+    """
     with app.app_context():
         with db.session.no_autoflush:
             # Garante que a disciplina existe
@@ -59,6 +93,9 @@ def criar_dependencias_usuario(app):
 
 
 def criar_dependencias_disciplina(app):
+    """ Garante que a instâncias das entidades `Disciplina` esteja disponível para 
+    que testes na classe `aula` possam ser feitos.
+    """
     with app.app_context():
         with db.session.no_autoflush:
             # Garante que a disciplina existe
@@ -70,6 +107,9 @@ def criar_dependencias_disciplina(app):
 
 
 def criar_dependencias_turma(app):
+    """ Garante que instâncias da entidade `Turma` esteja disponível para 
+    que testes na classe `aula` possam ser feitos.
+    """
     with app.app_context():
         with db.session.no_autoflush:
             # Garante que a turma existe
@@ -100,8 +140,8 @@ def test_cadastrar_aula(client, app):
         criar_dependencias(app)
 
         dados_validos = {
-            "hora_inicio": "13:00",
-            "hora_fim": "15:00",
+            "hora_inicio": "13:00:00",
+            "hora_fim": "15:00:00",
             "dias_da_semana": ["Segunda"],
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT001",
@@ -119,8 +159,8 @@ def test_cadastrar_aula(client, app):
         aula = response.json["data"]
         
         assert "id" in aula, "A resposta deve conter o campo 'id'."
-        assert aula["hora_inicio"].strftime('%H:%M') == "13:00", "O horário de início da aula deve ser '13:00'."
-        assert aula["hora_fim"].strftime('%H:%M') == "15:00", "O horário de fim da aula deve ser '15:00'."
+        assert aula["hora_inicio"] == "13:00:00", "O horário de início da aula deve ser '13:00:00'."
+        assert aula["hora_fim"] == "15:00:00", "O horário de fim da aula deve ser '15:00:00'."
         assert aula["dias_da_semana"] == ["Segunda"], "O dia da semana deve ser '['Segunda']'."
         assert aula["usuario_cpf"] == "12345678910", "O cpf do usuário deve ser '12345678910'."
         assert aula["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."
@@ -144,8 +184,8 @@ def test_cadastrar_aula_usuario_inexistente(client, app):
         criar_dependencias_turma(app)
 
         dados_validos = {
-            "hora_inicio": "08:00",
-            "hora_fim": "09:00",
+            "hora_inicio": "13:00:00",
+            "hora_fim": "15:00:00",
             "dias_da_semana": "Segunda",
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT001",
@@ -173,10 +213,10 @@ def test_cadastrar_aula_disciplina_inexistente(client, app):
     with app.app_context():
         criar_dependencias_usuario(app)
         criar_dependencias_turma(app)
-
+        
         dados_validos = {
-            "hora_inicio": "08:00",
-            "hora_fim": "09:00",
+            "hora_inicio": "08:00:00",
+            "hora_fim": "09:00:00",
             "dias_da_semana": "Segunda",
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT001",
@@ -203,11 +243,10 @@ def test_cadastrar_aula_turma_inexistente(client, app):
     """
     with app.app_context():
         criar_dependencias_usuario(app)
-        criar_dependencias_disciplina(app)
-
+        
         dados_validos = {
-            "hora_inicio": "08:00",
-            "hora_fim": "09:00",
+            "hora_inicio": "08:00:00",
+            "hora_fim": "09:00:00",
             "dias_da_semana": "Segunda",
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT001",
@@ -248,6 +287,7 @@ def test_cadastrar_aula_dados_invalidos(client, app):
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
         assert len(response.json["erro"]) == 6, "Deve haver 6 erros de validação."
 
+
 def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
     """Testa o cadastro de uma aula em uma horário que já existe outra aula com o mesmo usuário.
 
@@ -260,15 +300,16 @@ def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
     """
     with app.app_context():
         criar_dependencias(app)
+        criar_dependencias_segunda_disciplina(app)
 
-        aula = Aula(hora_inicio="08:00", hora_fim="09:00", dias_da_semana="Segunda", usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
         dados_invalidos = {
-            "hora_inicio": "08:00",
-            "hora_fim": "09:00",
-            "dias_da_semana": "Segunda",
+            "hora_inicio": "08:00:00",
+            "hora_fim": "09:00:00",
+            "dias_da_semana": ["Segunda"],
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT002",
             "turma_id": 1
@@ -294,7 +335,7 @@ def test_listar_aulas(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = Aula(hora_inicio="08:00", hora_fim="09:00", dias_da_semana="Segunda", usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
@@ -319,7 +360,7 @@ def test_buscar_aula(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = Aula(hora_inicio=string_para_hora("08:00"), hora_fim=string_para_hora("09:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
@@ -328,9 +369,9 @@ def test_buscar_aula(client, app):
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert isinstance(response.json, dict), "A resposta deve ser um dicionário."
         dados = response.json
-        assert "id" in aula, "A resposta deve conter o campo 'id'."
-        assert dados["hora_inicio"].strftime('%H:%M') == '08:00', "O horário de início da aula deve ser 08:00."
-        assert dados["hora_fim"].strftime('%H:%M') == '09:00', "O horário de fim da aula deve ser 09:00."
+        assert "id" in dados, "A resposta deve conter o campo 'id'."
+        assert dados["hora_inicio"] == "08:00:00", "O horário de início da aula deve ser 08:00:00."
+        assert dados["hora_fim"] == "09:00:00", "O horário de fim da aula deve ser 09:00:00."
         assert dados["dias_da_semana"] == ["Segunda"], "O dia da semana deve ser '['Segunda']'."
         assert dados["usuario_cpf"] == "12345678910", "O cpf do usuário deve ser '12345678910'."
         assert dados["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."

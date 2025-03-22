@@ -54,7 +54,7 @@ def test_cadastrar_aula(app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = Aula(hora_inicio=string_para_hora("13:00"), hora_fim=string_para_hora("15:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("13:00:00"), hora_fim=string_para_hora("15:00:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
 
         db.session.add(aula)
         db.session.commit()
@@ -62,8 +62,8 @@ def test_cadastrar_aula(app):
         aula_adicionada = Aula.query.filter_by(id=aula.id).first()
         assert aula_adicionada is not None
         assert aula_adicionada.id == aula.id
-        assert aula_adicionada.hora_inicio.strftime('%H:%M') == '13:00'
-        assert aula_adicionada.hora_fim.strftime('%H:%M') == '15:00'
+        assert aula_adicionada.hora_inicio.strftime('%H:%M:%S') == '13:00:00'
+        assert aula_adicionada.hora_fim.strftime('%H:%M:%S') == '15:00:00'
         assert aula_adicionada.dias_da_semana == ["Terça", "Quinta"]
         assert aula_adicionada.usuario_cpf == "12345678912"
         assert aula_adicionada.disciplina_codigo == "MAT001"
@@ -82,15 +82,15 @@ def test_listar_aulas(app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = Aula(hora_inicio=string_para_hora("13:00"), hora_fim=string_para_hora("15:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("13:00:00"), hora_fim=string_para_hora("15:00:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
         aulas = Aula.query.all()
         assert aulas[0] is not None
         assert aulas[0].id == aula.id
-        assert aulas[0].hora_inicio.strftime('%H:%M') == '13:00'
-        assert aulas[0].hora_fim.strftime('%H:%M') == '15:00'
+        assert aulas[0].hora_inicio.strftime('%H:%M:%S') == '13:00:00'
+        assert aulas[0].hora_fim.strftime('%H:%M:%S') == '15:00:00'
         assert aulas[0].dias_da_semana == ["Terça", "Quinta"]
         assert aulas[0].usuario_cpf == "12345678912"
         assert aulas[0].disciplina_codigo == "MAT001"
@@ -109,15 +109,15 @@ def test_buscar_aula(app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = Aula(hora_inicio=string_para_hora("13:00"), hora_fim=string_para_hora("15:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("13:00:00"), hora_fim=string_para_hora("15:00:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
         aula_buscada = db.session.get(Aula, aula.id)
         assert aula_buscada is not None
         assert aula_buscada.id == aula.id
-        assert aula_buscada.hora_inicio.strftime('%H:%M') == '13:00'
-        assert aula_buscada.hora_fim.strftime('%H:%M') == '15:00'
+        assert aula_buscada.hora_inicio.strftime('%H:%M:%S') == '13:00:00'
+        assert aula_buscada.hora_fim.strftime('%H:%M:%S') == '15:00:00'
         assert aula_buscada.dias_da_semana == ["Terça", "Quinta"]
         assert aula_buscada.usuario_cpf == "12345678912"
         assert aula_buscada.disciplina_codigo == "MAT001"

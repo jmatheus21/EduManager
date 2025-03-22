@@ -9,7 +9,7 @@ from flask import request, jsonify
 from app.extensions import db
 from ..models import Aula, Usuario, Disciplina, Turma
 from app.utils.validators import validar_aula
-from app.utils.hour_helpers import string_para_hora
+from app.utils.hour_helpers import string_para_hora, hora_para_string
 
 
 def cadastrar_aula() -> jsonify:
@@ -49,8 +49,12 @@ def cadastrar_aula() -> jsonify:
     nova_aula = Aula(hora_inicio=string_para_hora(data['hora_inicio']), hora_fim=string_para_hora(data['hora_fim']), dias_da_semana=data['dias_da_semana'], usuario_cpf=data['usuario_cpf'], disciplina_codigo=data['disciplina_codigo'], turma_id=data['turma_id'])
     db.session.add(nova_aula)
     db.session.commit()
-    return jsonify({"mensagem": "Aula criada com sucesso!", "data": {"id": nova_aula.id, "hora_inicio": nova_aula.hora_inicio, "hora_fim": nova_aula.hora_fim, "dias_da_semana": nova_aula.dias_da_semana, "usuario_cpf": nova_aula.usuario_cpf, "disciplina_codigo": nova_aula.disciplina_codigo, "turma_id": nova_aula.turma_id}}), 201
 
+    # Usando a função hora_para_string para converter os objetos time para string
+    hora_inicio_str = hora_para_string(nova_aula.hora_inicio)
+    hora_fim_str = hora_para_string(nova_aula.hora_fim)
+
+    return jsonify({"mensagem": "Aula criada com sucesso!", "data": {"id": nova_aula.id, "hora_inicio": hora_inicio_str, "hora_fim": hora_fim_str, "dias_da_semana": nova_aula.dias_da_semana, "usuario_cpf": nova_aula.usuario_cpf, "disciplina_codigo": nova_aula.disciplina_codigo, "turma_id": nova_aula.turma_id}}), 201
 
 def listar_aulas() -> jsonify:
     """Lista todas as aulas cadastradas no banco de dados.
@@ -59,7 +63,7 @@ def listar_aulas() -> jsonify:
         jsonify: Resposta JSON contendo uma lista de aulas com seus respectivos dados.
     """
     aulas = Aula.query.all()
-    return jsonify([{"id": aula.id, "hora_inicio": aula.hora_inicio, "hora_fim": aula.hora_fim, "dias_da_semana": aula.dias_da_semana, "usuario_cpf": aula.usuario_cpf, "disciplina_codigo": aula.disciplina_codigo, "turma_id": aula.turma_id} for aula in aulas]), 200
+    return jsonify([{"id": aula.id, "hora_inicio": hora_para_string(aula.hora_inicio), "hora_fim": hora_para_string(aula.hora_fim), "dias_da_semana": aula.dias_da_semana, "usuario_cpf": aula.usuario_cpf, "disciplina_codigo": aula.disciplina_codigo, "turma_id": aula.turma_id} for aula in aulas]), 200
 
 
 def buscar_aula(id: int) -> jsonify:
@@ -72,7 +76,7 @@ def buscar_aula(id: int) -> jsonify:
         jsonify: Resposta JSON contendo os dados da aula encontrada.
     """
     aula = db.session.get(Aula, id)
-    return jsonify({"id": aula.id, "ano": aula.ano, "serie": aula.serie, "nivel_de_ensino": aula.nivel_de_ensino, "turno": aula.turno, "status": aula.status, "sala_numero": aula.sala_numero, "calendario_ano_letivo": aula.calendario_ano_letivo}), 200
+    return jsonify({"id": aula.id, "hora_inicio": hora_para_string(aula.hora_inicio), "hora_fim": hora_para_string(aula.hora_fim), "dias_da_semana": [dia_da_semana for dia_da_semana in aula.dias_da_semana], "usuario_cpf": aula.usuario_cpf, "disciplina_codigo": aula.disciplina_codigo, "turma_id": aula.turma_id}), 200
 
 
 # def alterar_aula(id: int) -> jsonify:

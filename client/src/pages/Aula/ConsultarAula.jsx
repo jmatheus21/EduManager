@@ -52,4 +52,4 @@ const ConsultarAula = () => {
     );
 };
 
-export default ConsultarTurma;
+export default ConsultarAula;

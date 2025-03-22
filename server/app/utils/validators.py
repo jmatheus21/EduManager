@@ -398,7 +398,7 @@ As validações garantem que os dados estejam dentro dos critérios esperados e 
 """
 
 
-def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_cpf: str, disciplina_codigo: str, turma_id: int ):
+def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: list, usuario_cpf: str, disciplina_codigo: str, turma_id: int ):
     """Valida os dados de uma aula.
 
     Esta função verifica se os dados fornecidos para uma turma estão dentro dos critérios esperados.
@@ -407,7 +407,7 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_
     Args:
         hora_inicio (str): Hora de início no formato 'HH:MM'.
         hora_fim (str): Hora de fim no formato 'HH:MM'.
-        dias_da_semana (str): Os dias da disciplina. Deve ter no mínimo 5 caracteres e máximo 7.
+        dias_da_semana (list): Os dias da disciplina. Deve ter no mínimo 5 caracteres e máximo 7.
         usuario_cpf (str): O CPF do usuário. Deve ter obrigatoriamente 11 caracteres.
         disciplina_codigo (str): O código da disciplina. Deve ter no mínimo 6 caracteres e no máximo 10.
         turma_id (int): O id da turma. Deve ser no mínimo 0.
@@ -415,7 +415,7 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_
         list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
 
     Exemplo:
-        >>> erros = validar_aula("08:00", "09:00", "Segunda", "12345678910", "MAT001", 1)
+        >>> erros = validar_aula("13:00:00", "15:00:00", "Segunda", "12345678910", "MAT001", 1)
         >>> print(erros)
         []
     """
@@ -427,12 +427,20 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_
     if not hora_fim or not isinstance(hora_fim, str) or not validar_hora(hora_fim):
         erros.append("O atributo 'hora_fim' é obrigatório e deve ter o formato correto")
 
-    if not dias_da_semana or not isinstance(dias_da_semana, str) or dias_da_semana <  5 or dias_da_semana > 7:
-        erros.append("O campo 'dias_da_semana' é obrigatório e deve ser no mínimo 5 e no máximo 7 ")
-    elif not validar_dia_da_semana(dias_da_semana):
-        erros.append("Os dias da semana não são válidos")
+    # if not dias_da_semana or not isinstance(dias_da_semana, str) or dias_da_semana <  5 or dias_da_semana > 7:
+    #     erros.append("O campo 'dias_da_semana' é obrigatório e deve ser no mínimo 5 e no máximo 7 ")
+    # elif not validar_dia_da_semana(dias_da_semana):
+    #     erros.append("Os dias da semana não são válidos")
 
-    if not usuario_cpf or not isinstance(usuario_cpf, str) or len(usuario_cpf) == 11:
+    if not dias_da_semana or not isinstance(dias_da_semana, list):
+        erros.append("O campo 'dias_da_semana' é obrigatório e deve ser uma lista.")
+    else:
+        dias_validos = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"]
+        for dia in dias_da_semana:
+            if dia not in dias_validos:
+                erros.append(f"'{dia}' não é um dia válido da semana.")
+
+    if not usuario_cpf or not isinstance(usuario_cpf, str) or len(usuario_cpf) != 11:
         erros.append("O campo 'usuario_cpf' é obrigatório e deve ter 11 caracteres")
 
     if not disciplina_codigo or not isinstance(disciplina_codigo, str) or len(disciplina_codigo) < 6 or len(disciplina_codigo) > 10:
