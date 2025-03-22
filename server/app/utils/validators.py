@@ -415,7 +415,7 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_
         list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
 
     Exemplo:
-        >>> erros = validar_aula("08:00", "09:00", "Segunda", "12345678900", "MAT001", 1)
+        >>> erros = validar_aula("08:00", "09:00", "Segunda", "12345678910", "MAT001", 1)
         >>> print(erros)
         []
     """
@@ -427,7 +427,7 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: str, usuario_
     if not hora_fim or not isinstance(hora_fim, str) or not validar_hora(hora_fim):
         erros.append("O atributo 'hora_fim' é obrigatório e deve ter o formato correto")
 
-    if not dias_da_semana or not isinstance(dias_da_semana, str) or dias_da_semana < 5 or dias_da_semana > 7:
+    if not dias_da_semana or not isinstance(dias_da_semana, str) or dias_da_semana <  5 or dias_da_semana > 7:
         erros.append("O campo 'dias_da_semana' é obrigatório e deve ser no mínimo 5 e no máximo 7 ")
     elif not validar_dia_da_semana(dias_da_semana):
         erros.append("Os dias da semana não são válidos")

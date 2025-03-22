@@ -62,7 +62,20 @@ def validar_hora(hora: str) -> bool:
         bool: Retorna `True` se a string corresponder ao formato HH:MM, 
               caso contrário, retorna `False`."
     """
-    padrao = r"\d{2}:\d{2}$"
+    # padrao = r"^\d{2}:\d{2}$"  # Corrigido para validar a string com o formato correto
+    # if not re.match(padrao, hora):  # Verifica se a string segue o padrão "HH:MM"
+    #     return False
+
+    # padrao_hora = int(hora[:2])  # Converte para inteiro as horas
+    # padrao_minuto = int(hora[3:])  # Converte para inteiro os minutos
+
+    # # Verifica se as horas estão entre 00 e 23 e minutos entre 00 e 59
+    # if 0 <= padrao_hora <= 23 and 0 <= padrao_minuto <= 59:
+    #     return True
+    # else:
+    #     return False
+
+    padrao = r"^\d{2}:\d{2}$" #r"\d{2}:\d{2}$"
     padrao_hora = hora[:2]
     padrao_minuto = hora[2:]
 

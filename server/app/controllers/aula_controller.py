@@ -30,9 +30,9 @@ def cadastrar_aula() -> jsonify:
     if aula_existente is not None:
         return jsonify({"erro": ["Aula já existe"]}), 400
     
-    aula_no_mesmo_horario_com_mesmo_usuario = db.session.query(Aula).filter_by(hora_inicio=data['hora_inicio'], hora_fim=data['hora_fim'], usuario_cpf=data['usuario_cpf']).first()
+    aula_no_mesmo_horario_com_mesmo_usuario = db.session.query(Aula).filter_by(hora_inicio=data['hora_inicio'], hora_fim=data['hora_fim'], dias_da_semana=data['dias_da_semana'], usuario_cpf=data['usuario_cpf']).first()
     if aula_no_mesmo_horario_com_mesmo_usuario is not None:
-        return jsonify({"erro": ["Já existe uma aula no mesmo horário, com o mesmo usuário"]}), 400
+        return jsonify({"erro": ["Já existe uma aula no mesmo horário, com o mesmo professor"]}), 400
     
     usuario_existente = db.session.query(Usuario).filter_by(cpf=data['usuario_cpf']).first()
     if usuario_existente is None:

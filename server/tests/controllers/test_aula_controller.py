@@ -5,11 +5,12 @@ Os testes verificam as operações básicas de CRUD (Create, Read, Update, Delet
 incluindo cadastro, listagem, busca, atualização e remoção de aulas no banco de dados.
 """
 
-from app.models import Aula, Usuario, Disciplina, Turma, Calendario, Sala
+from app.models import Aula, Usuario, Disciplina, Turma, Calendario, Sala, Cargo
 from app.extensions import db
 from app.utils.date_helpers import string_para_data
-from app.utils.hour_helpers import string_para_hora
-
+from app.utils.hour_helpers import string_para_hora, hora_para_string
+from app.utils.usuario_helpers import gerar_hashing
+import datetime
 
 def criar_dependencias(app):
     """ Garante que instâncias das entidades `Usuario`, `Disciplina` e `Turma` estejam disponíveis para 
@@ -17,15 +18,16 @@ def criar_dependencias(app):
     """
     with app.app_context():
         with db.session.no_autoflush:
-            # Garante que o usuário existe
-            if not Usuario.query.filter_by(cpf=12345678912).first():
-                usuario = Usuario(cpf=12345678912, nome="Alan Ferreira dos Santos", senha="bocaAberta123", telefone="79 9 9999-8888", endereco="Bairro X, Rua A",horario_de_trabalho="Seg-Sex,7h-12h", data_de_nascimento="1998-05-17", tipo="p", formacao="Licenciatura em Matemática", escolaridade= None, habilidades= None, disciplinas= ["MAT123", "FIS789"], cargos=[2])
-                db.session.add(usuario)
-
             # Garante que a disciplina existe
             if not Disciplina.query.filter_by(codigo="MAT001").first():
                 disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro:Zahar, 2014.")
                 db.session.add(disciplina)
+            
+            # Garante que o usuário existe
+            cargo = Cargo(nome="Professor", salario=2060.0, data_contrato="2027-12-31")
+            if not Usuario.query.filter_by(id=1).first():
+                usuario = Usuario(cpf="12345678910", nome="Alan Ferreira dos Santos", email="alanferreira@email.com", senha=gerar_hashing("bocaAberta123"), telefone="79 9 9999-8888", endereco="Bairro X, Rua A", horario_de_trabalho="Seg-Sex,7h-12h", data_de_nascimento=string_para_data("1998-05-17"), tipo="p", formacao="Licenciatura em Matemática", escolaridade= None, habilidades= None, disciplinas= [disciplina], cargos=[cargo])
+                db.session.add(usuario)
 
             # Garante que a turma existe
             if not Turma.query.filter_by(id=1).first():
@@ -39,13 +41,56 @@ def criar_dependencias(app):
             db.session.commit()
 
 
-def test_cadastrar_turma(client, app):
-    """Testa o cadastro de uma turma com dados válidos.
+def criar_dependencias_usuario(app):
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a disciplina existe
+            if not Disciplina.query.filter_by(codigo="MAT001").first():
+                disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro:Zahar, 2014.")
+                db.session.add(disciplina)
+            
+            # Garante que o usuário existe
+            cargo = Cargo(nome="Professor", salario=2060.0, data_contrato="2027-12-31")
+            if not Usuario.query.filter_by(id=1).first():
+                usuario = Usuario(cpf="12345678910", nome="Alan Ferreira dos Santos", email="alanferreira@email.com", senha=gerar_hashing("bocaAberta123"), telefone="79 9 9999-8888", endereco="Bairro X, Rua A", horario_de_trabalho="Seg-Sex,7h-12h", data_de_nascimento=string_para_data("1998-05-17"), tipo="p", formacao="Licenciatura em Matemática", escolaridade= None, habilidades= None, disciplinas= [disciplina], cargos=[cargo])
+                db.session.add(usuario)
+
+            db.session.commit()
+
+
+def criar_dependencias_disciplina(app):
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a disciplina existe
+            if not Disciplina.query.filter_by(codigo="MAT001").first():
+                disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro:Zahar, 2014.")
+                db.session.add(disciplina)
+            
+            db.session.commit()
+
+
+def criar_dependencias_turma(app):
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a turma existe
+            if not Turma.query.filter_by(id=1).first():
+                calendario = Calendario(ano_letivo = 2026, data_inicio=string_para_data("2026-02-17"), data_fim=string_para_data("2026-11-27"), dias_letivos=150)
+                db.session.add(calendario)
+                sala = Sala(numero=101, capacidade=50, localizacao="Bloco A, 1° andar")
+                db.session.add(sala)
+                turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero= 101, calendario_ano_letivo= 2026)
+                db.session.add(turma)
+
+            db.session.commit()
+
+
+def test_cadastrar_aula(client, app):
+    """Testa o cadastro de uma aula com dados válidos.
 
     Este teste verifica se:
-    1. A requisição POST para a rota '/turma' retorna o status code 201 (Created).
+    1. A requisição POST para a rota '/aula' retorna o status code 201 (Created).
     2. A resposta contém uma mensagem indicando sucesso.
-    3. Os dados da turma cadastrada são retornados corretamente.
+    3. Os dados da aula cadastrada são retornados corretamente.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
@@ -55,98 +100,130 @@ def test_cadastrar_turma(client, app):
         criar_dependencias(app)
 
         dados_validos = {
-            "ano": 9,
-            "serie": "A",
-            "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "D",
-            "status": "A",
-            "sala_numero": 101,
-            "calendario_ano_letivo": 2026
+            "hora_inicio": "13:00",
+            "hora_fim": "15:00",
+            "dias_da_semana": ["Segunda"],
+            "usuario_cpf": "12345678910",
+            "disciplina_codigo": "MAT001",
+            "turma_id": 1
         }
 
-        response = client.post('/turma/', json=dados_validos)
+        response = client.post('/aula/', json=dados_validos)
 
         print("Resposta da API:", response.json)
 
         assert response.status_code == 201, "O status code deve ser 201 (Created)."
         assert "mensagem" in response.json, "A resposta deve conter uma mensagem."
-        assert "data" in response.json, "A resposta deve conter os dados da turma."
+        assert "data" in response.json, "A resposta deve conter os dados da aula."
         
-        turma = response.json["data"]
+        aula = response.json["data"]
         
-        assert "id" in turma, "A resposta deve conter o campo 'id'."
-        assert turma["ano"] == 9, "O ano da turma deve ser 9."
-        assert turma["serie"] == "A", "A serie da turma deve ser A."
-        assert turma["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
-        assert turma["turno"] == "D", "O turno da turma deve ser D."
-        assert turma["status"] == "A", "O status da turma deve ser A."
-        assert turma["sala_numero"] == 101, "O numero da sala da turma deve ser 101."
-        assert turma["calendario_ano_letivo"] == 2026, "O calendario do ano letivo deve ser 2026."
+        assert "id" in aula, "A resposta deve conter o campo 'id'."
+        assert aula["hora_inicio"].strftime('%H:%M') == "13:00", "O horário de início da aula deve ser '13:00'."
+        assert aula["hora_fim"].strftime('%H:%M') == "15:00", "O horário de fim da aula deve ser '15:00'."
+        assert aula["dias_da_semana"] == ["Segunda"], "O dia da semana deve ser '['Segunda']'."
+        assert aula["usuario_cpf"] == "12345678910", "O cpf do usuário deve ser '12345678910'."
+        assert aula["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."
+        assert aula["turma_id"] == 1, "O id da turma deve ser 1."
 
-def test_cadastrar_turma_calendario_inexistente(client, app):
-    """Testa o cadastro de uma turma com dado calendário inexistente.
+
+def test_cadastrar_aula_usuario_inexistente(client, app):
+    """Testa o cadastro de uma aula com dado usuário inexistente.
 
     Este teste verifica se:
-    1. A requisição POST para a rota '/turma' retorna o status code 400 (Bad Request).
-    2. A resposta contém uma mensagem indicando "Calendário não existe".
-    3. Os dados da turma cadastrada são retornados corretamente.
+    1. A requisição POST para a rota '/aula' retorna o status code 400 (Bad Request).
+    2. A resposta contém uma mensagem indicando "Usuário não existe".
+    3. Os dados da aula cadastrada são retornados corretamente.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        criar_dependencia_sala(app)
+        criar_dependencias_disciplina(app)
+        criar_dependencias_turma(app)
 
         dados_validos = {
-            "ano": 9,
-            "serie": "A",
-            "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "D",
-            "status": "A",
-            "sala_numero": 101,
-            "calendario_ano_letivo": 2026
+            "hora_inicio": "08:00",
+            "hora_fim": "09:00",
+            "dias_da_semana": "Segunda",
+            "usuario_cpf": "12345678910",
+            "disciplina_codigo": "MAT001",
+            "turma_id": 1
         }
 
-        response = client.post('/turma/', json=dados_validos)
+        response = client.post('/aula/', json=dados_validos)
 
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
-        assert "erro" in response.json, "Calendário não existe"
+        assert "erro" in response.json, "Usuário não existe"
 
-def test_cadastrar_turma_sala_inexistente(client, app):
-    """Testa o cadastro de uma turma com dado sala inexistente.
+
+def test_cadastrar_aula_disciplina_inexistente(client, app):
+    """Testa o cadastro de uma aula com dado disciplina inexistente.
 
     Este teste verifica se:
-    1. A requisição POST para a rota '/turma' retorna o status code 400 (Bad Request).
-    2. A resposta contém uma mensagem indicando "Sala não existe".
-    3. Os dados da turma cadastrada são retornados corretamente.
+    1. A requisição POST para a rota '/aula' retorna o status code 400 (Bad Request).
+    2. A resposta contém uma mensagem indicando "Disciplina não existe".
+    3. Os dados da aula cadastrada são retornados corretamente.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
     """
     with app.app_context():
-        criar_dependencia_calendario(app)
+        criar_dependencias_usuario(app)
+        criar_dependencias_turma(app)
 
         dados_validos = {
-            "ano": 9,
-            "serie": "A",
-            "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "D",
-            "status": "A",
-            "sala_numero": 101,
-            "calendario_ano_letivo": 2026
+            "hora_inicio": "08:00",
+            "hora_fim": "09:00",
+            "dias_da_semana": "Segunda",
+            "usuario_cpf": "12345678910",
+            "disciplina_codigo": "MAT001",
+            "turma_id": 1
         }
 
-        response = client.post('/turma/', json=dados_validos)
+        response = client.post('/aula/', json=dados_validos)
 
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
-        assert "erro" in response.json, "Sala não existe"
+        assert "erro" in response.json, "Disciplina não existe"
 
-def test_cadastrar_turma_dados_invalidos(client, app):
-    """Testa o cadastro de uma turma com dados inválidos.
 
-    Este teste verifica se a requisição POST para a rota '/turma' retorna o status code 400 (Bad Request)
+def test_cadastrar_aula_turma_inexistente(client, app):
+    """Testa o cadastro de uma aula com dado turma inexistente.
+
+    Este teste verifica se:
+    1. A requisição POST para a rota '/aula' retorna o status code 400 (Bad Request).
+    2. A resposta contém uma mensagem indicando "Turma não existe".
+    3. Os dados da aula cadastrada são retornados corretamente.
+
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencias_usuario(app)
+        criar_dependencias_disciplina(app)
+
+        dados_validos = {
+            "hora_inicio": "08:00",
+            "hora_fim": "09:00",
+            "dias_da_semana": "Segunda",
+            "usuario_cpf": "12345678910",
+            "disciplina_codigo": "MAT001",
+            "turma_id": 1
+        }
+
+        response = client.post('/aula/', json=dados_validos)
+
+        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+        assert "erro" in response.json, "Turma não existe"
+
+
+def test_cadastrar_aula_dados_invalidos(client, app):
+    """Testa o cadastro de uma aula com dados inválidos.
+
+    Este teste verifica se a requisição POST para a rota '/aula' retorna o status code 400 (Bad Request)
     e se a resposta contém mensagens de erro para cada campo inválido.
 
     Args:
@@ -157,25 +234,25 @@ def test_cadastrar_turma_dados_invalidos(client, app):
         criar_dependencias(app)
 
         dados_invalidos = {
-            "ano": 13,
-            "serie": "Aberta",
-            "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "",
-            "status": "A",
-            "sala_numero": 101,
-            "calendario_ano_letivo": 2026
+            "hora_inicio": "",
+            "hora_fim": "",
+            "dias_da_semana": "",
+            "usuario_cpf": "12345678",
+            "disciplina_codigo": "M01",
+            "turma_id": 0
         }
 
-        response = client.post('/turma/', json=dados_invalidos)
+        response = client.post('/aula/', json=dados_invalidos)
+
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert len(response.json["erro"]) == 4, "Deve haver 3 erros de validação."
+        assert len(response.json["erro"]) == 6, "Deve haver 6 erros de validação."
 
-def test_cadastrar_turma_com_horario_invalido(client, app):
-    """Testa o cadastro de uma turma em uma horário que já existe outra turma.
+def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
+    """Testa o cadastro de uma aula em uma horário que já existe outra aula com o mesmo usuário.
 
-    Este teste verifica se a requisição POST para a rota '/turma' retorna o status code 400 (Bad Request)
-    e se a resposta contém mensagens de erro de que o horário da turma está ocupado.
+    Este teste verifica se a requisição POST para a rota '/aula' retorna o status code 400 (Bad Request)
+    e se a resposta contém mensagens de erro de que o horário da aula está ocupado.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
@@ -184,32 +261,31 @@ def test_cadastrar_turma_com_horario_invalido(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
-        db.session.add(turma)
+        aula = Aula(hora_inicio="08:00", hora_fim="09:00", dias_da_semana="Segunda", usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
         db.session.commit()
 
         dados_invalidos = {
-            "ano": 1,
-            "serie": "A",
-            "nivel_de_ensino": "Ensino Fundamental",
-            "turno": "D",
-            "status": "A",
-            "sala_numero": 101,
-            "calendario_ano_letivo": 2026
+            "hora_inicio": "08:00",
+            "hora_fim": "09:00",
+            "dias_da_semana": "Segunda",
+            "usuario_cpf": "12345678910",
+            "disciplina_codigo": "MAT002",
+            "turma_id": 1
         }
 
-        response = client.post('/turma/', json=dados_invalidos)
+        response = client.post('/aula/', json=dados_invalidos)
 
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert "Já existe uma turma no mesmo horário" in response.json["erro"], "Deve retornar uma mensagem de erro no horário"
+        assert "Já existe uma aula no mesmo horário, com o mesmo professor" in response.json["erro"], "Deve retornar uma mensagem de erro no horário, com o mesmo professor"
 
 
-def test_listar_turmas(client, app):
-    """Testa a listagem de turmas cadastradas.
+def test_listar_aulas(client, app):
+    """Testa a listagem de aulas cadastradas.
 
-    Este teste verifica se a requisição GET para a rota '/turma/' retorna o status code 200 (OK)
-    e se a resposta contém uma lista com as turmas cadastradas.
+    Este teste verifica se a requisição GET para a rota '/aula/' retorna o status code 200 (OK)
+    e se a resposta contém uma lista com as aulas cadastradas.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
@@ -218,22 +294,23 @@ def test_listar_turmas(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
-        db.session.add(turma)
+        aula = Aula(hora_inicio="08:00", hora_fim="09:00", dias_da_semana="Segunda", usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
         db.session.commit()
 
-        response = client.get('/turma/')
+        response = client.get('/aula/')
+
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert isinstance(response.json, list), "A resposta deve ser uma lista."
         assert len(response.json) == 1, "Deve haver exatamente 1 turma na listagem."
         assert "id" in response.json[0], "A resposta deve conter o campo 'id'."
         
 
-def test_buscar_turma(client, app):
-    """Testa a busca de uma turma específica pelo número.
+def test_buscar_aula(client, app):
+    """Testa a busca de uma aula específica pelo número.
 
-    Este teste verifica se a requisição GET para a rota '/turma/{id}' retorna o status code 200 (OK)
-    e se a resposta contém os dados corretos da turma buscada.
+    Este teste verifica se a requisição GET para a rota '/aula/{id}' retorna o status code 200 (OK)
+    e se a resposta contém os dados corretos da aula buscada.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
@@ -242,22 +319,22 @@ def test_buscar_turma(client, app):
     with app.app_context():
         criar_dependencias(app)
 
-        turma = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
-        db.session.add(turma)
+        aula = Aula(hora_inicio=string_para_hora("08:00"), hora_fim=string_para_hora("09:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
         db.session.commit()
 
-        response = client.get(f'/turma/{turma.id}')
+        response = client.get(f'/aula/{aula.id}')
+
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert isinstance(response.json, dict), "A resposta deve ser um dicionário."
         dados = response.json
-        assert "id" in dados, "A resposta deve conter o campo 'id'."
-        assert dados["ano"] == 9, "O ano da turma deve ser 9."
-        assert dados["serie"] == "A", "A serie da turma deve ser A."
-        assert dados["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."
-        assert dados["turno"] == "D", "O turno da turma deve ser D."
-        assert dados["status"] == "A", "O status da turma deve ser A."
-        assert dados["sala_numero"] == 101, "O numero da sala da turma deve ser 101."
-        assert dados["calendario_ano_letivo"] == 2026, "O calendario do ano letivo deve ser 2026."
+        assert "id" in aula, "A resposta deve conter o campo 'id'."
+        assert dados["hora_inicio"].strftime('%H:%M') == '08:00', "O horário de início da aula deve ser 08:00."
+        assert dados["hora_fim"].strftime('%H:%M') == '09:00', "O horário de fim da aula deve ser 09:00."
+        assert dados["dias_da_semana"] == ["Segunda"], "O dia da semana deve ser '['Segunda']'."
+        assert dados["usuario_cpf"] == "12345678910", "O cpf do usuário deve ser '12345678910'."
+        assert dados["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."
+        assert dados["turma_id"] == 1, "O id da turma deve ser 1."
 
 
 # def test_alterar_aula(client, app):

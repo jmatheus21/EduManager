@@ -45,7 +45,7 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
     <AuthProvider>
         <Routes>
-        <Route path="login" element={<Login />} />
+          <Route path="login" element={<Login />} />
           <Route index element={<HomePageProtegida />} />
           <Route path="sala" element={<GerenciarProtegido menus={criarMenu("sala")} />}>
             <Route index element={<ConsultarSala />} />

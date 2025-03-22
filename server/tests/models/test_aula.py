@@ -5,10 +5,12 @@ Os testes verificam as operações básicas de CRUD (Create, Read, Update, Delet
 incluindo cadastro, listagem, busca, atualização e remoção de aulas no banco de dados.
 """
 
-from app.models import Aula, Usuario, Disciplina, Turma, Calendario, Sala
+from app.models import Aula, Usuario, Cargo, Disciplina, Turma, Calendario, Sala
 from app.extensions import db
 from datetime import datetime
 from app.utils.date_helpers import string_para_data
+from app.utils.hour_helpers import string_para_hora
+from app.utils.usuario_helpers import gerar_hashing
 
 
 def criar_dependencias(app):
@@ -17,15 +19,16 @@ def criar_dependencias(app):
     """
     with app.app_context():
         with db.session.no_autoflush:
-            # Garante que o usuário existe
-            if not Usuario.query.filter_by(cpf="12345678912").first():
-                usuario = Usuario(cpf="12345678912", nome="Alan Ferreira dos Santos", senha="bocaAberta123", telefone="79 9 9999-8888", endereco="Bairro X, Rua A",horario_de_trabalho="Seg-Sex,7h-12h", data_de_nascimento="1998-05-17", tipo="p", formacao="Licenciatura em Matemática", escolaridade= None, habilidades= None, disciplinas= ["MAT123", "FIS789"], cargos=[2])
-                db.session.add(usuario)
-
             # Garante que a disciplina existe
             if not Disciplina.query.filter_by(codigo="MAT001").first():
                 disciplina = Disciplina(codigo="MAT001", nome="Matemática", carga_horaria=30, ementa="Aritmética, Álgebra, Geometria, Estatística e Probabilidade, com foco na compreensão das relações entre esses conceitos.", bibliografia="STEWART, Ian. Aventuras matemáticas: vacas no labirinto e outros enigmas lógicos. 1. Ed. Rio de Janeiro:Zahar, 2014.")
                 db.session.add(disciplina)
+
+            # Garante que o usuário existe
+            cargo = Cargo(nome="Professor", salario=2060.0, data_contrato="2027-12-31")
+            if not Usuario.query.filter_by(id=1).first():
+                usuario = Usuario(cpf="12345678912", nome="Alan Ferreira dos Santos", email="alanferreira@email.com", senha=gerar_hashing("bocaAberta123"), telefone="79 9 9999-8888", endereco="Bairro X, Rua A", horario_de_trabalho="Seg-Sex,7h-12h", data_de_nascimento=string_para_data("1998-05-17"), tipo="p", formacao="Licenciatura em Matemática", escolaridade= None, habilidades= None, disciplinas=[disciplina], cargos=[cargo])
+                db.session.add(usuario)
 
             # Garante que a turma existe
             if not Turma.query.filter_by(id=1).first():
@@ -37,10 +40,6 @@ def criar_dependencias(app):
                 db.session.add(turma)
 
             db.session.commit()
-
-
-#def criar_dependencias_usuario(app):
-    
 
 
 def test_cadastrar_aula(app):
@@ -55,20 +54,20 @@ def test_cadastrar_aula(app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = aula(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        aula = Aula(hora_inicio=string_para_hora("13:00"), hora_fim=string_para_hora("15:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
+
         db.session.add(aula)
         db.session.commit()
 
-        aula_adicionada = aula.query.filter_by(id=aula.id).first()
+        aula_adicionada = Aula.query.filter_by(id=aula.id).first()
         assert aula_adicionada is not None
         assert aula_adicionada.id == aula.id
-        assert aula_adicionada.ano == 9
-        assert aula_adicionada.serie == "A"
-        assert aula_adicionada.nivel_de_ensino == "Fundamental"
-        assert aula_adicionada.turno == "D"
-        assert aula_adicionada.status == "A"
-        assert aula_adicionada.sala_numero == 101
-        assert aula_adicionada.calendario_ano_letivo == 2026
+        assert aula_adicionada.hora_inicio.strftime('%H:%M') == '13:00'
+        assert aula_adicionada.hora_fim.strftime('%H:%M') == '15:00'
+        assert aula_adicionada.dias_da_semana == ["Terça", "Quinta"]
+        assert aula_adicionada.usuario_cpf == "12345678912"
+        assert aula_adicionada.disciplina_codigo == "MAT001"
+        assert aula_adicionada.turma_id == 1
 
 
 def test_listar_aulas(app):
@@ -83,26 +82,25 @@ def test_listar_aulas(app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = aula(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        aula = Aula(hora_inicio=string_para_hora("13:00"), hora_fim=string_para_hora("15:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
-        aulas = aula.query.all()
+        aulas = Aula.query.all()
         assert aulas[0] is not None
         assert aulas[0].id == aula.id
-        assert aulas[0].ano == 9
-        assert aulas[0].serie == "A"
-        assert aulas[0].nivel_de_ensino == "Fundamental"
-        assert aulas[0].turno == "D"
-        assert aulas[0].status == "A"
-        assert aulas[0].sala_numero == 101
-        assert aulas[0].calendario_ano_letivo == 2026
+        assert aulas[0].hora_inicio.strftime('%H:%M') == '13:00'
+        assert aulas[0].hora_fim.strftime('%H:%M') == '15:00'
+        assert aulas[0].dias_da_semana == ["Terça", "Quinta"]
+        assert aulas[0].usuario_cpf == "12345678912"
+        assert aulas[0].disciplina_codigo == "MAT001"
+        assert aulas[0].turma_id == 1
 
 
 def test_buscar_aula(app):
-    """Testa a busca de uma aula específica pelo número no banco de dados.
+    """Testa a busca de uma aula específica pelo id no banco de dados.
 
-    Este teste verifica se uma aula pode ser buscada corretamente pelo número
+    Este teste verifica se uma aula pode ser buscada corretamente pelo id
     e se os dados da aula buscada estão corretos.
 
     Args:
@@ -111,20 +109,19 @@ def test_buscar_aula(app):
     with app.app_context():
         criar_dependencias(app)
 
-        aula = aula(ano=9, serie="A", nivel_de_ensino="Fundamental", turno="D", status="A", sala_numero=101, calendario_ano_letivo=2026)
+        aula = Aula(hora_inicio=string_para_hora("13:00"), hora_fim=string_para_hora("15:00"), dias_da_semana=["Terça", "Quinta"], usuario_cpf="12345678912", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
-        aula_buscada = db.session.get(aula, aula.id)
+        aula_buscada = db.session.get(Aula, aula.id)
         assert aula_buscada is not None
         assert aula_buscada.id == aula.id
-        assert aula_buscada.ano == 9
-        assert aula_buscada.serie == "A"
-        assert aula_buscada.nivel_de_ensino == "Fundamental"
-        assert aula_buscada.turno == "D"
-        assert aula_buscada.status == "A"
-        assert aula_buscada.sala_numero == 101
-        assert aula_buscada.calendario_ano_letivo == 2026
+        assert aula_buscada.hora_inicio.strftime('%H:%M') == '13:00'
+        assert aula_buscada.hora_fim.strftime('%H:%M') == '15:00'
+        assert aula_buscada.dias_da_semana == ["Terça", "Quinta"]
+        assert aula_buscada.usuario_cpf == "12345678912"
+        assert aula_buscada.disciplina_codigo == "MAT001"
+        assert aula_buscada.turma_id == 1
 
 
 # def test_alterar_aula(app):
