@@ -91,86 +91,86 @@ describe("FormularioAula Component", () => {
       ).toBeVisible();
     });
 
-    // it("permite ao usuário digitar nos campos do formulário", async () => {
-    //   const idTurmaInput = screen.getByLabelText(/Id da Turma:/i);
-    //   const codigoDisciplinaInput = screen.getByLabelText(/Código da Disciplina:/i);
-    //   const cpfProfessorInput = screen.getByLabelText(/CPF do Professor:/i);
-    //   const horaDeInicioInput = screen.getByLabelText(/Hora de Início:/i);
-    //   const horaDoFimInput = screen.getByLabelText(/Hora do Fim:/i);
-    //   const diasDaSemanaInput = screen.getByLabelText(/Dias da Semana:/i);
+    it("permite ao usuário digitar nos campos do formulário", async () => {
+      const idTurmaInput = screen.getByLabelText(/Id da Turma:/i);
+      const codigoDisciplinaInput = screen.getByLabelText(/Código da Disciplina:/i);
+      const cpfProfessorInput = screen.getByLabelText(/CPF do Professor:/i);
+      const horaDeInicioInput = screen.getByLabelText(/Hora de Início:/i);
+      const horaDoFimInput = screen.getByLabelText(/Hora do Fim:/i);
+      const checkboxQuarta = screen.getByLabelText("Quarta");
 
-    //   // realiza as ações
-    //   await act(async () => {
-    //     await userEvent.type(idTurmaInput, "1");
-    //     await userEvent.type(codigoDisciplinaInput, "MAT001");
-    //     await userEvent.selectOptions(cpfProfessorInput, "12345678910");
-    //     await userEvent.selectOptions(horaDeInicioInput, "13:00:00");
-    //     await userEvent.type(horaDoFimInput, "15:00:00");
-    //     await userEvent.type(diasDaSemanaInput, "Quarta");
-    //   });
+      // realiza as ações
+      await act(async () => {
+        await userEvent.type(idTurmaInput, "1");
+        await userEvent.type(codigoDisciplinaInput, "MAT001");
+        await userEvent.type(cpfProfessorInput, "12345678910");
+        await userEvent.type(horaDeInicioInput, "13:00");
+        await userEvent.type(horaDoFimInput, "15:00");
+        await userEvent.click(checkboxQuarta);
+      });
 
-    //   // verifica se os dados foram digitados corretamente
-    //   expect(idTurmaInput.value).toBe("1");
-    //   expect(codigoDisciplinaInput.value).toBe("MAT001");
-    //   expect(cpfProfessorInput.value).toBe("12345678910");
-    //   expect(horaDeInicioInput.value).toBe("13:00:00");
-    //   expect(horaDoFimInput.value).toBe("15:00:00");
-    //   expect(diasDaSemanaInput.value).toBe("Quarta");
-    // });
+      // verifica se os dados foram digitados corretamente
+      expect(idTurmaInput.value).toBe("1");
+      expect(codigoDisciplinaInput.value).toBe("MAT001");
+      expect(cpfProfessorInput.value).toBe("12345678910");
+      expect(horaDeInicioInput.value).toBe("13:00");
+      expect(horaDoFimInput.value).toBe("15:00");
+      expect.objectContaining({diasDaSemana: ["Quarta"]});
+    });
   });
 
-  // describe("Formulario da Aula", () => {
-  //   const mockEnviarFormulario = jest.fn();
+  describe("Formulario da Aula", () => {
+    const mockEnviarFormulario = jest.fn();
 
-  //   beforeEach(() => {
-  //     render(
-  //       <BrowserRouter>
-  //         <Formulario
-  //           enviarFormulario={mockEnviarFormulario}
-  //           alteracao={{
-  //             alterar: false,
-  //             dados: {},
-  //             chave: undefined,
-  //           }}
-  //         />
-  //       </BrowserRouter>
-  //     );
-  //   });
+    beforeEach(() => {
+      render(
+        <BrowserRouter>
+          <Formulario
+            enviarFormulario={mockEnviarFormulario}
+            alteracao={{
+              alterar: false,
+              dados: {},
+              chave: undefined,
+            }}
+          />
+        </BrowserRouter>
+      );
+    });
+    
+    it("verificar se o formulário está sendo enviado", async () => {
 
-  //   it("verificar se o formulário está sendo enviado", async () => {
+      const idTurmaInput = screen.getByLabelText(/Id da Turma:/i);
+      const codigoDisciplinaInput = screen.getByLabelText(/Código da Disciplina:/i);
+      const cpfProfessorInput = screen.getByLabelText(/CPF do Professor:/i);
+      const horaDeInicioInput = screen.getByLabelText(/Hora de Início:/i);
+      const horaDoFimInput = screen.getByLabelText(/Hora do Fim:/i);
+      const checkboxQuarta = screen.getByLabelText("Quarta");
+      const botao = screen.getByText(/Finalizar/i);
 
-  //     const idTurmaInput = screen.getByLabelText(/Id da Turma:/i);
-  //     const codigoDisciplinaInput = screen.getByLabelText(/Código da Disciplina:/i);
-  //     const cpfProfessorInput = screen.getByLabelText(/CPF do Professor:/i);
-  //     const horaDeInicioInput = screen.getByLabelText(/Hora de Início:/i);
-  //     const horaDoFimInput = screen.getByLabelText(/Hora do Fim:/i);
-  //     const diasDaSemanaInput = screen.getByLabelText(/Dias da Semana:/i);
-  //     const botao = screen.getByText(/Finalizar/i);
+      // realiza as ações
+      await act(async () => {
+        await userEvent.type(idTurmaInput, "1");
+        await userEvent.type(codigoDisciplinaInput, "MAT001");
+        await userEvent.type(cpfProfessorInput, "12345678910");
+        await userEvent.type(horaDeInicioInput, "13:00");
+        await userEvent.type(horaDoFimInput, "15:00");
+        await userEvent.click(checkboxQuarta);
+        await userEvent.click(botao);
+      });
 
-  //     // realiza as ações
-  //     await act(async () => {
-  //       await userEvent.type(idTurmaInput, "1");
-  //       await userEvent.type(codigoDisciplinaInput, "MAT001");
-  //       await userEvent.selectOptions(cpfProfessorInput, "12345678910");
-  //       await userEvent.selectOptions(horaDeInicioInput, "13:00:00");
-  //       await userEvent.type(horaDoFimInput, "15:00:00");
-  //       await userEvent.type(diasDaSemanaInput, "Quarta");
-  //       await userEvent.click(botao);
-  //     });
-
-  //     await waitFor(() => {
-  //       expect(mockEnviarFormulario).toHaveBeenCalledTimes(1);
-  //       expect(mockEnviarFormulario).toHaveBeenCalledWith(
-  //         {
-  //           turma_id: 1,
-  //           disciplina_codigo: "MAT001",
-  //           usuario_cpf: "12345678910",
-  //           hora_inicio: "M",
-  //           hora_fim: "15:00:00",
-  //           dias_da_semana: "Quarta",
-  //         }
-  //       );
-  //     });
-  //   });
-  // });
+      await waitFor(() => {
+        expect(mockEnviarFormulario).toHaveBeenCalledTimes(1);
+        expect(mockEnviarFormulario).toHaveBeenCalledWith(
+          {
+            turmaId: 1,
+            DisciplinaCodigo: "MAT001",
+            ProfessorCPF: "12345678910",
+            horaInicio: "13:00",
+            horaFim: "15:00",
+            diasDaSemana: ["Quarta"],
+          }
+        );
+      });
+    });
+  });
 });
