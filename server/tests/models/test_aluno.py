@@ -82,25 +82,58 @@ def test_buscar_aluno(app):
         assert data_para_string(aluno_buscado.data_de_nascimento) == "2011-09-10"
 
 
-    # def test_alterar_aluno(app):
-    # """Testa a atualização dos dados de um aluno no banco de dados.
+def test_alterar_aluno(app):
+    """Testa a atualização dos dados de um aluno no banco de dados.
 
-    # Este teste verifica se os dados de um aluno podem ser atualizados corretamente
-    # e se os novos dados são persistidos no banco de dados.
+    Este teste verifica se os dados de um aluno podem ser atualizados corretamente
+    e se os novos dados são persistidos no banco de dados.
 
-    # Args:
-    #     app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-    # """
-    # with app.app_context():
+    Args:
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
+        db.session.add(aluno)
+        db.session.commit()
+
+        aluno_original = db.session.get(Aluno, "202600000001")
+        aluno_original is not None
+        aluno_original.matricula = "202600000001"
+        aluno_original.nome = "João Pedro dos Santos"
+        aluno_original.email = "joaopedro123@email.com"
+        aluno_original.telefone = "79 9 1234-5678"
+        aluno_original.endereco = "Bairro Y, Rua B"
+        aluno_original.data_de_nascimento = string_para_data("2011-09-10")
+
+        db.session.commit()
+
+        aluno_alterado = db.session.get(Aluno, "202600000001")
+        assert aluno_alterado is not None
+        assert aluno_alterado.matricula == "202600000001"
+        assert aluno_alterado.nome == "João Pedro dos Santos"
+        assert aluno_alterado.email == "joaopedro123@email.com"
+        assert aluno_alterado.telefone == "79 9 1234-5678"
+        assert aluno_alterado.endereco == "Bairro Y, Rua B"
+        assert aluno_alterado.data_de_nascimento == string_para_data("2011-09-10")
         
 
-# def test_remover_aluno(app):
-#     """Testa a remoção de um aluno do banco de dados.
+def test_remover_aluno(app):
+    """Testa a remoção de um aluno do banco de dados.
 
-#     Este teste verifica se um aluno pode ser removido corretamente do banco de dados
-#     e se o aluno não pode mais ser encontrado após a remoção.
+    Este teste verifica se um aluno pode ser removido corretamente do banco de dados
+    e se o aluno não pode mais ser encontrado após a remoção.
 
-#     Args:
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
+    Args:
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        aluno = Aluno(matricula="202600000001", nome="João Pedro dos Santos", email="joaopedro@email.com", telefone="79 9 1234-5678", endereco="Bairro X, Rua A", data_de_nascimento=string_para_data("2011-09-10"))
+        db.session.add(aluno)
+        db.session.commit()
+
+        aluno_adicionado = db.session.get(Aluno, "202600000001")
+        db.session.delete(aluno_adicionado)
+        db.session.commit()
+
+        aluno_deletado = db.session.get(Aluno, "202600000001")
+        assert aluno_deletado is None

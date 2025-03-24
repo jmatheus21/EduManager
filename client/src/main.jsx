@@ -11,8 +11,8 @@ import { ConsultarSala, FormularioSala, InfoSala } from "./pages/Sala";
 import { ConsultarDisciplina, FormularioDisciplina, InfoDisciplina } from "./pages/Disciplina";
 import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pages/Calendario";
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
-import { ConsultarTurma, FormularioTurma } from "./pages/Turma";
-import { ConsultarAluno, FormularioAluno } from "./pages/Aluno";
+import { ConsultarTurma, FormularioTurma, InfoTurma } from "./pages/Turma";
+import { ConsultarAluno, FormularioAluno, InfoAluno } from "./pages/Aluno";
 import { ConsultarAula, FormularioAula } from "./pages/Aula";
 import Matricula from "./pages/Matricula/Matricula.jsx"
 import "./index.css";
@@ -75,20 +75,23 @@ createRoot(document.getElementById("root")).render(
           <Route path="turma" element={<GerenciarProtegido menus={criarMenu("turma")} />}>
             <Route index element={<ConsultarTurma />} />
             <Route path="cadastrar" element={<FormularioTurma />} />
-            {/* <Route path=":chave" element={<InfoTurma />} />
-            <Route path="alterar/:chave" element={<FormularioTurma />}/> */}
+            <Route path=":chave" element={<InfoTurma />} />
+            <Route path="alterar/:chave" element={<FormularioTurma />}/>
           </Route>
           <Route path="aluno" element={<GerenciarProtegido menus={criarMenu("aluno")} />}>
             <Route index element={<ConsultarAluno />} />
             <Route path="cadastrar" element={<FormularioAluno />} />
-            {/* <Route path=":chave" element={<InfoAluno />} />
-            <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
+            <Route path=":chave" element={<InfoAluno />} />
+            <Route path="alterar/:chave" element={<FormularioAluno />} />
           </Route>
           <Route path="aula" element={<GerenciarProtegido menus={criarMenu("aula")} />}>
             <Route index element={<ConsultarAula />} />
             <Route path="cadastrar" element={<FormularioAula />} />
             {/* <Route path=":chave" element={<InfoAula />} />
             <Route path="alterar/:chave" element={<FormularioAula />}/> */}
+          </Route>
+          <Route path="matricula" element={<GerenciarProtegido menus={criarMenu("matricula")} />}>
+            <Route index element={<Matricula />} />
           </Route>
         </Routes>
       </AuthProvider>

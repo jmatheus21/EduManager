@@ -160,8 +160,59 @@ describe("FormularioAluno Component", () => {
             data_de_nascimento: "2011-09-10",
             endereco: "Bairro X, Rua A",
             turma_id: 1
-          }, expect.anything());
+          });
       });
     });
+  });
+
+  describe("Teste de alterar aluno", () => {
+
+    const mockEnviarFormulario = jest.fn();
+
+    beforeEach(() => {
+      render(
+        <BrowserRouter>
+          <Formulario enviarFormulario={mockEnviarFormulario}
+          alteracao={{
+            alterar: true,
+            dados: {
+              matricula: "202600000001",
+              nome: "João Pedro dos Santos",
+              email: "joaopedro@email.com",
+              telefone: "79 9 1234-5678",
+              data_de_nascimento: "2011-09-10",
+              endereco: "Bairro X, Rua A",
+              turma_id: 1
+            },
+            chave: "202600000001"
+            }}
+          />
+        </BrowserRouter>
+      )
+    });
+    
+    it ("verifica se os dados foram carregados", async () => {
+
+      // pegar os campos
+      const nomeInput = screen.getByLabelText(/Aluno:/i);
+      const emailInput = screen.getByLabelText(/Email:/i);
+      const telefoneInput = screen.getByLabelText(/Telefone:/i);
+      const dataDeNascimentoInput = screen.getByLabelText(/Data de Nascimento:/i);
+      const enderecoInput = screen.getByLabelText(/Endereço:/i);
+      const idDaTurmaInput = screen.getByLabelText(/Id da Turma:/i);
+
+
+      await waitFor(() => {
+        // verificar se estão com os valores que recebe
+        expect(nomeInput.value).toBe("João Pedro dos Santos");
+        expect(emailInput.value).toBe("joaopedro@email.com");
+        expect(telefoneInput.value).toBe("79 9 1234-5678");
+        expect(dataDeNascimentoInput.value).toBe("2011-09-10");
+        expect(enderecoInput.value).toBe("Bairro X, Rua A");
+        expect(idDaTurmaInput.value).toBe("1");
+      })
+
+    });
+
   });
 });
