@@ -10,7 +10,10 @@ from app.extensions import db
 from ..models import Aluno, Turma
 from app.utils.validators import validar_aluno
 from app.utils.date_helpers import string_para_data
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo aluno no banco de dados.
@@ -52,7 +55,6 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     # id -> turma_id
     if turma_existente.status != "A":
         return jsonify({"erro": ["A turma está fechada, portanto, não é possível cadastrar mais alunos"]}), 400
-
     
     novo_aluno = Aluno(matricula=matricula, nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
     novo_aluno.turmas.append(turma_existente)
@@ -119,12 +121,16 @@ def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) 
         jsonify: Resposta JSON contendo os dados do aluno encontrado.
     """
     aluno = db.session.get(Aluno, matricula)
+<<<<<<< Updated upstream
     turma_atual = max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo)
 
     if turma_atual.status != "A":
         turma_atual = "Não matriculado"
 
     return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma_id": turma_atual.id}), 200
+=======
+    return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento}), 200
+>>>>>>> Stashed changes
 
 
 def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -145,16 +151,28 @@ def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
     if erros:
         return jsonify({"erro": erros}), 400
 
+<<<<<<< Updated upstream
     nova_turma = all(turma.id != data['turma_id'] for turma in aluno.turmas) # Indica se a turma já estava relacionada com o aluno
 
     if nova_turma:
         # Verifica se a turma existe
         turma_existente = db.session.get(Turma, data["turma_id"])
+=======
+    nova_turma = all(turma.id != data['id_turma'] for turma in aluno.turmas) # Indica se a turma já estava relacionada com o aluno
+
+    if nova_turma:
+        # Verifica se a turma existe
+        turma_existente = db.session.get(Turma, data["id_turma"])
+>>>>>>> Stashed changes
         if turma_existente is None:
             return jsonify({"erro": ["Turma não existe"]}), 400
         
         # Verifica se a turma está aberta
+<<<<<<< Updated upstream
         turma_fechada = db.session.query(Turma).filter_by(id=data['turma_id']).first()
+=======
+        turma_fechada = db.session.query(Turma).filter_by(id=data['id_turma']).first()
+>>>>>>> Stashed changes
         if turma_fechada is not None and turma_fechada.status == "C":
             return jsonify({"erro": ["A turma está fechada"]}), 400
 
@@ -171,7 +189,11 @@ def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
 
     # Caso a turma seja nova, adiciona nova turma ao aluno
     if nova_turma:
+<<<<<<< Updated upstream
         turma = db.session.get(Turma, data['turma_id'])
+=======
+        turma = db.session.get(Turma, data['id_turma'])
+>>>>>>> Stashed changes
         aluno.turmas.append(turma)
 
     db.session.commit()
@@ -192,4 +214,8 @@ def remover_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
     
     db.session.delete(aluno)
     db.session.commit()
+<<<<<<< Updated upstream
     return jsonify({"mensagem": "Aluno deletado com sucesso!"}), 200
+=======
+    return jsonify({"mensagem": "Aluno deletado com sucesso!"}), 200
+>>>>>>> Stashed changes

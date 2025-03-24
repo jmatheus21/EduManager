@@ -13,7 +13,11 @@ from datetime import datetime
 from app.utils.usuario_helpers import gerar_hashing
 from app.utils.date_helpers import string_para_data
 
+<<<<<<< Updated upstream
 
+=======
+# current_user_cpf: str, current_user_role: str
+>>>>>>> Stashed changes
 def cadastrar_usuario() -> jsonify:
     """Cadastra um novo usuário no banco de dados.
 
@@ -148,7 +152,7 @@ def alterar_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> 
             return jsonify({"erro": [f"Disciplinas inválidas: {', '.join(disciplinas_invalidas)}"]}), 400
     else:
         data['formacao'] = None
-        data['disciplinas'] = None  
+        data['disciplinas'] = None
 
     """
     Como o banco de dados ainda não está completamente configurado, a alteração

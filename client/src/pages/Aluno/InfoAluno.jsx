@@ -5,10 +5,17 @@ import { Titulo, BotaoInfo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
 
 /**
+<<<<<<< Updated upstream
  * Componente para exibir informações detalhadas de um Aluno.
  * Este componente permite visualizar os detalhes de um aluno específico, além de oferecer opções para alterar ou remover a aluno.
  *
  * @returns {JSX.Element} O componente de informações do aluno.
+=======
+ * Componente para exibir informações detalhadas de uma turma.
+ * Este componente permite visualizar os detalhes de uma turma específico, além de oferecer opções para alterar ou remover a turma.
+ *
+ * @returns {JSX.Element} O componente de informações da turma.
+>>>>>>> Stashed changes
  */
 const InfoAluno = () => {
   // Configuração padrão
@@ -57,6 +64,21 @@ const InfoAluno = () => {
   // Exibe mensagem de erro caso ocorra um erro na requisição
   if (api.error) return <p>Erro: {api.error}</p>;
 
+<<<<<<< Updated upstream
+=======
+  const exibirTurma = (turmas) => {
+    var i, turma, maior_ano = 0;
+    for (i = 0; i < turmas.length - 1; i++) {
+        if (turmas[i].ano > maior_ano) {
+            maior_ano = turmas[i].ano;
+            turma = turma[i];
+        }
+    }
+
+    return (<span key={i}>{turma.ano} ano {turma.serie} - {turma.nivel_de_ensino} ({turma.id}), </span>)
+  }
+
+>>>>>>> Stashed changes
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações do Aluno</Titulo>
@@ -69,11 +91,18 @@ const InfoAluno = () => {
         <Row>
           <Col>
             <h5>Matrícula:</h5>
+<<<<<<< Updated upstream
             {api.data && <p>{api.data.matricula}</p>}
           </Col>
           <Col>
             <h5>Turma:</h5>
             {api.data && <p data-testid="turma_id">{api.data.turma_id}</p>}
+=======
+            {api.data && <p data-testid="chave_primaria">{api.data.matricula}</p>}
+          </Col>
+          <Col>
+            <h5>Turma:</h5>
+>>>>>>> Stashed changes
           </Col>
         </Row>
         <Row>

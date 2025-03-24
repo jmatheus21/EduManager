@@ -15,6 +15,11 @@ usuario_bp = Blueprint("usuario", __name__)
 
 
 @usuario_bp.route("/", methods = ['POST'])
+<<<<<<< Updated upstream
+=======
+# @token_required
+#tirou current_user_cpf: str, current_user_role: str
+>>>>>>> Stashed changes
 def cadastrar_usuario() -> jsonify:
     """Rota para cadastrar um novo usuário.
 

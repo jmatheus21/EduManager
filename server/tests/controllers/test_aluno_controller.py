@@ -25,10 +25,16 @@ def criar_dependencias(app):
                 db.session.add(sala)
                 turma1 = Turma(ano=9, serie="A", nivel_de_ensino="Ensino Fundamental", turno="M", status="A", sala_numero=101, calendario_ano_letivo=2026)
                 db.session.add(turma1)
+<<<<<<< Updated upstream
                 turma2 = Turma(ano=1, serie="B", nivel_de_ensino="Ensino Médio", turno="N", status="C", sala_numero=101, calendario_ano_letivo=2026)
+=======
+                turma2 = Turma(ano=1, serie="A", nivel_de_ensino="Ensino Médio", turno="V", status="C", sala_numero=101, calendario_ano_letivo=2026)
+>>>>>>> Stashed changes
                 db.session.add(turma2)
 
             db.session.commit()
+    return turma1, turma2
+
     return turma1, turma2
 
 
@@ -250,7 +256,11 @@ def test_alterar_aluno(client, app):
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-11",
+<<<<<<< Updated upstream
             "turma_id": 1,
+=======
+            "id_turma": 1,
+>>>>>>> Stashed changes
         }
 
         response = client.put(f'/aluno/{aluno.matricula}', json=dados_atualizacao)
@@ -293,7 +303,11 @@ def test_alterar_aluno_turma_inexistente(client, app):
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-11",
+<<<<<<< Updated upstream
             "turma_id": 3,
+=======
+            "id_turma": 3,
+>>>>>>> Stashed changes
         }
 
         response = client.put(f'/aluno/{aluno.matricula}', json=dados_atualizacao)
@@ -327,7 +341,11 @@ def test_alterar_aluno_turma_fechada(client, app):
             "telefone": "79 9 1234-5678",
             "endereco": "Bairro X, Rua A",
             "data_de_nascimento": "2011-09-11",
+<<<<<<< Updated upstream
             "turma_id": 2,
+=======
+            "id_turma": 2,
+>>>>>>> Stashed changes
         }
 
         response = client.put(f'/aluno/{aluno.matricula}', json=dados_atualizacao)
@@ -357,3 +375,8 @@ def test_deletar_aluno(client, app):
         response = client.delete(f'/aluno/{aluno.matricula}')
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Aluno deletado com sucesso!"
+<<<<<<< Updated upstream
+=======
+
+    
+>>>>>>> Stashed changes

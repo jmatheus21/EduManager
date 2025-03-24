@@ -306,7 +306,9 @@ def test_alterar_turma(client, app):
         response = client.put(f'/turma/{turma.id}', json=dados_atualizacao)
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Turma atualizada com sucesso!"
+
         dados = response.json["data"]
+        
         assert dados["ano"] == 9, "O ano da turma deve ser 9."
         assert dados["serie"] == "D", "A serie da turma deve ser D."
         assert dados["nivel_de_ensino"] == "Ensino Fundamental", "O nivel de ensino da turma deve ser 'Ensino Fundamental'."

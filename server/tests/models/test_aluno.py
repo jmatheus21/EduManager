@@ -24,14 +24,14 @@ def test_cadastrar_aluno(app):
         db.session.add(aluno)
         db.session.commit()
 
-        aluno_adicionado = db.session.get(Aluno, "202600000001")
-        assert aluno_adicionado is not None
-        assert aluno_adicionado.matricula == "202600000001"
-        assert aluno_adicionado.nome == "João Pedro dos Santos"
-        assert aluno_adicionado.email == "joaopedro@email.com"
-        assert aluno_adicionado.telefone == "79 9 1234-5678"
-        assert aluno_adicionado.endereco == "Bairro X, Rua A"
-        assert data_para_string(aluno_adicionado.data_de_nascimento) == "2011-09-10"
+        aluno_original = db.session.get(Aluno, "202600000001")
+        assert aluno_original is not None
+        assert aluno_original.matricula == "202600000001"
+        assert aluno_original.nome == "João Pedro dos Santos"
+        assert aluno_original.email == "joaopedro@email.com"
+        assert aluno_original.telefone == "79 9 1234-5678"
+        assert aluno_original.endereco == "Bairro X, Rua A"
+        assert data_para_string(aluno_original.data_de_nascimento) == "2011-09-10"
         
 
 def test_listar_alunos(app):
