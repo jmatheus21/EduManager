@@ -129,7 +129,7 @@ describe("FormularioAluno Component", () => {
       );
     });
 
-    it. ("verificar se o formulário está sendo enviado", async () => {
+    it ("verificar se o formulário está sendo enviado", async () => {
 
       const nomeInput = screen.getByLabelText(/Aluno:/i);
       const emailInput = screen.getByLabelText(/Email:/i);
