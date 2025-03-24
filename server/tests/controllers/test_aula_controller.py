@@ -8,8 +8,9 @@ incluindo cadastro, listagem, busca, atualização e remoção de aulas no banco
 from app.models import Aula, Usuario, Disciplina, Turma, Calendario, Sala, Cargo
 from app.extensions import db
 from app.utils.date_helpers import string_para_data
-from app.utils.hour_helpers import string_para_hora, hora_para_string
+from app.utils.hour_helpers import string_para_hora
 from app.utils.usuario_helpers import gerar_hashing
+from tests.user_event import usuario_entra_no_sistema
 
 
 def criar_dependencias(app):
@@ -138,6 +139,7 @@ def test_cadastrar_aula(client, app):
     """
     with app.app_context():
         criar_dependencias(app)
+        usuario_entra_no_sistema(client, app)
 
         dados_validos = {
             "hora_inicio": "13:00:00",
@@ -182,6 +184,7 @@ def test_cadastrar_aula_usuario_inexistente(client, app):
     with app.app_context():
         criar_dependencias_disciplina(app)
         criar_dependencias_turma(app)
+        usuario_entra_no_sistema(client, app)
 
         dados_validos = {
             "hora_inicio": "13:00:00",
@@ -213,6 +216,7 @@ def test_cadastrar_aula_disciplina_inexistente(client, app):
     with app.app_context():
         criar_dependencias_usuario(app)
         criar_dependencias_turma(app)
+        usuario_entra_no_sistema(client, app)
         
         dados_validos = {
             "hora_inicio": "08:00:00",
@@ -243,6 +247,7 @@ def test_cadastrar_aula_turma_inexistente(client, app):
     """
     with app.app_context():
         criar_dependencias_usuario(app)
+        usuario_entra_no_sistema(client, app)
         
         dados_validos = {
             "hora_inicio": "08:00:00",
@@ -271,6 +276,7 @@ def test_cadastrar_aula_dados_invalidos(client, app):
     """
     with app.app_context():
         criar_dependencias(app)
+        usuario_entra_no_sistema(client, app)
 
         dados_invalidos = {
             "hora_inicio": "",
@@ -301,6 +307,7 @@ def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
     with app.app_context():
         criar_dependencias(app)
         criar_dependencias_segunda_disciplina(app)
+        usuario_entra_no_sistema(client, app)
 
         aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
@@ -334,6 +341,7 @@ def test_listar_aulas(client, app):
     """
     with app.app_context():
         criar_dependencias(app)
+        usuario_entra_no_sistema(client, app)
 
         aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
@@ -359,6 +367,7 @@ def test_buscar_aula(client, app):
     """
     with app.app_context():
         criar_dependencias(app)
+        usuario_entra_no_sistema(client, app)
 
         aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)

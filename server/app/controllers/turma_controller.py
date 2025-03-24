@@ -81,9 +81,10 @@ def alterar_turma(id: int, current_user_cpf: str, current_user_role: str) -> jso
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados da turma, ou uma mensagem de erro em caso de dados inválidos.
     """
+
     turma = db.session.get(Turma, id)
     if not turma:
-        return jsonify({"erro": "Turma não encontrada"}), 404
+        return jsonify({"erro": "Turma não encontrada"}), 400
     
     data = request.get_json()
 
@@ -91,9 +92,13 @@ def alterar_turma(id: int, current_user_cpf: str, current_user_role: str) -> jso
     if erros:
         return jsonify({"erro": erros}), 400
     
-    turma_existente = Turma.query.filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], turno=data['turno'], status=data['status'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
-    if turma_existente is not None:
+    turma_existente = db.session.query(Turma).filter_by(ano=data['ano'], serie=data['serie'], nivel_de_ensino=data['nivel_de_ensino'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
+    if turma_existente is not None and turma_existente.id != id:
         return jsonify({"erro": ["Turma já existe"]}), 400
+
+    turma_mesmo_horario = db.session.query(Turma).filter_by(turno=data['turno'], sala_numero=data['sala_numero'], calendario_ano_letivo=data['calendario_ano_letivo']).first()
+    if turma_mesmo_horario is not None and turma_mesmo_horario.id != id:
+        return jsonify({"erro": ["Já existe uma turma no mesmo horário"]}), 400
     
     calendario_existente = db.session.query(Calendario).filter_by(ano_letivo=data['calendario_ano_letivo']).first()
     if calendario_existente is None:

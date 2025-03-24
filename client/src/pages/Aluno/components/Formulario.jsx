@@ -186,7 +186,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                     type="number"
                     className="p-2"
                     placeholder="Exemplo: 1"
-                    {...register("id_turma", { required: true, valueAsNumber: true })}
+                    {...register("turma_id", { required: true, valueAsNumber: true })}
                   />
                   <Alert variant="white" className={`${errors.turma_id? "" : "d-none"} text-danger`}>
                       {errors?.turma_id?.type == "required" && "O id da turma é obrigatório"}

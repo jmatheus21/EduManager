@@ -13,12 +13,7 @@ from datetime import datetime
 from app.utils.usuario_helpers import gerar_hashing
 from app.utils.date_helpers import string_para_data
 
-<<<<<<< Updated upstream
-
-=======
-# current_user_cpf: str, current_user_role: str
->>>>>>> Stashed changes
-def cadastrar_usuario() -> jsonify:
+def cadastrar_usuario(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo usuário no banco de dados.
 
     Esta função recebe os dados de um usuário via JSON, valida os dados e, se válidos, cadastra o usuário no banco de dados.

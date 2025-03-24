@@ -41,7 +41,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
  
     try {
       
-      enviarFormulario(data);
+      await enviarFormulario(data);
 
     } catch (error) {
       console.error(error.message);

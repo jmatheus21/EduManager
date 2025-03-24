@@ -11,15 +11,10 @@ import { ConsultarSala, FormularioSala, InfoSala } from "./pages/Sala";
 import { ConsultarDisciplina, FormularioDisciplina, InfoDisciplina } from "./pages/Disciplina";
 import { ConsultarCalendario, FormularioCalendario, InfoCalendario } from "./pages/Calendario";
 import { ConsultarUsuario, FormularioUsuario, InfoUsuario } from "./pages/Usuario";
-<<<<<<< Updated upstream
 import { ConsultarTurma, FormularioTurma, InfoTurma } from "./pages/Turma";
 import { ConsultarAluno, FormularioAluno, InfoAluno } from "./pages/Aluno";
 import { ConsultarAula, FormularioAula } from "./pages/Aula";
 import Matricula from "./pages/Matricula/Matricula.jsx"
-=======
-import { ConsultarTurma, FormularioTurma } from "./pages/Turma";
-import { ConsultarAluno, FormularioAluno, InfoAluno } from "./pages/Aluno";
->>>>>>> Stashed changes
 import "./index.css";
 
 const criarMenu = (entidade) => {
@@ -87,7 +82,6 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<ConsultarAluno />} />
             <Route path="cadastrar" element={<FormularioAluno />} />
             <Route path=":chave" element={<InfoAluno />} />
-<<<<<<< Updated upstream
             <Route path="alterar/:chave" element={<FormularioAluno />} />
           </Route>
           <Route path="aula" element={<GerenciarProtegido menus={criarMenu("aula")} />}>
@@ -99,10 +93,6 @@ createRoot(document.getElementById("root")).render(
           <Route path="matricula" element={<GerenciarProtegido menus={criarMenu("matricula")} />}>
             <Route index element={<Matricula />} />
           </Route>
-=======
-            {/* <Route path="alterar/:chave" element={<FormularioAluno />}/> */}
-        </Route>
->>>>>>> Stashed changes
         </Routes>
       </AuthProvider>
     </BrowserRouter>
