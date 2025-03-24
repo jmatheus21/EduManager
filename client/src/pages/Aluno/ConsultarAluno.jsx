@@ -44,7 +44,8 @@ const ConsultarAluno = () => {
                 tipo={"text"}
                 placeholder={"Exemplo: 202600000001"}
                 minLength={12}
-                maxLength={15}
+                maxLength={12}
+                rota={"aluno"}
                 entidade={"aluno"}
             />
             <Listagem colunas={colunas} data={api.data} pk={colunas[0].field} />

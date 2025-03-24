@@ -121,10 +121,6 @@ def validar_calendario(ano_letivo: int, data_inicio: str, data_fim: str, dias_le
 
     if not data_inicio or not isinstance(data_inicio, str) or not validar_data(data_inicio):
         erros.append("O atributo 'data_inicio' é obrigatório e deve ter o formato correto")
-    else:
-        inicio = string_para_data(data_inicio)
-        if inicio < date.today() or inicio.year != ano_letivo:
-            erros.append("O atributo 'data_inicio' deve ser posterior a data atual e no ano letivo indicado")
 
     if not data_fim or not isinstance(data_fim, str) or not validar_data(data_fim):
         erros.append("O atributo 'data_fim' é obrigatório e deve ter o formato correto")

@@ -28,6 +28,22 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     """
     return aluno_controller.cadastrar_aluno(current_user_cpf, current_user_role)
 
+@aluno_bp.route("/matricula", methods=['POST'])
+@token_required
+def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Rota para matricular um aluno.
+
+    Esta rota permite associar um aluno a uma nova turma.
+    
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso.
+    """
+    return aluno_controller.matricular_aluno(current_user_cpf, current_user_role)
+
 @aluno_bp.route("/", methods=['GET'])
 @token_required
 def listar_alunos(current_user_cpf: str, current_user_role: str) -> jsonify:

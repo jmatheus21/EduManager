@@ -135,7 +135,7 @@ describe("FormularioCalendario Component", () => {
           dias_letivos: 150,
           data_inicio: "2026-01-01",
           data_fim: "2026-09-01"
-        }, expect.anything());
+        });
       });
 
     })

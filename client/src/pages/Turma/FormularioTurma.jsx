@@ -63,7 +63,7 @@ const FormularioTurma = () => {
         navigate("/turma?success=true&type=cadastro");
       }
     } catch (error) {
-      throw new Error(error.message);
+      throw error;
     }
   };
 

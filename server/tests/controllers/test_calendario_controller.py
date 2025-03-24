@@ -68,7 +68,7 @@ def test_cadastrar_calendario_dados_invalidos(client, app):
         response = client.post('/calendario/', json=dados_invalidos)
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert len(response.json["erro"]) == 5, "Deve haver 5 erros de validação."
+        assert len(response.json["erro"]) == 4, "Deve haver 4 erros de validação."
 
 def test_cadastrar_calendario_existente(client, app):
     """Testa o cadastro de um calendário para um ano letivo já existente.
