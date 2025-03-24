@@ -184,7 +184,7 @@ def test_cadastrar_turma_dados_invalidos(client, app):
         response = client.post('/turma/', json=dados_invalidos)
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert len(response.json["erro"]) == 4, "Deve haver 3 erros de validação."
+        assert len(response.json["erro"]) == 4, "Deve haver 4 erros de validação."
 
 def test_cadastrar_turma_com_horario_invalido(client, app):
     """Testa o cadastro de uma turma em uma horário que já existe outra turma.
