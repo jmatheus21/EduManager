@@ -7,6 +7,7 @@ Ele utiliza Flask Blueprint para organizar as rotas e delega a lógica de negóc
 
 from flask import Blueprint, jsonify
 from ..controllers import aula_controller
+from ..middlewares.token_middleware import token_required
 
 
 # Cria um Blueprint para as rotas de aulas
@@ -14,7 +15,8 @@ aula_bp = Blueprint("aula", __name__)
 
 
 @aula_bp.route("/", methods=['POST'])
-def cadastrar_aula() -> jsonify:
+@token_required
+def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Rota para cadastrar uma nova aula.
 
     Esta rota recebe os dados de uma aula via JSON e chama o controlador para realizar o cadastro.
@@ -22,11 +24,12 @@ def cadastrar_aula() -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo uma mensagem e os dados da aula cadastrada.
     """
-    return aula_controller.cadastrar_aula()
+    return aula_controller.cadastrar_aula(current_user_cpf, current_user_role)
 
 
 @aula_bp.route("/", methods=['GET'])
-def listar_aulas() -> jsonify:
+@token_required
+def listar_aulas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Rota para listar todas as aulas cadastradas.
 
     Esta rota retorna uma lista de todas as aulas cadastradas no sistema.
@@ -34,11 +37,12 @@ def listar_aulas() -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo uma lista de aulas.
     """
-    return aula_controller.listar_aulas()
+    return aula_controller.listar_aulas(current_user_cpf, current_user_role)
 
 
 @aula_bp.route("/<int:id>", methods=['GET'])
-def buscar_aulas(id: int) -> jsonify:
+@token_required
+def buscar_aulas(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Rota para buscar uma aula específica pelo id.
 
     Esta rota recebe o id de uma aula e retorna os dados da aula correspondente.
@@ -49,7 +53,7 @@ def buscar_aulas(id: int) -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo os dados da aula encontrada.
     """
-    return aula_controller.buscar_aula(id)
+    return aula_controller.buscar_aula(id, current_user_cpf, current_user_role)
 
 
 # @aula_bp.route("/<int:id>", methods=['PUT'])

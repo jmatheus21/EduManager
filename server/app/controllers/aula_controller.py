@@ -12,7 +12,7 @@ from app.utils.validators import validar_aula
 from app.utils.hour_helpers import string_para_hora, hora_para_string
 
 
-def cadastrar_aula() -> jsonify:
+def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra uma nova aula no banco de dados.
 
     Esta função recebe os dados de uma aula via JSON, valida os dados e, se válidos, cadastra a aula no banco de dados.
@@ -56,7 +56,7 @@ def cadastrar_aula() -> jsonify:
 
     return jsonify({"mensagem": "Aula criada com sucesso!", "data": {"id": nova_aula.id, "hora_inicio": hora_inicio_str, "hora_fim": hora_fim_str, "dias_da_semana": nova_aula.dias_da_semana, "usuario_cpf": nova_aula.usuario_cpf, "disciplina_codigo": nova_aula.disciplina_codigo, "turma_id": nova_aula.turma_id}}), 201
 
-def listar_aulas() -> jsonify:
+def listar_aulas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as aulas cadastradas no banco de dados.
 
     Returns:
@@ -66,7 +66,7 @@ def listar_aulas() -> jsonify:
     return jsonify([{"id": aula.id, "hora_inicio": hora_para_string(aula.hora_inicio), "hora_fim": hora_para_string(aula.hora_fim), "dias_da_semana": aula.dias_da_semana, "usuario_cpf": aula.usuario_cpf, "disciplina_codigo": aula.disciplina_codigo, "turma_id": aula.turma_id} for aula in aulas]), 200
 
 
-def buscar_aula(id: int) -> jsonify:
+def buscar_aula(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Busca uma aula específica pelo número.
 
     Args:

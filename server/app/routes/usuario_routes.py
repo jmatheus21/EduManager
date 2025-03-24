@@ -9,8 +9,10 @@ from flask import Blueprint, jsonify
 from ..controllers import usuario_controller
 from ..middlewares.token_middleware import token_required
 
+
 # Cria um Blueprint para as rotas de usuários
 usuario_bp = Blueprint("usuario", __name__)
+
 
 @usuario_bp.route("/", methods = ['POST'])
 @token_required
@@ -43,8 +45,7 @@ def listar_usuarios(current_user_cpf: str, current_user_role: str) -> jsonify:
     Returns:
         jsonify: Resposta JSON contendo uma lista de usuários.
     """
-    return usuario_controller.listar_usuarios(current_user_cpf, current_user_role
-)
+    return usuario_controller.listar_usuarios(current_user_cpf, current_user_role)
 
 
 @usuario_bp.route("/<string:cpf>", methods=['GET'])
