@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { Col, Container, Form, Row, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { BotaoCadastrar, BotaoAlterar } from "../../../components";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import validator from "validator";
+import { IMaskInput } from "react-imask";
 
 
 /**
@@ -13,7 +14,7 @@ import validator from "validator";
  * @returns {JSX.Element} O componente de formulário para cadastrar ou alterar uma aula.
  */
 const Formulario = ({ enviarFormulario, alteracao }) => {
-    const { register, handleSubmit, setError, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, control, setError, reset, formState: { errors } } = useForm();
     const { alterar, dados, chave } = alteracao;
 
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
 
         try {
 
-            enviarFormulario(data);
+            await enviarFormulario(data);
 
         } catch (error) {
             console.error(error.message);
@@ -70,10 +71,10 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                                 type="number"
                                 className="p-2"
                                 placeholder="Exemplo: 1"
-                                {...register("turmaId", { required: true, valueAsNumber: true })}
+                                {...register("turma_id", { required: true, valueAsNumber: true })}
                             />
-                            <Alert variant="white" className={`${errors.turmaId ? "" : "d-none"} text-danger`}>
-                                {errors.turmaId?.type === "required" && "O id da turma é obrigatório"}
+                            <Alert variant="white" className={`${errors.turma_id ? "" : "d-none"} text-danger`}>
+                                {errors.turma_id?.type === "required" && "O id da turma é obrigatório"}
                             </Alert>
                         </Form.Group>
                     </Col>
@@ -85,13 +86,13 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                                 type="text"
                                 className="p-2"
                                 placeholder="Exemplo: MAT001"
-                                {...register("DisciplinaCodigo", { required: true, minLength: 6, maxLength: 10, pattern: /^[A-Z]{3}\d{3}$/ })}
+                                {...register("disciplina_codigo", { required: true, minLength: 6, maxLength: 10, pattern: /^[A-Z]{3}\d{3}$/ })}
                             />
-                            <Alert variant="white" className={`${errors.DisciplinaCodigo ? "" : "d-none"} text-danger`}>
-                                {errors?.DisciplinaCodigo?.type == "required" && "O código da disciplina é obrigatório"}
-                                {errors?.DisciplinaCodigo?.type == "minLength" && "O código da disciplina deve ter no mínimo 6 caracteres"}
-                                {errors?.DisciplinaCodigo?.type == "maxLength" && "O código da disciplina deve ter no máximo 10 caracteres"}
-                                {errors?.DisciplinaCodigo?.type == "pattern" && "O código da disciplina não está no formato correto. Utilize três letras maiúsculas seguidas de três números (ex: MAT123)"}
+                            <Alert variant="white" className={`${errors.disciplina_codigo ? "" : "d-none"} text-danger`}>
+                                {errors?.disciplina_codigo?.type == "required" && "O código da disciplina é obrigatório"}
+                                {errors?.disciplina_codigo?.type == "minLength" && "O código da disciplina deve ter no mínimo 6 caracteres"}
+                                {errors?.disciplina_codigo?.type == "maxLength" && "O código da disciplina deve ter no máximo 10 caracteres"}
+                                {errors?.disciplina_codigo?.type == "pattern" && "O código da disciplina não está no formato correto. Utilize três letras maiúsculas seguidas de três números (ex: MAT123)"}
                             </Alert>
                         </Form.Group>
                     </Col>
@@ -99,16 +100,25 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                 <Row className="gap-5">
                     <Col>
                         <Form.Group className="d-flex flex-column gap-1">
-                            <Form.Label htmlFor="ProfessorCPF">CPF do Professor: <span className="text-danger">*</span></Form.Label>
-                            <Form.Control
-                                id="ProfessorCPF"
-                                type="text"
-                                className="p-2"
-                                placeholder="Exemplo: 111.222.333-44"
-                                {...register("ProfessorCPF", { required: true })}
+                            <Form.Label htmlFor="usuario_cpf">CPF do Professor: <span className="text-danger">*</span></Form.Label>
+                            <Controller
+                                name="usuario_cpf"
+                                control={control}
+                                disabled={alterar}
+                                defaultValue=""
+                                rules={{ required: !alterar }}
+                                render={({ field }) => (
+                                <IMaskInput
+                                    {...field}
+                                    id="usuario_cpf"
+                                    mask="000.000.000-00"
+                                    placeholder="Exemplo: 999.888.777-66"
+                                    className="p-2 form-control"
+                                />
+                                )}
                             />
-                            <Alert variant="white" className={`${errors.ProfessorCPF ? "" : "d-none"} text-danger`}>
-                                {errors?.ProfessorCPF?.type == "required" && "O CPF do professor é obrigatório"}
+                            <Alert variant="white" className={`${errors.usuario_cpf ? "" : "d-none"} text-danger`}>
+                                {errors?.usuario_cpf?.type == "required" && "O CPF do professor é obrigatório"}
                             </Alert>
                         </Form.Group>
                     </Col>
@@ -122,11 +132,11 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                                 type="time"
                                 className="p-2"
                                 placeholder="Exemplo: 1"
-                                {...register("horaInicio", { required: true, validate: (value) => validator.isTime(value) })}
+                                {...register("hora_inicio", { required: true, validate: (value) => validator.isTime(value) })}
                             />
-                            <Alert variant="white" className={`${errors.horaInicio ? "" : "d-none"} text-danger`}>
-                                {errors.horaInicio?.type === "required" && "A hora de início é obrigatória"}
-                                {errors.horaInicio?.type === "validate" && "A hora de início deve estar no formato correto"}
+                            <Alert variant="white" className={`${errors.hora_inicio ? "" : "d-none"} text-danger`}>
+                                {errors.hora_inicio?.type === "required" && "A hora de início é obrigatória"}
+                                {errors.hora_inicio?.type === "validate" && "A hora de início deve estar no formato correto"}
                             </Alert>
                         </Form.Group>
                     </Col>
@@ -138,11 +148,11 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                                 type="time"
                                 className="p-2"
                                 placeholder="Exemplo: 1"
-                                {...register("horaFim", { required: true, validate: (value) => validator.isTime(value) })}
+                                {...register("hora_fim", { required: true, validate: (value) => validator.isTime(value) })}
                             />
-                            <Alert variant="white" className={`${errors.horaFim ? "" : "d-none"} text-danger`}>
-                                {errors.horaFim?.type === "required" && "A hora do fim é obrigatória"}
-                                {errors.horaFim?.type === "validate" && "A hora do fim deve estar no formato correto"}
+                            <Alert variant="white" className={`${errors.hora_fim ? "" : "d-none"} text-danger`}>
+                                {errors.hora_fim?.type === "required" && "A hora do fim é obrigatória"}
+                                {errors.hora_fim?.type === "validate" && "A hora do fim deve estar no formato correto"}
                             </Alert>
                         </Form.Group>
                     </Col>
@@ -159,14 +169,14 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                                         type="checkbox"
                                         label={dia}
                                         value={dia}
-                                        {...register("diasDaSemana", {
+                                        {...register("dias_da_semana", {
                                             required: { value: true, message: "Os dias da semana são obrigatórios" }
                                         })}
                                     />
                                 ))}
                             </div>
-                            <Alert variant="white" className={`${errors.diasDaSemana ? "" : "d-none"} text-danger`}>
-                                {errors.diasDaSemana?.message}
+                            <Alert variant="white" className={`${errors.dias_da_semana ? "" : "d-none"} text-danger`}>
+                                {errors.dias_da_semana?.message}
                             </Alert>
                         </Form.Group>
                     </Col>

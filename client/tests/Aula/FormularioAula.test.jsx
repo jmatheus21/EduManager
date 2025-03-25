@@ -112,7 +112,7 @@ describe("FormularioAula Component", () => {
       // verifica se os dados foram digitados corretamente
       expect(idTurmaInput.value).toBe("1");
       expect(codigoDisciplinaInput.value).toBe("MAT001");
-      expect(cpfProfessorInput.value).toBe("12345678910");
+      expect(cpfProfessorInput.value).toBe("123.456.789-10");
       expect(horaDeInicioInput.value).toBe("13:00");
       expect(horaDoFimInput.value).toBe("15:00");
       expect.objectContaining({diasDaSemana: ["Quarta"]});
@@ -162,12 +162,12 @@ describe("FormularioAula Component", () => {
         expect(mockEnviarFormulario).toHaveBeenCalledTimes(1);
         expect(mockEnviarFormulario).toHaveBeenCalledWith(
           {
-            turmaId: 1,
-            DisciplinaCodigo: "MAT001",
-            ProfessorCPF: "12345678910",
-            horaInicio: "13:00",
-            horaFim: "15:00",
-            diasDaSemana: ["Quarta"],
+            turma_id: 1,
+            disciplina_codigo: "MAT001",
+            usuario_cpf: "123.456.789-10",
+            hora_inicio: "13:00",
+            hora_fim: "15:00",
+            dias_da_semana: ["Quarta"],
           }
         );
       });

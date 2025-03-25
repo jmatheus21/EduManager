@@ -7,9 +7,9 @@ const colunas = [
     { field: "id", headerName: "#", flex: 1, align: "center", headerAlign: "center" },
     { field: "turma_id", headerName: "Turma", flex: 1, align: "center", headerAlign: "center" },
     { field: "disciplina_codigo", headerName: "Disciplina", flex: 1, align: "center", headerAlign: "center" },
-    { field: "usuario_cpf", headerName: "Professor", flex: 1, align: "center", headerAlign: "center" },
-    { field: "hora_inicio", headerName: "H. Início", flex: 1, align: "center", headerAlign: "center" },
-    { field: "hora_fim", headerName: "H. Fim", flex: 1, align: "center", headerAlign: "center" },
+    { field: "professor_nome", headerName: "Professor", flex: 1, align: "center", headerAlign: "center" },
+    { field: "hora_inicio", headerName: "H. Início", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => `${value.slice(0, 2)}h${value.slice(3,5)}` },
+    { field: "hora_fim", headerName: "H. Fim", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => `${value.slice(0, 2)}h${value.slice(3,5)}` },
     { field: "dias_da_semana", headerName: "Dias da Semana", flex: 1, align: "center", headerAlign: "center" }
 ];
 

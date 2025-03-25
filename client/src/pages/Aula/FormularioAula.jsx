@@ -48,6 +48,8 @@ const FormularioAula = () => {
    * @param {Event} event - O evento de submissão do formulário.
    */
   const enviarFormulario = async (data) => {
+
+    data.usuario_cpf = data.usuario_cpf.replace(/\D/g, '');
  
     try {
       if (alterar) {

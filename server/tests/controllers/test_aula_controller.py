@@ -142,8 +142,8 @@ def test_cadastrar_aula(client, app):
         usuario_entra_no_sistema(client, app)
 
         dados_validos = {
-            "hora_inicio": "13:00:00",
-            "hora_fim": "15:00:00",
+            "hora_inicio": "13:00",
+            "hora_fim": "15:00",
             "dias_da_semana": ["Segunda"],
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT001",
@@ -164,7 +164,7 @@ def test_cadastrar_aula(client, app):
         assert aula["hora_inicio"] == "13:00:00", "O horário de início da aula deve ser '13:00:00'."
         assert aula["hora_fim"] == "15:00:00", "O horário de fim da aula deve ser '15:00:00'."
         assert aula["dias_da_semana"] == ["Segunda"], "O dia da semana deve ser '['Segunda']'."
-        assert aula["usuario_cpf"] == "12345678910", "O cpf do usuário deve ser '12345678910'."
+        assert aula["usuario_id"] == 1, "O id do usuário deve ser 1."
         assert aula["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."
         assert aula["turma_id"] == 1, "O id da turma deve ser 1."
 
@@ -190,7 +190,7 @@ def test_cadastrar_aula_usuario_inexistente(client, app):
             "hora_inicio": "13:00:00",
             "hora_fim": "15:00:00",
             "dias_da_semana": "Segunda",
-            "usuario_cpf": "12345678910",
+            "usuario_cpf": "12345678911",
             "disciplina_codigo": "MAT001",
             "turma_id": 1
         }
@@ -309,13 +309,13 @@ def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
         criar_dependencias_segunda_disciplina(app)
         usuario_entra_no_sistema(client, app)
 
-        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
         dados_invalidos = {
-            "hora_inicio": "08:00:00",
-            "hora_fim": "09:00:00",
+            "hora_inicio": "08:00",
+            "hora_fim": "09:00",
             "dias_da_semana": ["Segunda"],
             "usuario_cpf": "12345678910",
             "disciplina_codigo": "MAT002",
@@ -343,7 +343,7 @@ def test_listar_aulas(client, app):
         criar_dependencias(app)
         usuario_entra_no_sistema(client, app)
 
-        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
@@ -369,7 +369,7 @@ def test_buscar_aula(client, app):
         criar_dependencias(app)
         usuario_entra_no_sistema(client, app)
 
-        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_cpf="12345678910", disciplina_codigo="MAT001", turma_id=1)
+        aula = Aula(hora_inicio="08:00:00", hora_fim="09:00:00", dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
         db.session.add(aula)
         db.session.commit()
 
@@ -382,7 +382,7 @@ def test_buscar_aula(client, app):
         assert dados["hora_inicio"] == "08:00:00", "O horário de início da aula deve ser 08:00:00."
         assert dados["hora_fim"] == "09:00:00", "O horário de fim da aula deve ser 09:00:00."
         assert dados["dias_da_semana"] == ["Segunda"], "O dia da semana deve ser '['Segunda']'."
-        assert dados["usuario_cpf"] == "12345678910", "O cpf do usuário deve ser '12345678910'."
+        assert dados["professor_id"] == 1, "O id do professor deve ser 1."
         assert dados["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."
         assert dados["turma_id"] == 1, "O id da turma deve ser 1."
 
