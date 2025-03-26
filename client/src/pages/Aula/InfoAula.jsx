@@ -44,6 +44,7 @@ const InfoAula = () => {
     }
   };
 
+  
   /**
    * Efeito para buscar os dados da aula ao carregar.
    */
@@ -69,18 +70,6 @@ const InfoAula = () => {
     })
   }
 
-  const exibirTurma = (turmas) => {
-    var i, turma, maior_ano = 0;
-    for (i = 0; i < turmas.length - 1; i++) {
-        if (turmas[i].ano > maior_ano) {
-            maior_ano = turmas[i].ano;
-            turma = turma[i];
-        }
-    }
-
-    return (<span key={i}>{turma.ano} ano {turma.serie} - {turma.nivel_de_ensino} ({turma.id}), </span>)
-  }
-
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações da Aula</Titulo>
@@ -97,16 +86,13 @@ const InfoAula = () => {
           </Col>
           <Col>
             <h5>Turma:</h5>
-              {api.data && <p>{api.data.turma_id}</p>}
-              {api.data && <p>{api.data.turma_ano}</p>}
-              {api.data && <p>{api.data.turma_serie}</p>}
-              {api.data && <p>{api.data.turma_nivel_de_ensino}</p>}
+              {api.data && `${api.data.turma_ano}° ano ${api.data.turma_serie} - ${api.data.turma_nivel_de_ensino} (${api.data.turma_id})`}
           </Col>
         </Row>
         <Row>
           <Col>
             <h5>Professor:</h5>
-              {api.data.professor_nome} ({api.data.professor_cpf})
+            {api.data && `${api.data.professor_nome} (${api.data.professor_cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')})`}
           </Col>
           <Col>
             <h5>Disciplina:</h5>
@@ -116,17 +102,17 @@ const InfoAula = () => {
         <Row>
           <Col>
             <h5>Horário de Início:</h5>
-              {api.data && <p>{api.data.hora_inicio}</p>}
+              {api.data && <p>{api.data.hora_inicio.split(":").slice(0, 2).join(":")}</p>}
           </Col>
           <Col>
             <h5>Horário do Fim:</h5>
-              {api.data && <p>{api.data.hora_fim}</p>}
+              {api.data && <p>{api.data.hora_fim.split(":").slice(0, 2).join(":")}</p>}
           </Col>
         </Row>
         <Row>
           <Col>
             <h5>Dias da Semana:</h5>
-              {api.data && exibirDiasDaSemana(api?.data?.dias_da_semana)}
+            {api.data?.dias_da_semana && exibirDiasDaSemana(api.data.dias_da_semana)}
           </Col>
         </Row>
       </Container>

@@ -51,6 +51,14 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
             if (error.message === "Aula já existe") {
                 setError("id", { type: "equal" });
             }
+
+            if (error.message.includes("Turma não existe")) {
+                setError("root.serverError", { message: "A turma não existe" });
+            }
+
+            if (error.message.includes("O usuário não é do tipo 'professor'")) {
+                setError("root.serverError", { message: "Apenas professores podem realizar esta ação." });
+            }
         }
     };
 
