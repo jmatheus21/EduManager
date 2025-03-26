@@ -56,31 +56,33 @@ def buscar_aulas(id: int, current_user_cpf: str, current_user_role: str) -> json
     return aula_controller.buscar_aula(id, current_user_cpf, current_user_role)
 
 
-# @aula_bp.route("/<int:id>", methods=['PUT'])
-# def alterar_aula(id: int) -> jsonify:
-#     """Rota para alterar os dados de uma aula existente.
+@aula_bp.route("/<int:id>", methods=['PUT'])
+@token_required
+def alterar_aula(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Rota para alterar os dados de uma aula existente.
 
-#     Esta rota recebe o id de uma aula e os novos dados via JSON, e chama o controlador para realizar a atualização.
+    Esta rota recebe o id de uma aula e os novos dados via JSON, e chama o controlador para realizar a atualização.
 
-#     Args:
-#         id (int): O id da aula a ser alterada.
+    Args:
+        id (int): O id da aula a ser alterada.
 
-#     Returns:
-#         jsonify: Resposta JSON contendo uma mensagem e os dados atualizados da aula.
-#     """
-#     return aula_controller.alterar_aula(id)
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem e os dados atualizados da aula.
+    """
+    return aula_controller.alterar_aula(id, current_user_cpf, current_user_role)
 
 
-# @aula_bp.route("/<int:id>", methods=['DELETE'])
-# def remover_aula(id: int) -> jsonify:
-#     """Rota para remover uma aula existente.
+@aula_bp.route("/<int:id>", methods=['DELETE'])
+@token_required
+def remover_aula(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Rota para remover uma aula existente.
 
-#     Esta rota recebe o id de uma aula e chama o controlador para realizar a remoção.
+    Esta rota recebe o id de uma aula e chama o controlador para realizar a remoção.
 
-#     Args:
-#         id (int): O id da aula a ser removida.
+    Args:
+        id (int): O id da aula a ser removida.
 
-#     Returns:
-#         jsonify: Resposta JSON contendo uma mensagem de sucesso.
-#     """
-#     return aula_controller.remover_aula(id)
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso.
+    """
+    return aula_controller.remover_aula(id, current_user_cpf, current_user_role)

@@ -387,29 +387,66 @@ def test_buscar_aula(client, app):
         assert dados["turma_id"] == 1, "O id da turma deve ser 1."
 
 
-# def test_alterar_aula(client, app):
-#     """Testa a atualização dos dados de uma aula.
+def test_alterar_aula(client, app):
+    """Testa a atualização dos dados de uma aula.
 
-#     Este teste verifica se a requisição PUT para a rota '/aula/{id}' retorna o status code 200 (OK),
-#     se a resposta contém uma mensagem de sucesso e se os dados da aula foram atualizados corretamente.
+    Este teste verifica se a requisição PUT para a rota '/aula/{id}' retorna o status code 200 (OK),
+    se a resposta contém uma mensagem de sucesso e se os dados da aula foram atualizados corretamente.
 
-#     Args:
-#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         criar_dependencias(app)
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencias(app)
+        usuario_entra_no_sistema(client, app)
+
+        aula = Aula(hora_inicio="08:00:00", hora_fim="09:00:00", dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
+        db.session.commit()
+
+        # Dados para atualização
+        dados_atualizacao = {
+            "hora_inicio": "07:00",
+            "hora_fim": "09:00",
+            "dias_da_semana": ["Segunda", "Quarta"],
+            "usuario_cpf": "12345678910",
+            "disciplina_codigo": "MAT001",
+            "turma_id": 1
+        }
+
+        response = client.put(f'/aula/{aula.id}', json=dados_atualizacao)
+        assert response.status_code == 200, "O status code deve ser 200 (OK)."
+        assert response.json["mensagem"] == "Aula atualizada com sucesso!"
+
+        dados = response.json["data"]
+        
+        assert dados["hora_inicio"] == "07:00:00", "O horário de início deve ser '07:00:00'."
+        assert dados["hora_fim"] == "09:00:00", "O horário de fim deve ser '09:00:00'."
+        assert dados["dias_da_semana"] == ["Segunda", "Quarta"], "Os dias da semana devem ser '['Segunda', 'Quarta']'."
+        assert dados["usuario_id"] == 1, "O id do usuario deve ser 1."
+        assert dados["disciplina_codigo"] == "MAT001", "O código da disciplina deve ser 'MAT001'."
+        assert dados["turma_id"] == 1, "O id da turma deve 1."
 
 
-# def test_deletar_aula(client, app):
-#     """Testa a exclusão de uma aula.
+def test_remover_aula(client, app):
+    """Testa a exclusão de uma aula.
 
-#     Este teste verifica se a requisição DELETE para a rota '/aula/{id}' retorna o status code 200 (OK)
-#     e se a resposta contém uma mensagem de sucesso.
+    Este teste verifica se a requisição DELETE para a rota '/aula/{id}' retorna o status code 200 (OK)
+    e se a resposta contém uma mensagem de sucesso.
 
-#     Args:
-#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         criar_dependencias(app)
+    Args:
+        client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencias(app)
+        usuario_entra_no_sistema(client, app)
+
+        aula = Aula(hora_inicio="08:00:00", hora_fim="09:00:00", dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
+        db.session.commit()
+
+        response = client.delete(f'/aula/{aula.id}')
+        assert response.status_code == 200, "O status code deve ser 200 (OK)."
+        assert response.json["mensagem"] == "Aula deletada com sucesso!"

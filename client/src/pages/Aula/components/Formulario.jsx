@@ -104,7 +104,6 @@ const Formulario = ({ enviarFormulario, alteracao }) => {
                             <Controller
                                 name="usuario_cpf"
                                 control={control}
-                                disabled={alterar}
                                 defaultValue=""
                                 rules={{ required: !alterar }}
                                 render={({ field }) => (
