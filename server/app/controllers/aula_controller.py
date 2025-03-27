@@ -9,7 +9,7 @@ from flask import request, jsonify
 from app.extensions import db
 from ..models import Aula, Usuario, Disciplina, Turma
 from app.utils.validators import validar_aula
-from app.utils.hour_helpers import string_para_hora, hora_para_string
+from app.utils.hour_helpers import hora_para_string
 
 
 def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -43,6 +43,8 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
         return jsonify({"erro": ["Usuário não existe"]}), 400
     elif usuario_existente.tipo != "p":
         return jsonify({"erro": ["O usuário não é do tipo 'professor'"]}), 400
+    elif data['disciplina_codigo'] not in [disciplina.codigo for disciplina in usuario_existente.disciplinas]:
+        return jsonify({"erro": ["O 'professor' não pode ensinar essa 'disciplina'"]}), 400
     
     aula_no_mesmo_horario_com_mesmo_usuario = db.session.query(Aula).filter_by(hora_inicio=data['hora_inicio'], hora_fim=data['hora_fim'], dias_da_semana=data['dias_da_semana'], turma_id=data['turma_id']).first()
     if aula_no_mesmo_horario_com_mesmo_usuario is not None:
@@ -57,6 +59,7 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
     hora_fim_str = hora_para_string(nova_aula.hora_fim)
 
     return jsonify({"mensagem": "Aula criada com sucesso!", "data": {"id": nova_aula.id, "hora_inicio": hora_inicio_str, "hora_fim": hora_fim_str, "dias_da_semana": nova_aula.dias_da_semana, "usuario_id": nova_aula.usuario_id, "disciplina_codigo": nova_aula.disciplina_codigo, "turma_id": nova_aula.turma_id}}), 201
+
 
 def listar_aulas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as aulas cadastradas no banco de dados.

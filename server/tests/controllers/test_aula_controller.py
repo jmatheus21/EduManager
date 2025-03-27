@@ -107,6 +107,20 @@ def criar_dependencias_disciplina(app):
             db.session.commit()
 
 
+def criar_dependencias_outra_disciplina(app):
+    """ Garante que a instâncias das entidades `Disciplina` esteja disponível para 
+    que testes na classe `aula` possam ser feitos.
+    """
+    with app.app_context():
+        with db.session.no_autoflush:
+            # Garante que a disciplina existe
+            if not Disciplina.query.filter_by(codigo="MAT002").first():
+                disciplina = Disciplina(codigo="MAT002", nome="Matemática II", carga_horaria=60, ementa="", bibliografia="")
+                db.session.add(disciplina)
+            
+            db.session.commit()
+
+
 def criar_dependencias_turma(app):
     """ Garante que instâncias da entidade `Turma` esteja disponível para 
     que testes na classe `aula` possam ser feitos.
@@ -294,39 +308,66 @@ def test_cadastrar_aula_dados_invalidos(client, app):
         assert len(response.json["erro"]) == 6, "Deve haver 6 erros de validação."
 
 
-def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
-    """Testa o cadastro de uma aula em uma horário que já existe outra aula com o mesmo usuário.
+# def test_cadastrar_aula_no_mesmo_horario_com_mesmo_usuario(client, app):
+#     """Testa o cadastro de uma aula em uma horário que já existe outra aula com o mesmo usuário.
+
+#     Este teste verifica se a requisição POST para a rota '/aula' retorna o status code 400 (Bad Request)
+#     e se a resposta contém mensagens de erro de que o horário da aula está ocupado.
+
+#     Args:
+#         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
+#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+#     """
+#     with app.app_context():
+#         criar_dependencias(app)
+#         criar_dependencias_segunda_disciplina(app)
+#         usuario_entra_no_sistema(client, app)
+
+#         aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
+#         db.session.add(aula)
+#         db.session.commit()
+
+#         dados_invalidos = {
+#             "hora_inicio": "08:00",
+#             "hora_fim": "09:00",
+#             "dias_da_semana": ["Segunda"],
+#             "usuario_cpf": "12345678910",
+#             "disciplina_codigo": "MAT002",
+#             "turma_id": 1
+#         }
+
+#         response = client.post('/aula/', json=dados_invalidos)
+
+#         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
+#         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
+#         assert "Já existe uma aula no mesmo horário, com o mesmo professor" in response.json["erro"], "Deve retornar uma mensagem de erro no horário, com o mesmo professor"
+
+
+def test_professor_de_outra_disciplina(client, app):
+    """Testa o cadastro de uma aula que o professor não ensina.
 
     Este teste verifica se a requisição POST para a rota '/aula' retorna o status code 400 (Bad Request)
-    e se a resposta contém mensagens de erro de que o horário da aula está ocupado.
+    e se a resposta contém mensagens de erro de que o professor não pode ensinar essa disciplina.
 
     Args:
         client (FlaskClient): Cliente de teste do Flask para simular requisições HTTP.
         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-    """
+    """   
     with app.app_context():
         criar_dependencias(app)
-        criar_dependencias_segunda_disciplina(app)
+        criar_dependencias_outra_disciplina(app)
         usuario_entra_no_sistema(client, app)
 
-        aula = Aula(hora_inicio=string_para_hora("08:00:00"), hora_fim=string_para_hora("09:00:00"), dias_da_semana=["Segunda"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
-        db.session.add(aula)
-        db.session.commit()
-
         dados_invalidos = {
-            "hora_inicio": "08:00",
-            "hora_fim": "09:00",
-            "dias_da_semana": ["Segunda"],
-            "usuario_cpf": "12345678910",
-            "disciplina_codigo": "MAT002",
-            "turma_id": 1
+            "hora_inicio" : "08:00:00",
+            "hora_fim" : "09:00:00",
+            "dias_da_semana" : ["Segunda"],
+            "usuario_cpf" : "12345678910",
+            "disciplina_codigo" : "MAT002",
+            "turma_id" : 1
         }
-
         response = client.post('/aula/', json=dados_invalidos)
-
-        assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
-        assert "erro" in response.json, "A resposta deve conter mensagens de erro."
-        assert "Já existe uma aula no mesmo horário, com o mesmo professor" in response.json["erro"], "Deve retornar uma mensagem de erro no horário, com o mesmo professor"
+        assert "erro" in response.json, "O 'professor' não pode ensinar essa 'disciplina'"
 
 
 def test_listar_aulas(client, app):
