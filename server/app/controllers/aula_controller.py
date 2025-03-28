@@ -33,7 +33,7 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
     turma_existente = db.session.query(Turma).filter_by(id=data['turma_id']).first()
     if turma_existente is None:
         return jsonify({"erro": ["Turma não existe"]}), 400
-    
+        
     aula_existente = db.session.query(Aula).filter_by(disciplina_codigo=data['disciplina_codigo'], turma_id=data['turma_id']).first()
     if aula_existente is not None:
         return jsonify({"erro": ["Aula já existe"]}), 400
@@ -43,15 +43,25 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
         return jsonify({"erro": ["Usuário não existe"]}), 400
     elif usuario_existente.tipo != "p":
         return jsonify({"erro": ["O usuário não é do tipo 'professor'"]}), 400
-    elif data['disciplina_codigo'] not in [disciplina.codigo for disciplina in usuario_existente.disciplinas]:
-        return jsonify({"erro": ["O 'professor' não pode ensinar essa 'disciplina'"]}), 400
     
-    aula_no_mesmo_horario_com_mesmo_usuario = db.session.query(Aula).filter_by(hora_inicio=data['hora_inicio'], hora_fim=data['hora_fim'], dias_da_semana=data['dias_da_semana'], turma_id=data['turma_id']).first()
+    aula_no_mesmo_horario_com_mesmo_usuario = db.session.query(Aula).filter_by(
+        hora_inicio=data['hora_inicio'], 
+        hora_fim=data['hora_fim'], 
+        dias_da_semana=data['dias_da_semana'], 
+        turma_id=data['turma_id']
+    ).first()
+
     if aula_no_mesmo_horario_com_mesmo_usuario is not None:
         return jsonify({"erro": ["Já existe uma aula no mesmo horário, com o mesmo professor"]}), 400
-    
+
+    elif data['disciplina_codigo'] not in [disciplina.codigo for disciplina in usuario_existente.disciplinas]:
+        return jsonify({"erro": ["O 'professor' não pode ensinar essa 'disciplina'"]}), 400
+
     nova_aula = Aula(hora_inicio=data['hora_inicio'], hora_fim=data['hora_fim'], dias_da_semana=data['dias_da_semana'], usuario_id=usuario_existente.id, disciplina_codigo=data['disciplina_codigo'], turma_id=data['turma_id'])
     db.session.add(nova_aula)
+
+    # AAAAAA
+
     db.session.commit()
 
     # Usando a função hora_para_string para converter os objetos time para string

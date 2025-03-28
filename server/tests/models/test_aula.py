@@ -7,7 +7,6 @@ incluindo cadastro, listagem, busca, atualização e remoção de aulas no banco
 
 from app.models import Aula, Usuario, Cargo, Disciplina, Turma, Calendario, Sala
 from app.extensions import db
-from datetime import datetime
 from app.utils.date_helpers import string_para_data
 from app.utils.hour_helpers import string_para_hora
 from app.utils.usuario_helpers import gerar_hashing
@@ -124,27 +123,61 @@ def test_buscar_aula(app):
         assert aula_buscada.turma_id == 1
 
 
-# def test_alterar_aula(app):
-#     """Testa a atualização dos dados de uma aula no banco de dados.
+def test_alterar_aula(app):
+    """Testa a atualização dos dados de uma aula no banco de dados.
 
-#     Este teste verifica se os dados de uma aula podem ser atualizados corretamente
-#     e se os novos dados são persistidos no banco de dados.
+    Este teste verifica se os dados de uma aula podem ser atualizados corretamente
+    e se os novos dados são persistidos no banco de dados.
 
-#     Args:
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         criar_dependencias(app)
+    Args:
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencias(app)
+
+        aula = Aula(hora_inicio=string_para_hora("13:00:00"), hora_fim=string_para_hora("15:00:00"), dias_da_semana=["Terça", "Quinta"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
+        db.session.commit()
+
+        aula_original = db.session.get(Aula, aula.id)
+        aula_original is not None
+        aula_original.hora_inicio = string_para_hora("13:00:00")
+        aula_original.hora_fim = string_para_hora("15:00:00")
+        aula_original.dias_da_semana = ["Terça", "Quinta"]
+        aula_original.usuario_id = 1
+        aula_original.disciplina_codigo = "MAT001"
+        aula_original.turma_id = 1
+        db.session.commit()
+
+        aula_alterada = db.session.get(Aula, aula.id)
+        assert aula_alterada is not None
+        assert aula_alterada.hora_inicio == string_para_hora("13:00:00")
+        assert aula_alterada.hora_fim == string_para_hora("15:00:00")
+        assert aula_alterada.dias_da_semana == ["Terça", "Quinta"] 
+        assert aula_alterada.usuario_id == 1
+        assert aula_alterada.disciplina_codigo == "MAT001"
+        assert aula_alterada.turma_id == 1
 
 
-# def test_remover_aula(app):
-#     """Testa a remoção de uma aula do banco de dados.
+def test_remover_aula(app):
+    """Testa a remoção de uma aula do banco de dados.
 
-#     Este teste verifica se uma aula pode ser removida corretamente do banco de dados
-#     e se a aula não pode mais ser encontrada após a remoção.
+    Este teste verifica se uma aula pode ser removida corretamente do banco de dados
+    e se a aula não pode mais ser encontrada após a remoção.
 
-#     Args:
-#         app (Flask): Aplicação Flask para acessar o contexto da aplicação.
-#     """
-#     with app.app_context():
-#         criar_dependencias(app)
+    Args:
+        app (Flask): Aplicação Flask para acessar o contexto da aplicação.
+    """
+    with app.app_context():
+        criar_dependencias(app)
+
+        aula = Aula(hora_inicio=string_para_hora("13:00:00"), hora_fim=string_para_hora("15:00:00"), dias_da_semana=["Terça", "Quinta"], usuario_id=1, disciplina_codigo="MAT001", turma_id=1)
+        db.session.add(aula)
+        db.session.commit()
+
+        aula_adicionada = db.session.get(Aula, aula.id)
+        db.session.delete(aula_adicionada)
+        db.session.commit()
+
+        aula_deletada = db.session.get(Aula, aula.id)
+        assert aula_deletada is None
