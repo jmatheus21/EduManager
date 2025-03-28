@@ -37,7 +37,7 @@ class Usuario(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, doc="Id do usuário (chave primária)")
-    cpf = db.Column(db.CHAR(11), unique=True, doc = "CPF do usuário")
+    cpf = db.Column(db.CHAR(11), unique=True, nullable = False, doc = "CPF do usuário")
     nome = db.Column(db.String(100), nullable=False, doc = "Nome do usuário (máximo 100 caracteres).")
     email = db.Column(db.String(100), unique=True, nullable=False, doc = "Email do usuário (máximo 100 caracteres).")
     senha = db.Column(db.String(100), nullable=False, doc = "Senha do usuário (máximo 100 caracteres).")
