@@ -7,7 +7,7 @@ Ele interage com o modelo `Aula` para realizar operações CRUD e valida os dado
 
 from flask import request, jsonify
 from app.extensions import db
-from ..models import Aula, Usuario, Disciplina, Turma
+from ..models import Aula, Usuario, Disciplina, Turma, Boletim
 from app.utils.validators import validar_aula
 from app.utils.hour_helpers import hora_para_string
 
@@ -60,7 +60,10 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
     nova_aula = Aula(hora_inicio=data['hora_inicio'], hora_fim=data['hora_fim'], dias_da_semana=data['dias_da_semana'], usuario_id=usuario_existente.id, disciplina_codigo=data['disciplina_codigo'], turma_id=data['turma_id'])
     db.session.add(nova_aula)
 
-    # AAAAAA
+    # Criar um boletim para cada aluno da turma
+    for aluno in turma_existente.alunos:
+        novo_boletim = Boletim(aluno_matricula=aluno.matricula, aula_id=nova_aula.id, notas=[], ausencias=0)
+        db.session.add(novo_boletim)
 
     db.session.commit()
 

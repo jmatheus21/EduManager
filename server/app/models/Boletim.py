@@ -11,4 +11,3 @@ class Boletim(db.Model):
     aluno = db.relationship('Aluno', back_populates='boletins', cascade = 'all, delete')
     aula = db.relationship('Aula', back_populates='boletins', cascade = 'all, delete')
     
-    
