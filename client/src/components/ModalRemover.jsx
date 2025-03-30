@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
+import { Botao } from "./Botao";
 
 /**
  * Componente para exibir modal de remover objeto.
@@ -14,15 +15,13 @@ const ModalRemover = ({ estado, funcaoFechar, funcaoRemover, entidade }) => {
         <Modal.Title>Remover {entidade}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-3">
-        {typeof(entidade) == 'string'? `Tem certeza que deseja remover ${entidade.endsWith("a")? "a" : "o"} ${entidade.toLowerCase()}` : entidade}
+        {typeof(entidade) == 'string'? `Tem certeza que deseja remover ${entidade.endsWith("a")? "a" : "o"} ${entidade.toLowerCase()}?` : entidade}
       </Modal.Body>
       <Modal.Footer className="p-2 d-flex gap-2">
-        <Button variant="secondary" onClick={funcaoFechar} className="p-2">
-          Voltar
-        </Button>
-        <Button variant="danger" onClick={funcaoRemover} className="p-2">
-          Confirmar
-        </Button>
+        <Botao.Group>
+          <Botao.Base title="Voltar" sx={{ bgcolor: "grey.600", color: "white" }} onClick={funcaoFechar} />
+          <Botao.Base title="Confirmar" color="error" onClick={funcaoRemover} />
+        </Botao.Group>
       </Modal.Footer>
     </Modal>
   );

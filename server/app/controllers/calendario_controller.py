@@ -11,10 +11,15 @@ from ..models import Calendario
 from app.utils.validators import validar_calendario
 from app.utils.date_helpers import string_para_data
 
+
 def cadastrar_calendario(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo calendário no banco de dados.
 
     Esta função recebe os dados de um calendário via JSON, valida os dados e, se válidos, cadastra o calendário no banco de dados.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados do calendário cadastrado, ou uma mensagem de erro em caso de dados inválidos.
@@ -38,6 +43,10 @@ def cadastrar_calendario(current_user_cpf: str, current_user_role: str) -> jsoni
 def listar_calendarios(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todos os calendários cadastrados no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma lista de calendários com seus respectivos dados.
     """
@@ -50,6 +59,8 @@ def buscar_calendario(ano_letivo: int, current_user_cpf: str, current_user_role:
 
     Args:
         ano_letivo (int): O ano letivo do calendário a ser buscado.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados do calendário encontrado.
@@ -65,6 +76,8 @@ def alterar_calendario(ano_letivo: int, current_user_cpf: str, current_user_role
 
     Args:
         ano_letivo (int): O ano letivo do calendário a ser removido.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados do calendário, ou uma mensagem de erro em caso de dados inválidos.
@@ -96,6 +109,8 @@ def remover_calendario(ano_letivo: int, current_user_cpf: str, current_user_role
 
     Args:
         ano_letivo (int): O ano letivo do calendário a ser removido.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

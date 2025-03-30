@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover } from "../../components";
+import { Titulo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
+import { Botao } from "../../components/Botao";
 
 /**
  * Componente para exibir informações detalhadas de um Aluno.
@@ -39,7 +40,6 @@ const InfoAluno = () => {
       await api.deleteData(`/aluno/${chave}`);
       navigate("/aluno?success=true&type=remocao");
     } catch (error) {
-      console.error("Erro ao remover aluno:", error);
       alert("Erro ao remover aluno, tente novamente mais tarde");
     }
   };
@@ -85,7 +85,7 @@ const InfoAluno = () => {
           </Col>
           <Col>
             <h5>Turma:</h5>
-            {api.data && <p data-testid="turma_id">{api.data.turma_id}</p>}
+            {api.data && <p data-testid="turma_id">{api.data.turma_ano}° ano {api.data.turma_serie} - {api.data.turma_nivel_de_ensino} (id: {api.data.turma_id})</p>}
           </Col>
         </Row>
         <Row>
@@ -115,10 +115,10 @@ const InfoAluno = () => {
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/aluno/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title={"Remover"} color="error" onClick={handleShow} />
+        <Botao.Base title={"Alterar"} onClick={() => navigate(`/aluno/alterar/${chave}`)} />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}

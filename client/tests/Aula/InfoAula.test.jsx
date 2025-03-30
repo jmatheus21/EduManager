@@ -98,9 +98,9 @@ describe("InfoAula Component", () => {
 
       expect(screen.getByText(/Matemática Básica/i)).toBeVisible();
 
-      expect(screen.getByText(/07:00/i)).toBeVisible();
+      expect(screen.getByText(/07h00/i)).toBeVisible();
 
-      expect(screen.getByText(/09:00/i)).toBeVisible();
+      expect(screen.getByText(/09h00/i)).toBeVisible();
 
       const diasSemanaContainer = screen.getByText(/Dias da Semana:/i).closest("div");
       expect(diasSemanaContainer).toHaveTextContent("Segunda e Quarta");

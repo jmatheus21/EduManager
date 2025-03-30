@@ -9,7 +9,6 @@ from flask import request, jsonify
 from app.extensions import db
 from ..models import Usuario, Disciplina, Cargo
 from app.utils.validators import validar_usuario
-from datetime import datetime
 from app.utils.usuario_helpers import gerar_hashing
 from app.utils.date_helpers import string_para_data
 
@@ -17,6 +16,10 @@ def cadastrar_usuario(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo usuário no banco de dados.
 
     Esta função recebe os dados de um usuário via JSON, valida os dados e, se válidos, cadastra o usuário no banco de dados.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados do usuário cadastrado, ou uma mensagem de erro em caso de dados inválidos.
@@ -84,7 +87,11 @@ def cadastrar_usuario(current_user_cpf: str, current_user_role: str) -> jsonify:
 
 
 def listar_usuarios(current_user_cpf: str, current_user_role: str) -> jsonify:
-    """Lista todas os usuários cadastradas no banco de dados.
+    """Lista todas os usuários cadastrados no banco de dados.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma lista dos usuários com seus respectivos dados.
@@ -93,11 +100,13 @@ def listar_usuarios(current_user_cpf: str, current_user_role: str) -> jsonify:
     return jsonify([{"id": usuario.id, "cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [{"codigo": disciplina.codigo, "nome": disciplina.nome} for disciplina in usuario.disciplinas], "cargos": [{"nome": cargo.nome, "salario": cargo.salario, "data_contrato": cargo.data_contrato} for cargo in usuario.cargos]} for usuario in usuarios]), 200
 
 
-def buscar_usuario(cpf : str, current_user_cpf: str, current_user_role: str):
+def buscar_usuario_por_cpf(cpf: str, current_user_cpf: str, current_user_role: str):
     """Busca um usuário específico pelo cpf.
 
     Args:
         cpf (str): O cpf do usuário a ser buscado.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados do usuário encontrado.
@@ -106,28 +115,50 @@ def buscar_usuario(cpf : str, current_user_cpf: str, current_user_role: str):
     return jsonify({"id": usuario.id, "cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [{"codigo": disciplina.codigo, "nome": disciplina.nome} for disciplina in usuario.disciplinas], "cargos": [{"id" : cargo.id, "nome": cargo.nome, "salario": cargo.salario, "data_contrato": cargo.data_contrato} for cargo in usuario.cargos]}), 200
 
 
-def alterar_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> jsonify:
-    """Altera os dados de um usuário existente.
-
-    Esta função recebe o cpf de um aluno e os novos dados via JSON, valida os dados e, se válidos, atualiza o usuário no banco de dados.
+def buscar_usuario_por_id(id: int, current_user_cpf: str, current_user_role: str):
+    """Busca um usuário específico pelo id.
 
     Args:
-        cpf (str): O CPF do aluno a ser alterado.
+        id (int): O id do usuário a ser buscado.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
+    Returns:
+        jsonify: Resposta JSON contendo os dados do usuário encontrado.
+    """
+    usuario = db.session.get(Usuario, id)
+    return jsonify({"id": usuario.id, "cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [{"codigo": disciplina.codigo, "nome": disciplina.nome} for disciplina in usuario.disciplinas], "cargos": [{"id" : cargo.id, "nome": cargo.nome, "salario": cargo.salario, "data_contrato": cargo.data_contrato} for cargo in usuario.cargos]}), 200
+
+
+def alterar_usuario(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Altera os dados de um usuário existente.
+
+    Esta função recebe o id de um usuário e os novos dados via JSON, valida os dados e, se válidos, atualiza o usuário no banco de dados.
+
+    Args:
+        id (int): O id do usuário a ser buscado.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados do usuário, ou uma mensagem de erro em caso de dados inválidos.
     """
-    usuario = db.session.query(Usuario).filter_by(cpf=cpf).first()
+    usuario = db.session.get(Usuario, id)
     data = request.get_json()
     
     erros = validar_usuario(cpf=data['cpf'], nome=data['nome'], email=data['email'], senha="", telefone=data['telefone'], endereco=data['endereco'], horario_de_trabalho=data['horario_de_trabalho'], data_de_nascimento=data['data_de_nascimento'], tipo=data['tipo'], formacao=data['formacao'], escolaridade=data['escolaridade'], habilidades=data['habilidades'], disciplinas=data['disciplinas'], cargos=data['cargos'], new_user=False)
     if erros:
         return jsonify({"erro": erros}), 400
     
-    if cpf != data['cpf']:
+    if usuario.cpf != data['cpf']:
         usuario_existente = db.session.query(Usuario).filter_by(cpf=data["cpf"]).first()
         if usuario_existente is not None:
             return jsonify({"erro": ["Usuário já existe"]}), 400
+    
+    if usuario.email != data['email']:
+        usuario_existente = db.session.query(Usuario).filter_by(email=data["email"]).first()
+        if usuario_existente is not None:
+            return jsonify({"erro": ["E-mail já existe"]}), 400
 
     # verificar o tipo, se for professor, verificar disciplinas e colocar os campos que não são do tipo professor como nulo
     if data['tipo'].lower() == 'p':
@@ -149,11 +180,6 @@ def alterar_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> 
         data['formacao'] = None
         data['disciplinas'] = None
 
-    """
-    Como o banco de dados ainda não está completamente configurado, a alteração
-    da chave primária pode causar problemas de inconsistência de chaves estrangeiras.
-    """
-    usuario.cpf = data['cpf']
     usuario.nome = data['nome']
     usuario.email = data['email']
     usuario.telefone = data['telefone']
@@ -172,13 +198,6 @@ def alterar_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> 
         for codigo in data['disciplinas']:
             disciplina = db.session.get(Disciplina, codigo)
             usuario.disciplinas.append(disciplina)
-
-    """
-    # Remove os cargos existentes
-    for cargo in usuario.cargos:
-        db.session.delete(cargo)
-    db.session.commit()
-    """
 
     # Identificar cargos para deletar (existem no banco, mas não no frontend)
     cargos_para_deletar = [
@@ -221,16 +240,18 @@ def alterar_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> 
     return jsonify({"mensagem": "Usuário atualizado com sucesso!", "data": {"id": usuario.id, "cpf": usuario.cpf, "nome": usuario.nome, "email": usuario.email, "senha": usuario.senha, "telefone": usuario.telefone, "endereco": usuario.endereco, "horario_de_trabalho": usuario.horario_de_trabalho, "data_de_nascimento": usuario.data_de_nascimento, "tipo": usuario.tipo, "formacao": usuario.formacao, "escolaridade": usuario.escolaridade, "habilidades": usuario.habilidades, "disciplinas": [d.codigo for d in usuario.disciplinas], "cargos": [{"nome": c.nome, "salario": c.salario, "data_contrato": c.data_contrato} for c in usuario.cargos]}}), 200
 
 
-def remover_usuario(cpf: str, current_user_cpf: str, current_user_role: str) -> jsonify:
+def remover_usuario(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Remove um usuário existente do banco de dados.
 
     Args:
-        cpf (str): O CPF do usuário a ser removido.
+        id (int): O id do usuário a ser removido.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.
     """
-    usuario = db.session.query(Usuario).filter_by(cpf=cpf).first()
+    usuario = db.session.get(Usuario, id)
     
     db.session.delete(usuario)
     db.session.commit()

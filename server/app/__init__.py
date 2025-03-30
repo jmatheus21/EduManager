@@ -36,6 +36,9 @@ def create_app(config_class=Config):
     from .routes.aluno_routes import aluno_bp
     from .routes.aula_routes import aula_bp
     from .routes.login_routes import auth_bp
+    from .routes.notas_routes import notas_bp
+    from .routes.ausencias_routes import ausencias_bp
+    from .routes.boletim_routes import boletim_bp
     app.register_blueprint(sala_bp, url_prefix="/sala")
     app.register_blueprint(calendario_bp, url_prefix="/calendario")
     app.register_blueprint(usuario_bp, url_prefix="/usuario")
@@ -44,5 +47,8 @@ def create_app(config_class=Config):
     app.register_blueprint(aluno_bp, url_prefix="/aluno")
     app.register_blueprint(aula_bp, url_prefix="/aula")
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(notas_bp, url_prefix="/notas")
+    app.register_blueprint(ausencias_bp, url_prefix="/ausencias")
+    app.register_blueprint(boletim_bp, url_prefix="/boletim")
     
     return app

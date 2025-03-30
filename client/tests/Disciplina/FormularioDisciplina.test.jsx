@@ -143,7 +143,7 @@ describe("FormularioDisciplina Component", () => {
           carga_horaria: 60,
           ementa: "Aritmética e Álgebra",
           bibliografia: "Matemática - Volume 1"
-        }, expect.anything());
+        });
       });
 
     })

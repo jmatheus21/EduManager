@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover } from "../../components";
+import { Titulo, ModalRemover } from "../../components";
 import ModalRemoverSalaErro from "./components/ModalRemoverSala";
 import useApi from "../../hooks/useApi";
 import { Alert } from "@mui/material";
+import { Botao } from "../../components/Botao";
 
 /**
  * Componente para exibir informações detalhadas de uma sala.
@@ -90,10 +91,13 @@ const InfoSala = () => {
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/sala/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title="Remover" color="error" onClick={handleShow} />
+        <Botao.Base
+          title="Alterar"
+          onClick={() => navigate(`/sala/alterar/${chave}`)}
+        />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}

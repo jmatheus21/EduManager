@@ -41,7 +41,7 @@ def test_cadastrar_sala(client, app):
         assert sala["capacidade"] == 30, "A capacidade da sala deve ser 30."
         assert sala["localizacao"] == "Bloco A, 1º Andar", "A localização da sala deve ser 'Bloco A, 1º Andar'."
 
-def test_cadastrar_sala_calendario_ine(client, app):
+def test_cadastrar_sala_calendario_inexistente(client, app):
     """Testa o cadastro de uma sala com dados válidos.
 
     Este teste verifica se:

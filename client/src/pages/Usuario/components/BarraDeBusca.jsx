@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Button, Container, Form } from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
 import useApi from "../../../hooks/useApi.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IMaskInput } from "react-imask";
+import { Alert } from "@mui/material";
+import { Botao } from "../../../components/Botao/index.jsx";
 
 /**
  * Componente unificado para barra de busca e exibição de alertas.
@@ -53,13 +55,13 @@ const BarraDeBusca = ({
     event.preventDefault();
 
     try {
-      const response = await api.fetchData(`/usuario/${chave}`);
+      const response = await api.fetchData(`/usuario/cpf/${chave}`);
 
       if (response) {
-        navigate(`/usuario/${chave}`);
+        navigate(`/usuario/${response.id}`);
       }
     } catch (error) {
-      setTipoAlerta("danger");
+      setTipoAlerta("error");
       setMensagemAlerta(
         `Usuário com CPF ${chave} não foi encontrado`
       );
@@ -81,21 +83,18 @@ const BarraDeBusca = ({
             id="atributo"   
             type="text"
             placeholder="Exemplo: 999.888.777-66"
-            className="px-2 form-control"
+            className="px-2 form-control me-3"
             onChange={mudarEstado}
         />
-        <Button
-          variant="primary"
+        <Botao.Base
+          title="Buscar"
           type="submit"
-          className="py-2 px-3 ms-2"
           onClick={funcaoBusca}
-        >
-          Buscar
-        </Button>
+        />
       </Form>
 
       {mensagemAlerta && (
-        <Alert variant={tipoAlerta} className="p-3 mb-3">
+        <Alert severity={tipoAlerta} className="p-3 mb-3 d-flex align-content-center gap-3">
           {mensagemAlerta}
         </Alert>
       )}

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover } from "../../components";
+import { Titulo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
+import { Alert } from "@mui/material";
+import { Botao } from "../../components/Botao";
 
 /**
  * Componente para exibir informações detalhadas de uma disciplina.
@@ -39,7 +41,6 @@ const InfoDisciplina = () => {
       await api.deleteData(`/disciplina/${chave}`);
       navigate("/disciplina?success=true&type=remocao");
     } catch (error) {
-      console.error("Erro ao remover disciplina:", error);
       alert("Erro ao remover disciplina, tente novamente mais tarde");
     }
   };
@@ -61,7 +62,7 @@ const InfoDisciplina = () => {
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações da Disciplina</Titulo>
       {successParam && (
-        <Alert variant="success" className="p-3 mt-3">
+        <Alert security="success" className="p-3 mt-3 d-flex gap-3">
           Disciplina alterada com sucesso!
         </Alert>
       )}
@@ -95,10 +96,13 @@ const InfoDisciplina = () => {
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/disciplina/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title="Remover" color="error" onClick={handleShow} />
+        <Botao.Base
+          title="Alterar"
+          onClick={() => navigate(`/disciplina/alterar/${chave}`)}
+        />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}

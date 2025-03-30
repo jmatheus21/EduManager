@@ -39,8 +39,8 @@ describe("FormularioAluno Component", () => {
       // Verifica se o título da página foi renderizado
       expect(screen.getByText(/Cadastrar Aluno/i)).toBeVisible();
 
-      // Verifica se o campo "Aluno:" foi renderizado
-      expect(screen.getByLabelText(/Aluno:/i)).toBeVisible();
+      // Verifica se o campo "Nome:" foi renderizado
+      expect(screen.getByLabelText(/Nome:/i)).toBeVisible();
 
       // Verifica se o campo "Email:" foi renderizado
       expect(screen.getByLabelText(/Email:/i)).toBeVisible();
@@ -84,7 +84,7 @@ describe("FormularioAluno Component", () => {
     });
 
     it("permite ao usuário digitar nos campos do formulário", async () => {
-      const nomeInput = screen.getByLabelText(/Aluno:/i);
+      const nomeInput = screen.getByLabelText(/Nome:/i);
       const emailInput = screen.getByLabelText(/Email:/i);
       const telefoneInput = screen.getByLabelText(/Telefone:/i);
       const dataDeNascimentoInput = screen.getByLabelText(/Data de Nascimento:/i);
@@ -131,7 +131,7 @@ describe("FormularioAluno Component", () => {
 
     it ("verificar se o formulário está sendo enviado", async () => {
 
-      const nomeInput = screen.getByLabelText(/Aluno:/i);
+      const nomeInput = screen.getByLabelText(/Nome:/i);
       const emailInput = screen.getByLabelText(/Email:/i);
       const telefoneInput = screen.getByLabelText(/Telefone:/i);
       const dataDeNascimentoInput = screen.getByLabelText(/Data de Nascimento:/i);
@@ -194,7 +194,7 @@ describe("FormularioAluno Component", () => {
     it ("verifica se os dados foram carregados", async () => {
 
       // pegar os campos
-      const nomeInput = screen.getByLabelText(/Aluno:/i);
+      const nomeInput = screen.getByLabelText(/Nome:/i);
       const emailInput = screen.getByLabelText(/Email:/i);
       const telefoneInput = screen.getByLabelText(/Telefone:/i);
       const dataDeNascimentoInput = screen.getByLabelText(/Data de Nascimento:/i);

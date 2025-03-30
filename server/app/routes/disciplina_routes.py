@@ -9,6 +9,7 @@ from flask import Blueprint, jsonify
 from ..controllers import disciplina_controller
 from ..middlewares.token_middleware import token_required
 
+
 # Cria um Blueprint para as rotas de disciplinas
 disciplina_bp = Blueprint("disciplina", __name__)
 

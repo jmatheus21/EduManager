@@ -7,7 +7,7 @@ Ele interage com o modelo `Sala` para realizar operações CRUD e valida os dado
 
 from flask import request, jsonify
 from app.extensions import db
-from ..models import Sala, Turma, Calendario
+from ..models import Sala, Turma
 from app.utils.validators import validar_sala
 
 
@@ -15,6 +15,10 @@ def cadastrar_sala(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra uma nova sala no banco de dados.
 
     Esta função recebe os dados de uma sala via JSON, valida os dados e, se válidos, cadastra a sala no banco de dados.
+    
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados da sala cadastrada, ou uma mensagem de erro em caso de dados inválidos.
@@ -38,6 +42,10 @@ def cadastrar_sala(current_user_cpf: str, current_user_role: str) -> jsonify:
 def listar_salas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as salas cadastradas no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma lista de salas com seus respectivos dados.
     """
@@ -50,6 +58,8 @@ def buscar_sala(numero: int, current_user_cpf: str, current_user_role: str) -> j
 
     Args:
         numero (int): O número da sala a ser buscada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados da sala encontrada.
@@ -65,6 +75,8 @@ def alterar_sala(numero: int, current_user_cpf: str, current_user_role: str) -> 
 
     Args:
         numero (int): O número da sala a ser alterada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados da sala, ou uma mensagem de erro em caso de dados inválidos.
@@ -93,6 +105,8 @@ def remover_sala(numero: int, current_user_cpf: str, current_user_role: str) -> 
 
     Args:
         numero (int): O número da sala a ser removida.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

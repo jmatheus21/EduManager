@@ -39,8 +39,6 @@ export default function LoginForm() {
         window.location.href = "/";
     } catch (erro) {
         setError("root.serverError", { message: "Credenciais inválidas" })
-        console.error(erro)
-        console.error(erro.message)
     } finally {
         setLoading(false)
     }

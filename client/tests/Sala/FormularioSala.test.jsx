@@ -125,7 +125,7 @@ describe("FormularioSala Component", () => {
           numero: 123,
           capacidade: 250,
           localizacao: "Bloco A, 1° Andar"
-        }, expect.anything());
+        });
       });
 
     })

@@ -52,7 +52,7 @@ const FormularioDisciplina = () => {
     try {
       if (alterar) {
         // garantir que a chave primária não foi alterada
-        data["disciplina"] = String(chave);
+        data["codigo"] = String(chave);
 
         await updateData(`/disciplina/${chave}`, data);
 

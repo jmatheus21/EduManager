@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover } from "../../components";
+import { Titulo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
-import { inverterData } from "../../components/Listagem.jsx"; 
+import { inverterData } from "../../components/Listagem.jsx";
 import { Alert } from "@mui/material";
+import { Botao } from "../../components/Botao/index.jsx";
 
 /**
  * Componente para exibir informações detalhadas de um calendário.
@@ -41,7 +42,6 @@ const InfoCalendario = () => {
       await api.deleteData(`/calendario/${chave}`);
       navigate("/calendario?success=true&type=remocao");
     } catch (error) {
-      console.error("Erro ao remover calendário:", error);
       alert("Erro ao remover calendário, tente novamente mais tarde");
     }
   };
@@ -63,15 +63,20 @@ const InfoCalendario = () => {
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações do Calendário</Titulo>
       {successParam && (
-        <Alert severity="success" className="p-3 mt-3 d-flex align-content-center gap-3">
+        <Alert
+          severity="success"
+          className="p-3 mt-3 d-flex align-content-center gap-3"
+        >
           Calendário alterado com sucesso!
         </Alert>
       )}
-      <Container fluid className="mb-4 d-grid gap-3">
+      <Container fluid className="my-4 d-grid gap-3">
         <Row>
           <Col>
             <h5>Ano Letivo:</h5>
-            {api.data && <p data-testid="chave_primaria">{api.data.ano_letivo}</p>}
+            {api.data && (
+              <p data-testid="chave_primaria">{api.data.ano_letivo}</p>
+            )}
           </Col>
           <Col>
             <h5>Dias letivos:</h5>
@@ -89,10 +94,13 @@ const InfoCalendario = () => {
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/calendario/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title="Remover" color="error" onClick={handleShow} />
+        <Botao.Base
+          title="Alterar"
+          onClick={() => navigate(`/calendario/alterar/${chave}`)}
+        />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}

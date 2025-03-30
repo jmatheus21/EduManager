@@ -7,9 +7,10 @@ Ele interage com o modelo `Aluno` para realizar operações CRUD e valida os dad
 
 from flask import request, jsonify
 from app.extensions import db
-from ..models import Aluno, Turma
+from ..models import Aluno, Turma, Boletim
 from app.utils.validators import validar_aluno
 from app.utils.date_helpers import string_para_data
+
 
 def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Cadastra um novo aluno no banco de dados.
@@ -21,7 +22,7 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
         current_user_role (str): O role do usuário autenticado.
 
     Returns:
-        jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados da turma cadastrada, ou uma mensagem de erro em caso de dados inválidos.
+        jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados do aluno cadastrado, ou uma mensagem de erro em caso de dados inválidos.
     """
 
     data = request.get_json()
@@ -34,31 +35,46 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     turma_existente = db.session.get(Turma, data["turma_id"])
     if turma_existente is None:
         return jsonify({"erro": ["Turma não existe"]}), 400
-
+    
     # criar lógica para matrícula
     id = db.session.query(Aluno).count() + 1
     matricula = f"{turma_existente.calendario_ano_letivo}000{id:05d}"
-    
-    aluno_existente = db.session.query(Aluno).filter_by(matricula=matricula).first()
-    if aluno_existente is not None:
-        return jsonify({"erro": ["Matrícula já existe"]}), 400
 
+    # verificando se e-mail é único
     email_existente = db.session.query(Aluno).filter_by(email= data['email']).first()
     if email_existente:
         return jsonify({"erro": ["E-mail já existe"]}), 400
     
     # Verifica se a turma está aberta
-    # id -> turma_id
     if turma_existente.status != "A":
         return jsonify({"erro": ["A turma está fechada, portanto, não é possível cadastrar mais alunos"]}), 400
     
-    novo_aluno = Aluno(matricula=matricula, nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'])
-    novo_aluno.turmas.append(turma_existente)
+    # criando aluno
+    novo_aluno = Aluno(matricula=matricula, nome=data['nome'], email=data['email'], telefone=data['telefone'], endereco=data['endereco'], data_de_nascimento=data['data_de_nascimento'], turmas=[turma_existente])
     db.session.add(novo_aluno)
+
+    # criando boletim para todas as aulas da turma que o aluno foi cadastrado
+    for aula in turma_existente.aulas:
+        boletim = Boletim(aluno_matricula=matricula, aula_id=aula.id, notas=[], ausencias=0)
+        db.session.add(boletim)
+    
     db.session.commit()
+
     return jsonify({"mensagem": "Aluno criado com sucesso!", "data": {"matricula": novo_aluno.matricula, "nome": novo_aluno.nome, "email": novo_aluno.email, "telefone": novo_aluno.telefone, "endereco": novo_aluno.endereco, "data_de_nascimento": novo_aluno.data_de_nascimento, "turma_id": turma_existente.id}}), 201
 
+
 def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
+    """Realiza a matrícula de um novo aluno no banco de dados.
+
+    Esta função recebe os dados de um aluno via JSON, valida os dados e, se válidos, realiza a matrícula o aluno no banco de dados.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
+    Returns:
+        jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados do aluno cadastrado, ou uma mensagem de erro em caso de dados inválidos.
+    """
 
     data = request.get_json()
 
@@ -82,10 +98,22 @@ def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     if turma.status != "A":
         return jsonify({"erro": ["A turma informada não está ativa"]}), 400
     
-    if turma in aluno.turmas:
-        return jsonify({"erro": ["Aluno já está matriculado nessa turma"]}), 400
+    if aluno.turmas:
+        if turma in aluno.turmas:
+            return jsonify({"erro": ["Aluno já está matriculado nessa turma"]}), 400
+    
+        turma_mais_recente = max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo)
+
+        if turma_mais_recente.calendario_ano_letivo == turma.calendario_ano_letivo:
+            return jsonify({"erro": ["O aluno já está matriculado em uma turma nesse ano letivo"]}), 400
     
     aluno.turmas.append(turma)
+
+    for aula in turma.aulas:
+        boletim = Boletim(aluno_matricula=aluno.matricula, aula_id=aula.id, notas=[], ausencias=0)
+        db.session.add(boletim)
+    
+    db.session.commit()
 
     return jsonify({"messagem": "Aluno matriculado com sucesso!"}), 201
 
@@ -102,7 +130,7 @@ def listar_alunos(current_user_cpf: str, current_user_role: str) -> jsonify:
     """
     alunos = Aluno.query.all()
 
-    return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma": max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo).id if aluno.turmas else None} for aluno in alunos]), 200
+    return jsonify([{"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma_id": max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo).id if aluno.turmas else None} for aluno in alunos]), 200
 
 
 def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -117,14 +145,16 @@ def buscar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) 
         jsonify: Resposta JSON contendo os dados do aluno encontrado.
     """
     aluno = db.session.get(Aluno, matricula)
+    if not aluno.turmas:
+        return jsonify({"erro": ["Nenhuma turma associada a aluno!"]}), 400
+    
     turma_atual = max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo) if aluno.turmas else None
 
     if turma_atual is None or turma_atual.status != "A":
-        turma_atual = "Não matriculado"
+        return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma_id": "Não matriculado"}), 200
     else:
-        turma_atual = turma_atual.id
+        return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma_id": turma_atual.id, "turma_ano": turma_atual.ano, "turma_serie": turma_atual.serie, "turma_nivel_de_ensino": turma_atual.nivel_de_ensino}), 200
 
-    return jsonify({"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento, "turma": turma_atual}), 200
 
 def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str) -> jsonify:
     """Altera os dados de um aluno existente.
@@ -133,6 +163,8 @@ def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
 
     Args:
         matricula (str): A matrícula do aluno a ser alterado.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados do aluno, ou uma mensagem de erro em caso de dados inválidos.
@@ -144,7 +176,8 @@ def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
     if erros:
         return jsonify({"erro": erros}), 400
 
-    nova_turma = all(turma.id != data['turma_id'] for turma in aluno.turmas) # Indica se a turma já estava relacionada com o aluno
+    # verifica se fez alteração no turma_id
+    nova_turma = all(turma.id != data['turma_id'] for turma in aluno.turmas)
 
     if nova_turma:
         # Verifica se a turma existe
@@ -153,9 +186,26 @@ def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
             return jsonify({"erro": ["Turma não existe"]}), 400
         
         # Verifica se a turma está aberta
-        turma_fechada = db.session.query(Turma).filter_by(id=data['turma_id']).first()
-        if turma_fechada is not None and turma_fechada.status == "C":
+        if turma_existente.status == "C":
             return jsonify({"erro": ["A turma está fechada"]}), 400
+        
+        turma_mais_recente = max(aluno.turmas, key=lambda turma: turma.calendario_ano_letivo)
+
+        # apaga os boletins da turma anterior
+        for aula in turma_mais_recente.aulas:
+            boletins = db.session.query(Boletim).filter_by(aluno_matricula=aluno.matricula, aula_id=aula.id)
+            for boletim in boletins:
+                db.session.delete(boletim)
+
+        # Caso a turma seja nova, adiciona nova turma ao aluno
+        aluno.turmas.remove(turma_mais_recente)
+        
+        # criar boletim para novas turmas
+        for aula in turma_existente.aulas:
+            boletim = Boletim(aluno_matricula=aluno.matricula, aula_id=aula.id, notas=[], ausencias=0)
+            db.session.add(boletim)
+
+        aluno.turmas.append(turma_existente)
 
     if aluno.email != data['email']:
         email_existente = db.session.query(Aluno).filter_by(email= data['email']).first()
@@ -168,11 +218,6 @@ def alterar_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
     aluno.endereco = data['endereco']
     aluno.data_de_nascimento = string_para_data(data['data_de_nascimento'])
 
-    # Caso a turma seja nova, adiciona nova turma ao aluno
-    if nova_turma:
-        turma = db.session.get(Turma, data['turma_id'])
-        aluno.turmas.append(turma)
-
     db.session.commit()
 
     return jsonify({"mensagem": "Aluno atualizado com sucesso!", "data": {"matricula": aluno.matricula, "nome": aluno.nome, "email": aluno.email, "telefone": aluno.telefone, "endereco": aluno.endereco, "data_de_nascimento": aluno.data_de_nascimento}}), 200
@@ -183,6 +228,8 @@ def remover_aluno(matricula: str, current_user_cpf: str, current_user_role: str)
 
     Args:
         matrícula (str): A matrícula do aluno a ser removido.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

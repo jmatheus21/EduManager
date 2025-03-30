@@ -33,7 +33,7 @@ const FormularioAluno = () => {
           const response = await fetchData(`/aluno/${chave}`);
           if (response) setDados(response);
         } catch (error) {
-          console.error("Erro ao carregar dados do aluno:", error);
+          throw error;
         }
       }
     };

@@ -21,6 +21,10 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
 
     Esta rota recebe os dados de uma aula via JSON e chama o controlador para realizar o cadastro.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma mensagem e os dados da aula cadastrada.
     """
@@ -33,6 +37,10 @@ def listar_aulas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Rota para listar todas as aulas cadastradas.
 
     Esta rota retorna uma lista de todas as aulas cadastradas no sistema.
+
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma lista de aulas.
@@ -49,6 +57,8 @@ def buscar_aulas(id: int, current_user_cpf: str, current_user_role: str) -> json
 
     Args:
         id (int): O id da aula a ser buscada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados da aula encontrada.
@@ -65,6 +75,8 @@ def alterar_aula(id: int, current_user_cpf: str, current_user_role: str) -> json
 
     Args:
         id (int): O id da aula a ser alterada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem e os dados atualizados da aula.
@@ -81,6 +93,8 @@ def remover_aula(id: int, current_user_cpf: str, current_user_role: str) -> json
 
     Args:
         id (int): O id da aula a ser removida.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

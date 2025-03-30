@@ -3,6 +3,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import useApi from "../hooks/useApi.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from "@mui/material/Alert"
+import { Botao } from "./Botao/index.jsx";
 
 /**
  * Componente unificado para barra de busca e exibição de alertas.
@@ -89,7 +90,7 @@ const BarraDeBusca = ({
             id="atributo"
             type="number"
             placeholder={placeholder}
-            className="px-2"
+            className="px-2 me-3"
             min={min}
             max={max}
             onChange={mudarEstado}
@@ -98,20 +99,17 @@ const BarraDeBusca = ({
           <Form.Control
             type={tipo}
             placeholder={placeholder}
-            className="px-2"
+            className="px-2 me-3"
             minLength={minLength}
             maxLength={maxLength}
             onChange={mudarEstado}
           />
         )}
-        <Button
-          variant="primary"
+        <Botao.Base
+          title="Buscar"
           type="submit"
-          className="py-2 px-3 ms-2"
           onClick={funcaoBusca}
-        >
-          Buscar
-        </Button>
+        />
       </Form>
 
       {mensagemAlerta && (

@@ -17,6 +17,10 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
 
     Esta função recebe os dados de uma aula via JSON, valida os dados e, se válidos, cadastra a aula no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados da aula cadastrada, ou uma mensagem de erro em caso de dados inválidos.
     """
@@ -44,14 +48,14 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
     elif usuario_existente.tipo != "p":
         return jsonify({"erro": ["O usuário não é do tipo 'professor'"]}), 400
     
-    aula_no_mesmo_horario_com_mesmo_usuario = db.session.query(Aula).filter_by(
+    aula_no_mesmo_horario = db.session.query(Aula).filter_by(
         hora_inicio=data['hora_inicio'], 
         hora_fim=data['hora_fim'], 
         dias_da_semana=data['dias_da_semana'], 
         turma_id=data['turma_id']
     ).first()
 
-    if aula_no_mesmo_horario_com_mesmo_usuario is not None:
+    if aula_no_mesmo_horario is not None:
         return jsonify({"erro": ["Já existe uma aula no mesmo horário, com o mesmo professor"]}), 400
 
     elif data['disciplina_codigo'] not in [disciplina.codigo for disciplina in usuario_existente.disciplinas]:
@@ -77,6 +81,10 @@ def cadastrar_aula(current_user_cpf: str, current_user_role: str) -> jsonify:
 def listar_aulas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as aulas cadastradas no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma lista de aulas com seus respectivos dados.
     """
@@ -90,6 +98,8 @@ def buscar_aula(id: int, current_user_cpf: str, current_user_role: str) -> jsoni
 
     Args:
         id (int): O id da aula a ser buscada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados da aula encontrada.
@@ -106,6 +116,8 @@ def alterar_aula(id: int, current_user_cpf: str, current_user_role: str) -> json
 
     Args:
         id (int): O número da aula a ser alterada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados da aula, ou uma mensagem de erro em caso de dados inválidos.
@@ -162,6 +174,8 @@ def remover_aula(id: int, current_user_cpf: str, current_user_role: str) -> json
 
     Args:
         id (int): O id da aula a ser removida.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

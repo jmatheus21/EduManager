@@ -16,6 +16,10 @@ def cadastrar_turma(current_user_cpf: str, current_user_role: str) -> jsonify:
 
     Esta função recebe os dados de uma turma via JSON, valida os dados e, se válidos, cadastra a turma no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados da turma cadastrada, ou uma mensagem de erro em caso de dados inválidos.
     """
@@ -50,6 +54,10 @@ def cadastrar_turma(current_user_cpf: str, current_user_role: str) -> jsonify:
 def listar_turmas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as turmas cadastradas no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma lista de turmas com seus respectivos dados.
     """
@@ -62,6 +70,8 @@ def buscar_turma(id: int, current_user_cpf: str, current_user_role: str) -> json
 
     Args:
         id (int): O id da turma a ser buscada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados da turma encontrada.
@@ -77,6 +87,8 @@ def alterar_turma(id: int, current_user_cpf: str, current_user_role: str) -> jso
 
     Args:
         id (int): O número da turma a ser alterada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados da turma, ou uma mensagem de erro em caso de dados inválidos.
@@ -121,10 +133,12 @@ def alterar_turma(id: int, current_user_cpf: str, current_user_role: str) -> jso
 
 
 def remover_turma(id: int, current_user_cpf: str, current_user_role: str) -> jsonify:
-    """Remove uma turm existente do banco de dados.
+    """Remove uma turma existente do banco de dados.
 
     Args:
         id (int): O id da turma a ser removida.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

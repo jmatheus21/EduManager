@@ -31,8 +31,6 @@ def criar_dependencias(app):
             db.session.commit()
     return turma1, turma2
 
-    return turma1, turma2
-
 
 def test_cadastrar_aluno(client, app):
     """Testa o cadastro de um aluno com dados válidos.

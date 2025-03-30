@@ -7,12 +7,14 @@ A classe utiliza o SQLAlchemy para mapear a tabela no banco de dados e fornecer 
 
 from app.extensions import db
 
+
 # Tabela de associação para o relacionamento Muitos para Muitos entre professor e disciplina
 professor_disciplina = db.Table(
     'professor_disciplina',
     db.Column('usuario_id', db.Integer, db.ForeignKey('usuario.id', ondelete='CASCADE', onupdate = 'CASCADE'), primary_key=True),
     db.Column('disciplina_codigo', db.String(10), db.ForeignKey('disciplina.codigo',ondelete=('CASCADE'), onupdate = ('CASCADE')), primary_key=True)
 )
+
 
 class Usuario(db.Model):
     """Classe que representa a entidade Usuário no banco de dados.
@@ -35,7 +37,6 @@ class Usuario(db.Model):
         cargos (relationship): Relacionamento com a entidade Cargo. Cada usuário pode ter vários cargos associados.
         aulas (relationship): Relacionamento com a entidade Aula. Cada usuário do tipo professor pode ministrar várias aulas.
     """
-
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, doc="Id do usuário (chave primária)")
     cpf = db.Column(db.CHAR(11), unique=True, nullable = False, doc = "CPF do usuário")
     nome = db.Column(db.String(100), nullable=False, doc = "Nome do usuário (máximo 100 caracteres).")

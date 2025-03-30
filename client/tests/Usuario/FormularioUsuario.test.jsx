@@ -78,7 +78,7 @@ describe("FormulariorUsuario Component", () => {
       expect(screen.getByLabelText(/Formação:/i)).toBeVisible();
   
       // Verifica se o campo 'Código(s) da(s) Disciplinas' foi renderizado
-      expect(screen.getByLabelText(/Código\(s\) da\(s\) Disciplinas:/i)).toBeVisible();
+      expect(screen.getByLabelText(/Código\(s\) da\(s\) Disciplina\(s\):/i)).toBeVisible();
       
       // Verifica se o campo 'Habilidades' não foi renderizado
       expect(screen.getByLabelText(/Habilidades:/i).closest('.row')).toHaveClass('d-none');
@@ -104,7 +104,7 @@ describe("FormulariorUsuario Component", () => {
       expect(screen.getByLabelText(/Formação:/i).closest('.row')).toHaveClass('d-none');
   
       // Verifica se o campo 'Código(s) da(s) Disciplinas' não foi renderizado
-      expect(screen.getByLabelText(/Código\(s\) da\(s\) Disciplinas:/i).closest('.row')).toHaveClass('d-none');
+      expect(screen.getByLabelText(/Código\(s\) da\(s\) Disciplina\(s\):/i).closest('.row')).toHaveClass('d-none');
     
     });
 
@@ -148,7 +148,7 @@ describe("FormulariorUsuario Component", () => {
       const senhaInput = screen.getByPlaceholderText(/No mínimo 5 caracteres/i);
       const confirmarSenhaInput = screen.getByLabelText(/Confirmar senha:/i);
       const formacaoInput = screen.getByLabelText(/Formação:/i);
-      const codigosDisciplinasInput = screen.getByLabelText(/Código\(s\) da\(s\) Disciplinas:/i);
+      const codigosDisciplinasInput = screen.getByLabelText(/Código\(s\) da\(s\) Disciplina\(s\):/i);
      
       // realiza as ações
       await act(async () => {
@@ -234,7 +234,7 @@ describe("FormulariorUsuario Component", () => {
       const tipoInput = screen.getByLabelText(/Tipo:/i);
       const enderecoInput = screen.getByLabelText(/Endereço:/i);
       const formacaoInput = screen.getByLabelText(/Formação:/i);
-      const codigosDisciplinasInput = screen.getByLabelText(/Código\(s\) da\(s\) Disciplinas:/i);
+      const codigosDisciplinasInput = screen.getByLabelText(/Código\(s\) da\(s\) Disciplina\(s\):/i);
 
 
       await waitFor(() => {

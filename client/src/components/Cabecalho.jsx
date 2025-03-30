@@ -32,7 +32,7 @@ const Cabecalho = ({ menus }) => {
 
   return (
     <div>
-      <Navbar bg="primary" variant="dark" expand="lg" className="p-2">
+      <Navbar bg="primary" variant="dark" expand="lg" className="p-3">
         <Container fluid>
           <Button
             className="d-lg-none text-light"

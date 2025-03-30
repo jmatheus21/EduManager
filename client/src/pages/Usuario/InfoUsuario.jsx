@@ -1,17 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover, Listagem } from "../../components";
+import { Titulo, ModalRemover, Listagem } from "../../components";
 import { inverterData, formatarCpf } from "../../components/Listagem.jsx";
 import useApi from "../../hooks/useApi";
 import { formatarMoeda } from "../Cargo/FormularioCargo.jsx";
 import { Alert } from "@mui/material";
+import { Botao } from "../../components/Botao/index.jsx";
 
 const colunas = [
-  { field: "id", headerName: "#", flex: 1, align: "center", headerAlign: "center" },
-  { field: "nome", headerName: "Nome", flex: 1, align: "center", headerAlign: "center" },
-  { field: "salario", headerName: "Salário mensal", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => formatarMoeda(Number(value))},
-  { field: "data_contrato", headerName: "Data de contrato", flex: 1, align: "center", headerAlign: "center", valueGetter: (value, _row) => inverterData(value) },
+  {
+    field: "id",
+    headerName: "#",
+    flex: 1,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "nome",
+    headerName: "Nome",
+    flex: 1,
+    align: "center",
+    headerAlign: "center",
+  },
+  {
+    field: "salario",
+    headerName: "Salário mensal",
+    flex: 1,
+    align: "center",
+    headerAlign: "center",
+    valueGetter: (value, _row) => formatarMoeda(Number(value)),
+  },
+  {
+    field: "data_contrato",
+    headerName: "Data de contrato",
+    flex: 1,
+    align: "center",
+    headerAlign: "center",
+    valueGetter: (value, _row) => inverterData(value),
+  },
 ];
 
 /**
@@ -69,21 +96,36 @@ const InfoUsuario = () => {
 
   const exibirDisciplinas = (disciplinas) => {
     return disciplinas.map((item, index) => {
-      if (disciplinas.length == 1 || (disciplinas.length - 1) == index) {
-        return (<span key={index}>{item.nome} ({item.codigo})</span>)
-      } else if ((disciplinas.length - 2) == index) {
-        return (<span key={index}>{item.nome} ({item.codigo}) e </span>)
+      if (disciplinas.length == 1 || disciplinas.length - 1 == index) {
+        return (
+          <span key={index}>
+            {item.nome} ({item.codigo})
+          </span>
+        );
+      } else if (disciplinas.length - 2 == index) {
+        return (
+          <span key={index}>
+            {item.nome} ({item.codigo}) e{" "}
+          </span>
+        );
       } else {
-        return (<span key={index}>{item.nome} ({item.codigo}), </span>)
+        return (
+          <span key={index}>
+            {item.nome} ({item.codigo}),{" "}
+          </span>
+        );
       }
-    })
-  }
+    });
+  };
 
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
       <Titulo>Informações do Usuário</Titulo>
       {successParam && (
-        <Alert severity="success" className="p-3 mt-3 d-flex align-content-center gap-3">
+        <Alert
+          severity="success"
+          className="p-3 mt-3 d-flex align-content-center gap-3"
+        >
           Usuário alterado com sucesso!
         </Alert>
       )}
@@ -95,7 +137,11 @@ const InfoUsuario = () => {
           </Col>
           <Col>
             <h5>Tipo:</h5>
-            {api.data && <p data-testid="usuario_tipo">{api.data.tipo == "p" ? "Professor" : "Funcionário"}</p>}
+            {api.data && (
+              <p data-testid="usuario_tipo">
+                {api.data.tipo == "p" ? "Professor" : "Funcionário"}
+              </p>
+            )}
           </Col>
         </Row>
         <Row>
@@ -130,8 +176,14 @@ const InfoUsuario = () => {
         </Row>
         <Row>
           <Col>
-            <h5>{api.data && api.data.tipo == "p"? "Formação:" : "Escolaridade:"}</h5>
-            {api.data && api.data.tipo == "p"? (<p>{api?.data?.formacao}</p>) : (<p>{api?.data?.escolaridade}</p>)}
+            <h5>
+              {api.data && api.data.tipo == "p" ? "Formação:" : "Escolaridade:"}
+            </h5>
+            {api.data && api.data.tipo == "p" ? (
+              <p>{api?.data?.formacao}</p>
+            ) : (
+              <p>{api?.data?.escolaridade}</p>
+            )}
           </Col>
         </Row>
         <Row>
@@ -139,18 +191,35 @@ const InfoUsuario = () => {
             <h5>Cargos:</h5>
           </Col>
         </Row>
-        {api.data && <Listagem colunas={colunas} data={api.data.cargos} pk={colunas[0].field} />}
+        {api.data && (
+          <Listagem
+            colunas={colunas}
+            data={api.data.cargos}
+            pk={colunas[0].field}
+          />
+        )}
         <Row>
           <Col>
-            <h5>{api.data && api.data.tipo == "p"? "Disciplinas:" : "Habilidades:"}</h5>
-              {api.data && api.data.tipo == "p"? exibirDisciplinas(api?.data?.disciplinas) : (<p>{api?.data?.habilidades}</p>)}
+            <h5>
+              {api.data && api.data.tipo == "p"
+                ? "Disciplinas:"
+                : "Habilidades:"}
+            </h5>
+            {api.data && api.data.tipo == "p" ? (
+              exibirDisciplinas(api?.data?.disciplinas)
+            ) : (
+              <p>{api?.data?.habilidades}</p>
+            )}
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/usuario/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title="Remover" color="error" onClick={handleShow} />
+        <Botao.Base
+          title="Alterar"
+          onClick={() => navigate(`/usuario/alterar/${chave}`)}
+        />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}

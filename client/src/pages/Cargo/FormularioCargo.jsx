@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { isDate, isAfter } from "validator";
 import { FaTrash } from "react-icons/fa";
 import { inverterData } from "../../components/Listagem"
+import { Botao } from '../../components/Botao';
 
 const data = new Date();
 const dia = data.getDate() < 10 ? "0" + data.getDate() : data.getDate();
@@ -92,14 +93,11 @@ const FormularioCargo = ({ fields, append, remove, erro, clearErrors }) => {
                     </Form.Group>
                 </Col>
                 <Col className='d-flex align-items-end justify-content-end'>
-                    <Button
-                        variant="primary"
+                    <Botao.Base
+                        title="Adicionar"
                         type="submit"
-                        className="py-2 px-3"
                         onClick={handleSubmit(adicionarCargo)}
-                    >
-                        Adicionar
-                    </Button>
+                    />
                 </Col>
             </Row>
             <Row>

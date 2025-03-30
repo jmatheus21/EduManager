@@ -6,12 +6,12 @@
 }
 
 /* Reset específico para elementos do Bootstrap */
-.container,
+/* .container,
 .row,
 .col {
   margin: 0 !important;
   padding: 0 !important;
-}
+} */
 
 .h-full {
   height: 100%;

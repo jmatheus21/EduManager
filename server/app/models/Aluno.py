@@ -7,12 +7,14 @@ A classe utiliza o SQLAlchemy para mapear a tabela no banco de dados e fornecer 
 
 from app.extensions import db
 
+
 # Tabela de associação para o relacionamento Muitos para Muitos entre aluno e turma
 aluno_turma = db.Table(
     'aluno_turma',
     db.Column('aluno_matricula', db.String(15), db.ForeignKey('aluno.matricula', ondelete='CASCADE', onupdate = 'CASCADE'), primary_key=True),
     db.Column('turma_id', db.Integer, db.ForeignKey('turma.id', ondelete='CASCADE', onupdate = 'CASCADE'), primary_key=True)
 )
+
 
 class Aluno (db.Model):
     """Classe que representa a entidade Aluno no banco de dados.

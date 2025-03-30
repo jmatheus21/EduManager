@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover } from "../../components";
+import { Titulo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
+import { Botao } from "../../components/Botao";
 
 /**
  * Componente para exibir informações detalhadas de uma aula.
@@ -39,12 +40,10 @@ const InfoAula = () => {
       await api.deleteData(`/aula/${chave}`);
       navigate("/aula?success=true&type=remocao");
     } catch (error) {
-      console.error("Erro ao remover aula:", error);
       alert("Erro ao remover aula, tente novamente mais tarde");
     }
   };
 
-  
   /**
    * Efeito para buscar os dados da aula ao carregar.
    */
@@ -60,15 +59,27 @@ const InfoAula = () => {
 
   const exibirDiasDaSemana = (dias_da_semana) => {
     return dias_da_semana.map((item, index) => {
-      if (dias_da_semana.length == 1 || (dias_da_semana.length - 1) == index) {
-        return (<span key={index}>{item.nome} {item}</span>)
-      } else if ((dias_da_semana.length - 2) == index) {
-        return (<span key={index}>{item.nome} {item} e </span>)
+      if (dias_da_semana.length == 1 || dias_da_semana.length - 1 == index) {
+        return (
+          <span key={index}>
+            {item.nome} {item}
+          </span>
+        );
+      } else if (dias_da_semana.length - 2 == index) {
+        return (
+          <span key={index}>
+            {item.nome} {item} e{" "}
+          </span>
+        );
       } else {
-        return (<span key={index}>{item.nome} {item}, </span>)
+        return (
+          <span key={index}>
+            {item.nome} {item},{" "}
+          </span>
+        );
       }
-    })
-  }
+    });
+  };
 
   return (
     <Container fluid className="d-flex flex-column justify-content-between">
@@ -82,44 +93,57 @@ const InfoAula = () => {
         <Row>
           <Col>
             <h5>Identificação:</h5>
-              {api.data && <p data-testid="chave_primaria">{api.data.id}</p>}
+            {api.data && <p data-testid="chave_primaria">{api.data.id}</p>}
           </Col>
           <Col>
             <h5>Turma:</h5>
-              {api.data && `${api.data.turma_ano}° ano ${api.data.turma_serie} - ${api.data.turma_nivel_de_ensino} (${api.data.turma_id})`}
+            {api.data &&
+              `${api.data.turma_ano}° ano ${api.data.turma_serie} - ${api.data.turma_nivel_de_ensino} (${api.data.turma_id})`}
           </Col>
         </Row>
         <Row>
           <Col>
             <h5>Professor:</h5>
-            {api.data && `${api.data.professor_nome} (${api.data.professor_cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')})`}
+            {api.data &&
+              `${api.data.professor_nome} (${api.data.professor_cpf.replace(
+                /(\d{3})(\d{3})(\d{3})(\d{2})/,
+                "$1.$2.$3-$4"
+              )})`}
           </Col>
           <Col>
             <h5>Disciplina:</h5>
-              {api.data && <p>{api.data.disciplina_nome}</p>}
+            {api.data && <p>{api.data.disciplina_nome}</p>}
           </Col>
         </Row>
         <Row>
           <Col>
             <h5>Horário de Início:</h5>
-              {api.data && <p>{api.data.hora_inicio.split(":").slice(0, 2).join(":")}</p>}
+            {api.data && (
+              <p>{api.data.hora_inicio.split(":").slice(0, 2).join("h")}</p>
+            )}
           </Col>
           <Col>
             <h5>Horário do Fim:</h5>
-              {api.data && <p>{api.data.hora_fim.split(":").slice(0, 2).join(":")}</p>}
+            {api.data && (
+              <p>{api.data.hora_fim.split(":").slice(0, 2).join("h")}</p>
+            )}
           </Col>
         </Row>
         <Row>
           <Col>
             <h5>Dias da Semana:</h5>
-            {api.data?.dias_da_semana && exibirDiasDaSemana(api.data.dias_da_semana)}
+            {api.data?.dias_da_semana &&
+              exibirDiasDaSemana(api.data.dias_da_semana)}
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/aula/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title="Remover" color="error" onClick={handleShow} />
+        <Botao.Base
+          title="Alterar"
+          onClick={() => navigate(`/aula/alterar/${chave}`)}
+        />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}

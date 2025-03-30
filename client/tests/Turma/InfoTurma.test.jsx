@@ -98,9 +98,9 @@ describe("InfoTurma Component", () => {
 
         expect(screen.getByText("Ensino Fundamental")).toBeVisible();
 
-        expect(screen.getByText("N")).toBeVisible();
+        expect(screen.getByText("Noturno")).toBeVisible();
         
-        expect(screen.getByText("A")).toBeVisible();
+        expect(screen.getByText("Ativa")).toBeVisible();
 
         expect(screen.getByText("101")).toBeVisible();
 

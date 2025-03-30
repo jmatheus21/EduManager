@@ -9,6 +9,7 @@ from flask import Blueprint, jsonify
 from ..controllers import sala_controller
 from ..middlewares.token_middleware import token_required
 
+
 # Cria um Blueprint para as rotas de salas
 sala_bp = Blueprint("sala", __name__)
 

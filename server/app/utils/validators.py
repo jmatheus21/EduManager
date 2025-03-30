@@ -1,8 +1,9 @@
 from datetime import date
-from .validators_helpers import validar_data_contrato, validar_telefone, validar_data, validar_data_de_nascimento, validar_data_de_nascimento_aluno, validar_horario_completo, validar_horario_trabalho, validar_hora, validar_dia_da_semana
+from .validators_helpers import validar_data_contrato, validar_telefone, validar_data, validar_data_de_nascimento, validar_data_de_nascimento_aluno, validar_horario_completo, validar_horario_trabalho, validar_hora, validar_dia_da_semana, validar_matricula
 from .date_helpers import string_para_data
 from .hour_helpers import string_para_hora
 from .disciplina_helpers import validar_codigo
+import re
 
 
 """
@@ -11,7 +12,6 @@ Módulo de Validação de Salas.
 Este módulo fornece funções para validar os dados de uma entidade.
 As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
 """
-
 
 def validar_sala(numero: int, capacidade: int, localizacao: str) -> list:
     """Valida os dados de uma sala.
@@ -53,7 +53,6 @@ Este módulo fornece funções para validar os dados de uma entidade.
 As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
 """
 
-
 def validar_aluno(nome: str, email: str, telefone: str, endereco: str, data_de_nascimento: str):
     """Valida os dados de um aluno.
 
@@ -94,6 +93,13 @@ def validar_aluno(nome: str, email: str, telefone: str, endereco: str, data_de_n
 
     return erros
 
+
+"""
+Módulo de Validação de Calendários.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
 
 def validar_calendario(ano_letivo: int, data_inicio: str, data_fim: str, dias_letivos: int) -> list:
     """Valida os dados de um calendário.
@@ -139,6 +145,13 @@ def validar_calendario(ano_letivo: int, data_inicio: str, data_fim: str, dias_le
     return erros
 
 
+"""
+Módulo de Validação de Cargos.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
 def validar_cargo (nome : str, salario : float, data_contrato : str) -> list:
     """Valida os dados de um cargo.
 
@@ -183,7 +196,6 @@ Módulo de Validação de Disciplinas.
 Este módulo fornece funções para validar os dados de uma entidade.
 As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
 """
-
 
 def validar_disciplina (codigo: str, nome: str, carga_horaria: int, ementa: str, bibliografia: str) -> list:
     """ Valida os dados de uma disciplina.
@@ -234,7 +246,6 @@ Módulo de Validação de Turmas.
 Este módulo fornece funções para validar os dados de uma entidade.
 As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
 """
-
 
 def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, status: str, sala_numero: int, calendario_ano_letivo: int):
     """Valida os dados de uma turma.
@@ -293,6 +304,13 @@ def validar_turma (ano: int, serie: str, nivel_de_ensino: str, turno: str, statu
     return erros
 
 
+"""
+Módulo de Validação de Usuários.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
 def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone : str, endereco : str, horario_de_trabalho : str, data_de_nascimento: str, tipo : str, formacao : str, escolaridade : str, habilidades : str, disciplinas : list, cargos : list, new_user : bool = True) -> list:
     """Valida os dados de um usuário.
 
@@ -343,7 +361,7 @@ def validar_usuario (cpf : str, nome : str, email : str, senha : str, telefone :
     if not endereco or not isinstance(endereco, str) or len(endereco) < 10 or len(endereco) > 255:
         erros.append("O atributo 'endereco' é obrigatório e deve ter no mínimo 10 caracteres e no máximo 255 caracteres")
 
-    if not horario_de_trabalho or not isinstance(horario_de_trabalho, str) or len(horario_de_trabalho) < 5 or len(horario_de_trabalho) > 20 or not validar_horario_completo(horario_de_trabalho):
+    if not horario_de_trabalho or not isinstance(horario_de_trabalho, str) or len(horario_de_trabalho) < 5 or len(horario_de_trabalho) > 20:
         erros.append("O atributo 'horario_de_trabalho' é obrigatório e deve ter no mínimo 10 caracteres e no máximo 20 caracteres")
     elif not validar_horario_trabalho(horario_de_trabalho):
         erros.append("O atributo 'horario de trabalho' precisa estar no formato AAA-AAA,HHh-HHh, em que AAA é a abreviação de 3 letras maiúsculas para dias (ex: Seg, Sex) e HH representa as horas")
@@ -393,7 +411,6 @@ Este módulo fornece funções para validar os dados de uma entidade.
 As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
 """
 
-
 def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: list, usuario_cpf: str, disciplina_codigo: str, turma_id: int ):
     """Valida os dados de uma aula.
 
@@ -436,5 +453,148 @@ def validar_aula (hora_inicio: str, hora_fim: str, dias_da_semana: list, usuario
 
     if not turma_id or not isinstance(turma_id, int) or turma_id <= 0:
         erros.append("O campo 'turma_id' é obrigatório e deve ser um número inteiro positivo")
+    
+    return erros
+
+
+"""
+Módulo de Validação de Notas cadastradas.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+def validar_notas_cadastradas(alunos : list, aula_id: int):
+    
+    erros = []
+    
+    padrao_matricula = r'^\d{4}000\d{5}$'
+
+    if not aula_id or not isinstance(aula_id, int) or aula_id <= 0:
+        return ["O campo 'aula_id' é obrigatório e deve ser positivo"]
+
+    for aluno in alunos:
+        if not aluno['matricula'] or not isinstance(aluno['matricula'], str):
+            erros.append("O campo 'aluno_matricula' é obrigatório para todos os alunos")
+            
+        elif not re.match(padrao_matricula, aluno['matricula']):
+            erros.append("O campo 'aluno_matricula' está no formato errado em algum aluno")
+
+        try:
+            float(aluno["nota"])
+        except ValueError:
+            erros.append("O campo 'nota' é obrigatório para todos os alunos")
+
+        if 0 > aluno["nota"] or aluno["nota"] > 10:
+            erros.append("O campo 'nota' deve está entre 0 e 10 para todos os alunos")
+        
+        if erros:
+            return erros
+    
+    return []
+
+
+"""
+Módulo de Validação de Notas alteradas.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+def validar_nota_alterada(aluno_matricula: str, notas: list):
+    
+    erros = []
+
+    padrao_matricula = r'^\d{4}000\d{5}$'
+
+    if not aluno_matricula or not isinstance(aluno_matricula, str):
+        erros.append("O campo 'aluno_matricula' é obrigatório")
+    elif not re.match(padrao_matricula, aluno_matricula):
+        erros.append("O campo 'aluno_matricula' está no formato errado")
+    
+    if not notas or not isinstance(notas, list) or 0 >= len(notas) or len(notas) > 4:
+        erros.append("O campo 'notas' é obrigatório e precisa ter entre 1 e 4 notas")
+    
+    for nota in notas:
+        nota = float(nota)
+        if not isinstance(nota, float) or nota < 0 or nota > 10:
+            erros.append("Todas as notas precisam está entre 0 e 10")
+        if erros:
+            return erros
+    
+    return erros
+
+
+"""
+Módulo de Validação de Ausências registradas.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+def validar_ausencias_registradas (alunos: list):
+    """Valida as ausências de um aluno.
+
+    Esta função verifica se os dados fornecidos para uma ausência estão dentro dos critérios esperados.
+    Caso haja erros, eles são retornados em uma lista.
+
+    Args:
+        alunos (list): Alunos que assistem à aula.
+
+    Returns:
+        list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
+
+    Exemplo:
+        >>> erros = validar_ausencias_cadastradas([])
+        >>> print(erros)
+        []
+    """
+
+    erros = []    
+
+    for aluno in alunos:
+        if not aluno['matricula'] or not isinstance(aluno['matricula'], str) or not validar_matricula(aluno['matricula']):
+            erros.append("O atributo 'matricula' é obrigatório e deve ter o padrão correto para todos os alunos")
+        
+        if aluno['ausencia'] is None or not isinstance(aluno['ausencia'], bool):
+            erros.append("O atributo 'ausencia' é obrigatório para todos os alunos")
+        
+        if erros:
+            return erros
+      
+    return erros
+
+
+"""
+Módulo de Validação de Ausências alteradas.
+
+Este módulo fornece funções para validar os dados de uma entidade.
+As validações garantem que os dados estejam dentro dos critérios esperados e retornam uma lista de erros, se houver.
+"""
+
+def validar_ausencias_alteradas (ausencias: int):
+    """Valida as ausências de um aluno.
+
+    Esta função verifica se os dados fornecidos para uma ausência estão dentro dos critérios esperados.
+    Caso haja erros, eles são retornados em uma lista.
+
+    Args:
+        aluno_matricula (str): Matrícula do aluno que assiste à aula.
+        aula_id (int):  ID da aula.
+        ausencias (int): Número de ausências
+
+    Returns:
+        list: Uma lista de mensagens de erro, se houver. Caso contrário, retorna uma lista vazia.
+
+    Exemplo:
+        >>> erros = validar_ausencias_alteradas([], 1)
+        >>> print(erros)
+        []
+    """
+
+    erros = []    
+      
+    if ausencias is None or not isinstance(ausencias, int) or ausencias < 0:
+        erros.append("O atributo 'ausencias' é obrigatório e deve ser maior ou igual a 0")
     
     return erros

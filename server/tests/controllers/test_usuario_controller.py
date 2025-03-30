@@ -11,6 +11,7 @@ from app.extensions import db
 from app.utils.date_helpers import string_para_data
 from tests.user_event import usuario_entra_no_sistema
 
+
 def test_cadastrar_usuario_valido_do_tipo_professor(client, app):
     """Testa o cadastro de um usuário do tipo professor com dados válidos.
 
@@ -302,6 +303,7 @@ def test_cadastrar_usuario_dados_invalidos_do_tipo_funcionario(client, app):
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
         assert len(response.json["erro"]) == 6, "Deve haver 6 erros de validação."
 
+
 def test_alterar_usuario_cpf_duplicado(client, app):
     """Testa a atualização dos dados de um usuário com um cpf de outro usuário.
 
@@ -374,7 +376,7 @@ def test_alterar_usuario_cpf_duplicado(client, app):
             "cargos": [{"nome": "Administrador de Recursos", "salario": 1040.0, "data_contrato": "2027-12-31"}]
         }
 
-        response = client.put(f'/usuario/{usuario2.cpf}', json=dados_atualizacao)
+        response = client.put(f'/usuario/{usuario2.id}', json=dados_atualizacao)
 
         assert response.status_code == 400, "O status code deve ser 400 (Bad Request)."
         assert "erro" in response.json, "A resposta deve conter mensagens de erro."
@@ -382,6 +384,7 @@ def test_alterar_usuario_cpf_duplicado(client, app):
         erro = response.json["erro"]
 
         assert "Usuário já existe" in erro, "Deve haver um erro de usuário existente"
+
 
 def test_alterar_usuario_do_tipo_professor(client, app):
     """Testa a atualização dos dados de um usuário do tipo professor.
@@ -440,7 +443,7 @@ def test_alterar_usuario_do_tipo_professor(client, app):
             "cargos": [{"nome": "Professor", "salario": 3060.0, "data_contrato": "2027-12-31"}, {"nome": "Administrador de Recursos", "salario": 1040.0, "data_contrato": "2027-12-31"}]
         }
 
-        response = client.put(f'/usuario/{usuario.cpf}', json=dados_atualizacao)
+        response = client.put(f'/usuario/{usuario.id}', json=dados_atualizacao)
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Usuário atualizado com sucesso!"
         dados = response.json["data"]
@@ -520,7 +523,7 @@ def test_alterar_usuario_do_tipo_funcionario(client, app):
             "cargos": [{"nome": "Funcionário", "salario": 2000.0, "data_contrato": "2027-12-31"}, {"nome": "Administrador de Recursos", "salario": 1040.0, "data_contrato": "2027-12-31"}, {"nome": "Cargo teste", "salario": 5040.0, "data_contrato": "2027-12-31"}]
         }
 
-        response = client.put(f'/usuario/{usuario.cpf}', json=dados_atualizacao)
+        response = client.put(f'/usuario/{usuario.id}', json=dados_atualizacao)
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Usuário atualizado com sucesso!"
         dados = response.json["data"]
@@ -544,6 +547,7 @@ def test_alterar_usuario_do_tipo_funcionario(client, app):
         assert {"nome": "Funcionário", "salario": 2000.0, "data_contrato": "2027-12-31"} in dados["cargos"], "Faltando cargo"
         assert {"nome": "Administrador de Recursos", "salario": 1040.0, "data_contrato": "2027-12-31"} in dados["cargos"], "Faltando cargo"
         assert {"nome": "Cargo teste", "salario": 5040.0, "data_contrato": "2027-12-31"} in dados["cargos"], "Faltando cargo"
+
 
 def test_deletar_usuario_do_tipo_professor(client, app):
     """Testa a exclusão de um usuário do tipo professor.
@@ -585,7 +589,7 @@ def test_deletar_usuario_do_tipo_professor(client, app):
         db.session.add_all([disciplina1, disciplina2, cargo1, cargo2, usuario])
         db.session.commit()
 
-        response = client.delete(f'/usuario/{usuario.cpf}')
+        response = client.delete(f'/usuario/{usuario.id}')
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Usuário deletado com sucesso!"
 
@@ -627,6 +631,6 @@ def test_deletar_usuario_do_tipo_funcionario(client, app):
         db.session.add_all([cargo1, cargo2, usuario])
         db.session.commit()
 
-        response = client.delete(f'/usuario/{usuario.cpf}')
+        response = client.delete(f'/usuario/{usuario.id}')
         assert response.status_code == 200, "O status code deve ser 200 (OK)."
         assert response.json["mensagem"] == "Usuário deletado com sucesso!"

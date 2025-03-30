@@ -1,4 +1,4 @@
-import { useState } from "react"; 
+import { useState } from "react";
 import apiClient from "../axiosConfig";
 
 /**
@@ -24,8 +24,8 @@ const useApi = (baseUrl) => {
       const response = await apiClient.get(`${baseUrl}${endpoint}`, {
         headers: { "Content-Type": "application/json" },
       });
-      setData(response.data)
-      return response.data
+      setData(response.data);
+      return response.data;
     } catch (err) {
       setError(err.response?.data?.erro || err.message);
       throw new Error(err.response?.data?.erro);
@@ -45,9 +45,9 @@ const useApi = (baseUrl) => {
     setError(null);
     try {
       const response = await apiClient.post(`${baseUrl}${endpoint}`, body, {
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
-      setData((prevData) => [...(prevData || []), response.data]);
+      return response;
     } catch (err) {
       setError(err.response?.data?.erro || err.message);
       throw new Error(err.response?.data?.erro);
@@ -66,9 +66,10 @@ const useApi = (baseUrl) => {
     setLoading(true);
     setError(null);
     try {
-      await apiClient.put(`${baseUrl}${endpoint}`, body, {
-        headers: { "Content-Type": "application/json" }
+      const response = await apiClient.put(`${baseUrl}${endpoint}`, body, {
+        headers: { "Content-Type": "application/json" },
       });
+      return response;
     } catch (err) {
       setError(err.response?.data?.erro || err.message);
       throw new Error(err.response?.data?.erro);
@@ -95,6 +96,41 @@ const useApi = (baseUrl) => {
     }
   };
 
+  /**
+   * Função para baixar arquivos da API.
+   * @param {string} endpoint - O endpoint específico (ex.: '/boletim/123').
+   * @param {string} filename - O nome do arquivo para download.
+   * @returns {Promise<void>}
+   */
+  const downloadFile = async (endpoint, filename) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient.get(`${baseUrl}${endpoint}`, {
+        responseType: "blob", // Isso é crucial para downloads
+      });
+
+      // Cria um link temporário para disparar o download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+
+      // Limpeza
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      return response.data;
+    } catch (err) {
+      setError(err.response?.data?.erro || err.message);
+      throw err; // Rejeita a promise para tratamento adicional
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     data,
     loading,
@@ -103,6 +139,7 @@ const useApi = (baseUrl) => {
     createData,
     updateData,
     deleteData,
+    downloadFile
   };
 };
 

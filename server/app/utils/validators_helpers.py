@@ -258,5 +258,16 @@ def validar_horario_completo(horario: str) -> bool:
     
     return h_fim > h_inicio
 
+def validar_matricula(matricula: str) -> bool:
+    """
+    Valida se a matrícula está no formato correto: "XXXX000XXXXX".
 
+    Args:
+        matricula (str): A matrícula a ser validada, no formato "XXXX000XXXXX".
+
+    Returns:
+        bool: True se a matrícula estiver no formato correto, False caso contrário.
+    """
+    padrao = r'^\d{4}000\d{5}$'
+    return bool(re.match(padrao, matricula))
 

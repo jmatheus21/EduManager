@@ -16,6 +16,10 @@ def cadastrar_disciplina(current_user_cpf: str, current_user_role: str) -> jsoni
 
     Esta função recebe os dados de uma disciplina via JSON, valida os dados e, se válidos, cadastra a disciplina no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados da disciplina cadastrada, ou uma mensagem de erro em caso de dados inválidos.
     """
@@ -38,6 +42,10 @@ def cadastrar_disciplina(current_user_cpf: str, current_user_role: str) -> jsoni
 def listar_disciplinas(current_user_cpf: str, current_user_role: str) -> jsonify:
     """Lista todas as disciplinas cadastradas no banco de dados.
 
+    Args:
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
+
     Returns:
         jsonify: Resposta JSON contendo uma lista de disciplinas com seus respectivos dados.
     """
@@ -49,7 +57,9 @@ def buscar_disciplina(codigo: str, current_user_cpf: str, current_user_role: str
     """Busca uma disciplina específica pelo código.
 
     Args:
-        codigo (str): O código da disciplina a ser buscada
+        codigo (str): O código da disciplina a ser buscada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo os dados da disciplina encontrada.
@@ -65,6 +75,8 @@ def alterar_disciplina(codigo: str, current_user_cpf: str, current_user_role: st
 
     Args:
         codigo (str): O código da disciplina a ser alterada.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso e os dados atualizados da disciplina, ou uma mensagem de erro em caso de dados inválidos.
@@ -96,6 +108,8 @@ def remover_disciplina(codigo: str, current_user_cpf: str, current_user_role: st
 
     Args:
         codigo (str): O código da disciplina a ser removida.
+        current_user_cpf (str): O cpf do usuário autenticado.
+        current_user_role (str): O role do usuário autenticado.
 
     Returns:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.

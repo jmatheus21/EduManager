@@ -21,15 +21,15 @@ const Matricula = () => {
       }, 5000);
 
     } catch (e) {
-      console.error(e)
+      throw e;
     }
   }
 
   return (
     <Container fluid>
         <Titulo>Matricular Aluno</Titulo>
-        { show && (<Alert severity='success' className="p-3 mb-3 d-flex align-content-center gap-3">
-          <p>Aluno matriculado com sucesso!</p>
+        { show && (<Alert severity='success' className="p-2 my-3 d-flex align-content-center gap-3">
+          Aluno matriculado com sucesso!
         </Alert>)}
         <Formulario enviarFormulario={enviarFormulario} />
     </Container>

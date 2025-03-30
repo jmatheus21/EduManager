@@ -9,8 +9,10 @@ from flask import Blueprint, jsonify
 from ..controllers import aluno_controller
 from app.middlewares.token_middleware import token_required
 
+
 # Cria um Blueprint para as rotas de alunos
 aluno_bp = Blueprint("aluno", __name__)
+
 
 @aluno_bp.route("/", methods=['POST'])
 @token_required
@@ -28,6 +30,7 @@ def cadastrar_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
     """
     return aluno_controller.cadastrar_aluno(current_user_cpf, current_user_role)
 
+
 @aluno_bp.route("/matricula", methods=['POST'])
 @token_required
 def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
@@ -43,6 +46,7 @@ def matricular_aluno(current_user_cpf: str, current_user_role: str) -> jsonify:
         jsonify: Resposta JSON contendo uma mensagem de sucesso.
     """
     return aluno_controller.matricular_aluno(current_user_cpf, current_user_role)
+
 
 @aluno_bp.route("/", methods=['GET'])
 @token_required

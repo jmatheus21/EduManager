@@ -1,8 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row } from "react-bootstrap";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Titulo, BotaoInfo, ModalRemover } from "../../components";
+import { Titulo, ModalRemover } from "../../components";
 import useApi from "../../hooks/useApi";
+import { Botao } from "../../components/Botao";
+
+const exibirTurno = (turno) => {
+  switch(turno) {
+    case "V":
+      return "Vespertino";
+    case "N":
+      return "Noturno"; 
+    default:
+      return "Matutino";
+  }
+}
+
+const exibirStatus = (turno) => {
+  switch(turno) {
+    case "C":
+      return "Consolidada";
+    default:
+      return "Ativa";
+  }
+}
 
 /**
  * Componente para exibir informações detalhadas de uma turma.
@@ -93,13 +114,13 @@ const InfoTurma = () => {
           </Col>
           <Col>
             <h5>Turno:</h5>
-            {api.data && <p>{api.data.turno}</p>}
+            {api.data && <p>{exibirTurno(api.data.turno)}</p>}
           </Col>
         </Row>
         <Row>
           <Col>
             <h5>Status:</h5>
-            {api.data && <p>{api.data.status}</p>}
+            {api.data && <p>{exibirStatus(api.data.status)}</p>}
           </Col>
           <Col>
             <h5>Sala:</h5>
@@ -107,10 +128,10 @@ const InfoTurma = () => {
           </Col>
         </Row>
       </Container>
-      <BotaoInfo
-        funcaoAlterar={() => navigate(`/turma/alterar/${chave}`)}
-        funcaoRemover={handleShow}
-      />
+      <Botao.Group>
+        <Botao.Base title="Remover" color="error" onClick={handleShow} />
+        <Botao.Base title="Alterar" onClick={() => navigate(`/turma/alterar/${chave}`)} />
+      </Botao.Group>
       <ModalRemover
         estado={show}
         funcaoFechar={handleClose}
