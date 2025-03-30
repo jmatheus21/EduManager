@@ -44,6 +44,13 @@ DB_PORT=5432
 DB_NAME=
 SECRET_KEY=
 DEBUG=True
+
+# Variáveis de ambiente para o banco de dados para a realização dos testes
+TEST_DB_USER=
+TEST_DB_PASSWORD=
+TEST_DB_HOST=localhost
+TEST_DB_PORT=5432
+TEST_DB_NAME=
 ```
 **Observação:** *Certifique-se de preencher os valores pelas configurações adequadas ao seu ambiente.*
 
@@ -67,3 +74,31 @@ Para iniciar o servidor de desenvolvimento do **React.js**, execute o seguinte c
 npm run dev
 ```
 Por padrão, o frontend estará disponível em **http://localhost:5173**.
+
+### Testes do Backend
+Para testar todos os componentes do backend, navegue até a pasta *server*, a partir do diretório raíz do projeto, com o comando no terminal:
+```
+cd server
+```
+Ative o ambiente virtual (Windows):
+```
+venv\Scripts\activate
+```
+Para iniciar os testes do backend, execute o comando:
+```
+pytest
+```
+
+### Testes dos Frontend
+Para testar todos os componentes do frontend, navegue até a pasta *client*, a partir do diretório raíz do projeto, com o comando no terminal:
+```
+cd client
+```
+Para iniciar os testes do frontend, execute o comando:
+```
+npm test
+```
+
+
+
+
