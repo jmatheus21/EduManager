@@ -24,7 +24,7 @@ cd server
 ```
 Após isso, exclua a pasta *venv* já existente para evitar conflito de arquivos e crie um ambiente virtual:
 ```
-python3 -m venv venv
+python -m venv venv
 ```
 Ative o ambiente virtual (Windows):
 ```
